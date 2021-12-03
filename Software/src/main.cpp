@@ -1,8 +1,10 @@
 #include <Arduino.h>
-void setup() {
-// write your initialization code here
+
+__attribute__((unused)) void setup() {
+    Serial.begin(9600);
+    Serial.println();
+    Serial.println("Hello world!");
 }
 
-void loop() {
-// write your code here
+__attribute__((unused)) void loop() {
 }
