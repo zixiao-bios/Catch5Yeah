@@ -8,7 +8,7 @@
 #include <TFT_eSPI.h>
 
 Audio *audio;
-#define NUM_LEDS TOWER_NUM_LEDS
+#define NUM_LEDS STRIPE_NUM_LEDS
 CRGB leds[NUM_LEDS];
 
 void showStrip() {
@@ -114,6 +114,6 @@ __attribute__((unused)) void setup() {
 }
 
 __attribute__((unused)) void loop() {
-//    rainbowCycle(10);
-    theaterChaseRainbow(50);
+    rainbowCycle(10);
+//    theaterChaseRainbow(50);
 }
