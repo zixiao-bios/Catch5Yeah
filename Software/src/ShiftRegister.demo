@@ -18,12 +18,12 @@
 
 ShiftRegister74HC595<1> sr(15, 0, 2); // NOLINT
 
-void setup() {
+__attribute__((unused)) void setup() {
     Serial.begin(115200);
     pinMode(35, INPUT);
 }
 
-void loop() {
+__attribute__((unused)) void loop() {
     Serial.println(digitalRead(35));
     delay(50);
 //    sr.setNoUpdate(1, HIGH);
