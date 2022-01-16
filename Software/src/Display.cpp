@@ -6,7 +6,7 @@ TFT_eSPI tft = TFT_eSPI(SCREEN_WIDTH, SCREEN_HEIGHT);
 
 TaskHandle_t displayTaskHandler666 = nullptr;
 
-void disp_flush(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *color_p) {
+void dispFlush(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *color_p) {
     uint32_t w = (area->x2 - area->x1 + 1);
     uint32_t h = (area->y2 - area->y1 + 1);
 
@@ -18,32 +18,25 @@ void disp_flush(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *color_p)
     lv_disp_flush_ready(disp);
 }
 
-void touchpad_read(lv_indev_drv_t *indev_driver, lv_indev_data_t *data) {
+void touchpadRead(lv_indev_drv_t *indev_driver, lv_indev_data_t *data) {
     uint16_t touchX, touchY;
     bool touched = tft.getTouch(&touchX, &touchY, 600);
     if (!touched) {
         data->state = LV_INDEV_STATE_REL;
     } else {
         data->state = LV_INDEV_STATE_PR;
-
-        /*Set the coordinates*/
         data->point.x = touchX;
         data->point.y = touchY;
-
-        Serial.print("Data x ");
-        Serial.println(touchX);
-
-        Serial.print("Data y ");
-        Serial.println(touchY);
     }
 }
 
-void display() {
+void displayInit() {
     lv_init();
 
     tft.begin();
-    tft.setRotation(3);
+    tft.setRotation(SCREEN_ROTATION);
 
+    // todo: set touch calData
     uint16_t calData[5] = {275, 3620, 264, 3532, 1};
     tft.setTouch(calData);
 
@@ -55,7 +48,7 @@ void display() {
     /*Change the following line to your display resolution*/
     disp_drv.hor_res = SCREEN_WIDTH;
     disp_drv.ver_res = SCREEN_HEIGHT;
-    disp_drv.flush_cb = disp_flush;
+    disp_drv.flush_cb = dispFlush;
     disp_drv.draw_buf = &draw_buf;
     lv_disp_drv_register(&disp_drv);
 
@@ -63,7 +56,7 @@ void display() {
     static lv_indev_drv_t indev_drv;
     lv_indev_drv_init(&indev_drv);
     indev_drv.type = LV_INDEV_TYPE_POINTER;
-    indev_drv.read_cb = touchpad_read;
+    indev_drv.read_cb = touchpadRead;
     lv_indev_drv_register(&indev_drv);
 
     // test
@@ -78,7 +71,7 @@ void display() {
     lv_obj_t *label1;
 
     lv_obj_t *btn1 = lv_btn_create(lv_scr_act());
-    lv_obj_add_event_cb(btn1, event_handler, LV_EVENT_ALL, nullptr);
+    lv_obj_add_event_cb(btn1, eventHandler, LV_EVENT_ALL, nullptr);
     lv_obj_align(btn1, LV_ALIGN_CENTER, 0, -40);
 
     label1 = lv_label_create(btn1);
@@ -86,7 +79,7 @@ void display() {
     lv_obj_center(label1);
 
     lv_obj_t *btn2 = lv_btn_create(lv_scr_act());
-    lv_obj_add_event_cb(btn2, event_handler, LV_EVENT_ALL, nullptr);
+    lv_obj_add_event_cb(btn2, eventHandler, LV_EVENT_ALL, nullptr);
     lv_obj_align(btn2, LV_ALIGN_CENTER, 0, 40);
     lv_obj_add_flag(btn2, LV_OBJ_FLAG_CHECKABLE);
     lv_obj_set_height(btn2, LV_SIZE_CONTENT);
@@ -96,7 +89,7 @@ void display() {
     lv_obj_center(label1);
 }
 
-bool run() {
+bool displayTaskRun() {
     if (displayTaskHandler666 != nullptr) {
         vTaskDelete(displayTaskHandler666);
     }
@@ -113,7 +106,7 @@ bool run() {
     }
 }
 
-void event_handler(lv_event_t *e) {
+void eventHandler(lv_event_t *e) {
     lv_event_code_t code = lv_event_get_code(e);
 
     if (code == LV_EVENT_CLICKED) {

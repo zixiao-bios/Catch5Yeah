@@ -10,10 +10,10 @@
 
 
 __attribute__((unused)) void setup() {
-    Serial.begin(115200); /* prepare for possible serial debug */
+    Serial.begin(115200);
 
-    display();
-    run();
+    displayInit();
+    displayTaskRun();
 }
 
 __attribute__((unused)) void loop() {
