@@ -4,6 +4,7 @@
 #include <TFT_eSPI.h>
 #include <lvgl.h>
 #include <freertos/FreeRTOS.h>
+#include "FS.h"
 #include "config.h"
 
     void displayInit();
@@ -17,5 +18,7 @@
     [[noreturn]] void displayTask(void *pv);
 
     void eventHandler(lv_event_t *e);
+
+    void touch_calibrate(bool repeat);
 
 #endif //SOFTWARE_DISPLAY_H

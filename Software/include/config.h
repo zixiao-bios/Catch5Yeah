@@ -24,8 +24,9 @@
 /**======================
  * 2. Display settings
  **======================*/
-#define SCREEN_WIDTH 480
-#define SCREEN_HEIGHT 320
+#define SCREEN_WIDTH 320
+#define SCREEN_HEIGHT 480
 #define SCREEN_ROTATION 3
+#define CALIBRATION_FILE "/TouchCalData"
 
 #endif //SOFTWARE_CONFIG_H

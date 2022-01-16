@@ -1,11 +1,8 @@
 #include <Arduino.h>
-#include <SPIFFS.h>
 #include <FastLED.h>
-#include "Audio.h"
-#include <TFT_eSPI.h>
-#include <SPI.h>
-#include "FS.h"
 #include <ShiftRegister74HC595.h>
+
+#include "Audio.h"
 #include "Display.h"
 
 

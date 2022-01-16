@@ -35,10 +35,7 @@ void displayInit() {
 
     tft.begin();
     tft.setRotation(SCREEN_ROTATION);
-
-    // todo: set touch calData
-    uint16_t calData[5] = {275, 3620, 264, 3532, 1};
-    tft.setTouch(calData);
+    touch_calibrate(false);
 
     lv_disp_draw_buf_init(&draw_buf, buf, nullptr, SCREEN_WIDTH * 10);
 
@@ -46,8 +43,8 @@ void displayInit() {
     static lv_disp_drv_t disp_drv;
     lv_disp_drv_init(&disp_drv);
     /*Change the following line to your display resolution*/
-    disp_drv.hor_res = SCREEN_WIDTH;
-    disp_drv.ver_res = SCREEN_HEIGHT;
+    disp_drv.hor_res = SCREEN_HEIGHT;
+    disp_drv.ver_res = SCREEN_WIDTH;
     disp_drv.flush_cb = dispFlush;
     disp_drv.draw_buf = &draw_buf;
     lv_disp_drv_register(&disp_drv);
@@ -114,4 +111,65 @@ void eventHandler(lv_event_t *e) {
     } else if (code == LV_EVENT_VALUE_CHANGED) {
         LV_LOG_USER("Toggled");
     }
-};
+}
+
+void touch_calibrate(bool repeat) {
+    uint16_t calData[5];
+    uint8_t calDataOK = 0;
+
+    // check file system exists
+    if (!SPIFFS.begin()) {
+        Serial.println("Formating file system");
+        SPIFFS.format();
+        SPIFFS.begin();
+    }
+
+    // check if calibration file exists and size is correct
+    if (SPIFFS.exists(CALIBRATION_FILE)) {
+        if (repeat) {
+            // Delete if we want to re-calibrate
+            SPIFFS.remove(CALIBRATION_FILE);
+        } else {
+            fs::File f = SPIFFS.open(CALIBRATION_FILE, "r");
+            if (f) {
+                if (f.readBytes((char *) calData, 14) == 14)
+                    calDataOK = 1;
+                f.close();
+            }
+        }
+    }
+
+    if (calDataOK && !repeat) {
+        // calibration data valid
+        tft.setTouch(calData);
+    } else {
+        // data not valid so recalibrate
+        tft.fillScreen(TFT_BLACK);
+        tft.setCursor(20, 0);
+        tft.setTextFont(2);
+        tft.setTextSize(1);
+        tft.setTextColor(TFT_WHITE, TFT_BLACK);
+
+        tft.println("Touch corners as indicated");
+
+        tft.setTextFont(1);
+        tft.println();
+
+        if (repeat) {
+            tft.setTextColor(TFT_RED, TFT_BLACK);
+            tft.println("Set REPEAT_CAL to false to stop this running again!");
+        }
+
+        tft.calibrateTouch(calData, TFT_MAGENTA, TFT_BLACK, 15);
+
+        tft.setTextColor(TFT_GREEN, TFT_BLACK);
+        tft.println("Calibration complete!");
+
+        // store data
+        fs::File f = SPIFFS.open(CALIBRATION_FILE, "w");
+        if (f) {
+            f.write((const unsigned char *) calData, 14);
+            f.close();
+        }
+    }
+}
