@@ -4,7 +4,7 @@ static lv_disp_draw_buf_t draw_buf;
 static lv_color_t buf[SCREEN_WIDTH * 10];
 TFT_eSPI tft = TFT_eSPI(SCREEN_WIDTH, SCREEN_HEIGHT);
 
-TaskHandle_t displayTaskHandler666 = nullptr;
+TaskHandle_t displayTaskHandler = nullptr;
 
 void dispFlush(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *color_p) {
     uint32_t w = (area->x2 - area->x1 + 1);
@@ -87,10 +87,10 @@ void displayInit() {
 }
 
 bool displayTaskRun() {
-    if (displayTaskHandler666 != nullptr) {
-        vTaskDelete(displayTaskHandler666);
+    if (displayTaskHandler != nullptr) {
+        vTaskDelete(displayTaskHandler);
     }
-    return xTaskCreate(&displayTask, "DisplayTask", 4096, nullptr, 1, &displayTaskHandler666) == pdPASS;
+    return xTaskCreate(&displayTask, "DisplayTask", 4096, nullptr, 1, &displayTaskHandler) == pdPASS;
 }
 
 [[noreturn]] void displayTask(void *pv) {
