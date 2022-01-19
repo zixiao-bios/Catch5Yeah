@@ -4,6 +4,8 @@
 
 #include <Arduino.h>
 #include <FastLED.h>
+#include <freertos/FreeRTOS.h>
+#include <freertos/FreeRTOSConfig.h>
 #include "config.h"
 
 class RGB_Strip {
@@ -15,11 +17,15 @@ public:
 
     bool setEffect(const String& effect);
 
+    void turnOff();
+
 private:
     int id, dataPin, ledNum;
     CRGB *leds;
     TaskHandle_t taskHandle = nullptr;
     char name[5]{};
+
+    void stopTask();
 
     static void setPixel(CRGB *Pixel, byte red, byte green, byte blue);
     static void setAll(byte red, byte green, byte blue, CRGB* leds, int ledNum);

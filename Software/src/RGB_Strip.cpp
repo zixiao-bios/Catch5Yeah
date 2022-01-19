@@ -40,6 +40,8 @@ RGB_Strip::RGB_Strip(int id) : id(id) {
         default:
             Serial.println("Error! Please set dataPin:" + String(dataPin) + "in /src/RGB.cpp init function!");
     }
+
+//    this->turnOff();
 }
 
 void RGB_Strip::setPixel(CRGB *Pixel, byte red, byte green, byte blue) {
@@ -49,7 +51,7 @@ void RGB_Strip::setPixel(CRGB *Pixel, byte red, byte green, byte blue) {
 }
 
 void RGB_Strip::setAll(byte red, byte green, byte blue, CRGB *leds, int ledNum) {
-    for (int i = 0; i < ledNum; i++) {
+    for (int i = ledNum - 1; i >= 0; i--) {
         setPixel(&leds[i], red, green, blue);
     }
     FastLED.show();
@@ -74,49 +76,51 @@ void RGB_Strip::Wheel(byte WheelPos, byte c[3]) {
 }
 
 bool RGB_Strip::setEffect(const String &effect) {
-    if (this->taskHandle != nullptr) {
-        vTaskDelete(this->taskHandle);
-        this->taskHandle = nullptr;
-    }
+    stopTask();
 
-    vTaskDelay(5);
     if (effect == "rainbow") {
-        return xTaskCreate(&RGB_Strip::rainbow, this->name, 2048, this, 1, &this->taskHandle) == pdPASS;
+        return xTaskCreatePinnedToCore(&RGB_Strip::rainbow, this->name, 10000, this, 3, &this->taskHandle, 0) == pdPASS;
     } else if (effect == "theaterRainbow") {
-        return xTaskCreate(&RGB_Strip::theaterRainbow, this->name, 2048, this, 1, &this->taskHandle) == pdPASS;
+        return xTaskCreatePinnedToCore(&RGB_Strip::theaterRainbow, this->name, 10000, this, 3, &this->taskHandle, 0) ==
+               pdPASS;
     }
 }
 
 [[noreturn]] void RGB_Strip::theaterRainbow(void *pv) {
     auto *self = (RGB_Strip *) pv;
     byte c[3];
-    const TickType_t delayTick = 20 / portTICK_PERIOD_MS;
 
     while (true) {
         for (int j = 0; j < 256; j++) {     // cycle all 256 colors in the wheel
             for (int q = 0; q < 3; q++) {
                 for (int i = 0; i < self->ledNum; i = i + 3) {
-                    if (i + q >= self->ledNum) {
-                        break;
-                    }
                     Wheel((i + j) % 255, c);
                     if (self->inverse) {
+                        if (i + q >= self->ledNum) {
+                            break;
+                        }
                         setPixel(&self->leds[i + q], *c, *(c + 1), *(c + 2));    //turn every third pixel on
                     } else {
+                        if (self->ledNum - 1 - (i + q) < 0) {
+                            break;
+                        }
                         setPixel(&self->leds[self->ledNum - 1 - (i + q)], *c, *(c + 1),
                                  *(c + 2));    //turn every third pixel on
                     }
                 }
                 FastLED.show();
-                vTaskDelay(delayTick);
+                delay(20);
 
                 for (int i = 0; i < self->ledNum; i = i + 3) {
-                    if (i + q >= self->ledNum) {
-                        break;
-                    }
                     if (self->inverse) {
+                        if (i + q >= self->ledNum) {
+                            break;
+                        }
                         setPixel(&self->leds[i + q], 0, 0, 0);        //turn every third pixel off
                     } else {
+                        if (self->ledNum - 1 - (i + q) < 0) {
+                            break;
+                        }
                         setPixel(&self->leds[self->ledNum - 1 - (i + q)], 0, 0, 0);        //turn every third pixel off
                     }
                 }
@@ -128,7 +132,6 @@ bool RGB_Strip::setEffect(const String &effect) {
 [[noreturn]] void RGB_Strip::rainbow(void *pv) {
     auto *self = (RGB_Strip *) pv;
     byte c[3];
-    const TickType_t delayTick = 10 / portTICK_PERIOD_MS;
 
     while (true) {
         for (int j = 0; j < 256 * 5; j++) { // 5 cycles of all colors on wheel
@@ -141,7 +144,22 @@ bool RGB_Strip::setEffect(const String &effect) {
                 }
             }
             FastLED.show();
-            vTaskDelay(delayTick);
+            delay(10);
         }
+        Serial.println("rainbow");
     }
+}
+
+void RGB_Strip::turnOff() {
+    Serial.println("turnoff");
+    stopTask();
+    RGB_Strip::setAll(0, 0, 0, this->leds, this->ledNum);
+}
+
+void RGB_Strip::stopTask() {
+    if (this->taskHandle != nullptr) {
+        vTaskDelete(this->taskHandle);
+        this->taskHandle = nullptr;
+    }
+    vTaskDelay(5);
 }
