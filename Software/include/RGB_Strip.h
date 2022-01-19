@@ -8,6 +8,9 @@
 
 class RGB_Strip {
 public:
+    // RGB effect rotation direction
+    bool inverse = false;
+
     explicit RGB_Strip(int id);
 
     bool setEffect(const String& effect);
@@ -24,6 +27,7 @@ private:
     static void Wheel(byte WheelPos, byte c[3]);
 
     [[noreturn]] static void rainbow(void *pv);
+    [[noreturn]] static void theaterRainbow(void *pv);
 };
 
 

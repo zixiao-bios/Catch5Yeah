@@ -12,7 +12,13 @@ __attribute__((unused)) void setup() {
 //    displayInit();
 //    displayTaskRun();
 
+    static RGB_Strip rgb2 = RGB_Strip(2);
     static RGB_Strip rgb3 = RGB_Strip(3);
+
+    rgb2.inverse = true;
+    rgb3.inverse = true;
+
+    rgb2.setEffect("theaterRainbow");
     rgb3.setEffect("rainbow");
 }
 

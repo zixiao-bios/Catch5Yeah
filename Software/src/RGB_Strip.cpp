@@ -73,37 +73,75 @@ void RGB_Strip::Wheel(byte WheelPos, byte c[3]) {
     }
 }
 
-[[noreturn]] void RGB_Strip::rainbow(void *pv) {
-    auto *self = (RGB_Strip *) pv;
-    while (true) {
-        byte c[3];
-        uint16_t i, j;
-        const TickType_t delayTick = 10 / portTICK_PERIOD_MS;
-
-        for (j = 0; j < 256 * 5; j++) { // 5 cycles of all colors on wheel
-            for (i = 0; i < self->ledNum; i++) {
-                Wheel(((i * 256 / self->ledNum) + j) & 255, c);
-                setPixel(&self->leds[i], *c, *(c + 1), *(c + 2));
-            }
-            FastLED.show();
-            vTaskDelay(delayTick);
-        }
-    }
-}
-
 bool RGB_Strip::setEffect(const String &effect) {
     if (this->taskHandle != nullptr) {
         vTaskDelete(this->taskHandle);
         this->taskHandle = nullptr;
     }
 
-//    setPixel(&leds[0], 255, 255, 255);
-//    FastLED.show();
-//    vTaskDelay(500 / portTICK_PERIOD_MS);
-//    setPixel(&leds[0], 0, 0, 0);
-//    FastLED.show();
-
+    vTaskDelay(5);
     if (effect == "rainbow") {
         return xTaskCreate(&RGB_Strip::rainbow, this->name, 2048, this, 1, &this->taskHandle) == pdPASS;
+    } else if (effect == "theaterRainbow") {
+        return xTaskCreate(&RGB_Strip::theaterRainbow, this->name, 2048, this, 1, &this->taskHandle) == pdPASS;
+    }
+}
+
+[[noreturn]] void RGB_Strip::theaterRainbow(void *pv) {
+    auto *self = (RGB_Strip *) pv;
+    byte c[3];
+    const TickType_t delayTick = 20 / portTICK_PERIOD_MS;
+
+    while (true) {
+        for (int j = 0; j < 256; j++) {     // cycle all 256 colors in the wheel
+            for (int q = 0; q < 3; q++) {
+                for (int i = 0; i < self->ledNum; i = i + 3) {
+                    if (i + q >= self->ledNum) {
+                        break;
+                    }
+                    Wheel((i + j) % 255, c);
+                    if (self->inverse) {
+                        setPixel(&self->leds[i + q], *c, *(c + 1), *(c + 2));    //turn every third pixel on
+                    } else {
+                        setPixel(&self->leds[self->ledNum - 1 - (i + q)], *c, *(c + 1),
+                                 *(c + 2));    //turn every third pixel on
+                    }
+                }
+                FastLED.show();
+                vTaskDelay(delayTick);
+
+                for (int i = 0; i < self->ledNum; i = i + 3) {
+                    if (i + q >= self->ledNum) {
+                        break;
+                    }
+                    if (self->inverse) {
+                        setPixel(&self->leds[i + q], 0, 0, 0);        //turn every third pixel off
+                    } else {
+                        setPixel(&self->leds[self->ledNum - 1 - (i + q)], 0, 0, 0);        //turn every third pixel off
+                    }
+                }
+            }
+        }
+    }
+}
+
+[[noreturn]] void RGB_Strip::rainbow(void *pv) {
+    auto *self = (RGB_Strip *) pv;
+    byte c[3];
+    const TickType_t delayTick = 10 / portTICK_PERIOD_MS;
+
+    while (true) {
+        for (int j = 0; j < 256 * 5; j++) { // 5 cycles of all colors on wheel
+            for (int i = 0; i < self->ledNum; i++) {
+                Wheel(((i * 256 / self->ledNum) + j) & 255, c);
+                if (self->inverse) {
+                    setPixel(&self->leds[self->ledNum - 1 - i], *c, *(c + 1), *(c + 2));
+                } else {
+                    setPixel(&self->leds[i], *c, *(c + 1), *(c + 2));
+                }
+            }
+            FastLED.show();
+            vTaskDelay(delayTick);
+        }
     }
 }
