@@ -23,6 +23,13 @@
 #define RGB3_NUM_LEDS 113
 #define RGB4_NUM_LEDS 16
 
+// keypad, button
+#define K1 26
+#define K2 3
+#define K3 32
+#define K4 33
+#define BTN 35
+
 
 /**======================
  * 2. Display settings
