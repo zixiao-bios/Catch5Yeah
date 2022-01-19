@@ -34,7 +34,7 @@ __attribute__((unused)) void setup() {
 //    displayTaskRun();
 
     // todo: 这里优先级=1时卡死，=2时正常，为什么？
-    xTaskCreatePinnedToCore(mainTask, "mainTask", 10000, nullptr, 2, nullptr, 0);
+    xTaskCreatePinnedToCore(mainTask, "mainTask", 10000, nullptr, 1, nullptr, 0);
 }
 
 __attribute__((unused)) void loop() {

@@ -166,7 +166,8 @@ void RGB_Strip::stopTask() {
         vTaskDelete(this->taskHandle);
         this->taskHandle = nullptr;
     }
-    delay(5);
+    // todo: 删除这个delay后，mainTask的优先级=1也能正常运行
+//    delay(5);
 }
 
 void RGB_Strip::RGBLoop(void *pv) {
