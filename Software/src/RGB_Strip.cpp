@@ -79,10 +79,11 @@ bool RGB_Strip::setEffect(const String &effect) {
     stopTask();
 
     if (effect == "rainbow") {
-        return xTaskCreatePinnedToCore(&RGB_Strip::rainbow, this->name, 10000, this, 3, &this->taskHandle, 0) == pdPASS;
+        return xTaskCreatePinnedToCore(&RGB_Strip::rainbow, this->name, 10000, this, 2, &this->taskHandle, 0) == pdPASS;
     } else if (effect == "theaterRainbow") {
-        return xTaskCreatePinnedToCore(&RGB_Strip::theaterRainbow, this->name, 10000, this, 3, &this->taskHandle, 0) ==
-               pdPASS;
+        return xTaskCreatePinnedToCore(&RGB_Strip::theaterRainbow, this->name, 10000, this, 2, &this->taskHandle, 0) == pdPASS;
+    } else if (effect == "loopRGB") {
+        return xTaskCreatePinnedToCore(&RGB_Strip::RGBLoop, this->name, 10000, this, 2, &this->taskHandle, 0) == pdPASS;
     }
 }
 
@@ -162,4 +163,45 @@ void RGB_Strip::stopTask() {
         this->taskHandle = nullptr;
     }
     vTaskDelay(5);
+}
+
+void RGB_Strip::RGBLoop(void *pv) {
+    auto *self = (RGB_Strip *) pv;
+
+    while (true) {
+        for (int j = 0; j < 3; j++) {
+            // Fade IN
+            for (int k = 0; k < 256; k++) {
+                switch (j) {
+                    case 0:
+                        setAll(k, 0, 0, self->leds, self->ledNum);
+                        break;
+                    case 1:
+                        setAll(0, k, 0, self->leds, self->ledNum);
+                        break;
+                    case 2:
+                        setAll(0, 0, k, self->leds, self->ledNum);
+                        break;
+                }
+                FastLED.show();
+                delay(3);
+            }
+            // Fade OUT
+            for (int k = 255; k >= 0; k--) {
+                switch (j) {
+                    case 0:
+                        setAll(k, 0, 0, self->leds, self->ledNum);
+                        break;
+                    case 1:
+                        setAll(0, k, 0, self->leds, self->ledNum);
+                        break;
+                    case 2:
+                        setAll(0, 0, k, self->leds, self->ledNum);
+                        break;
+                }
+                FastLED.show();
+                delay(3);
+            }
+        }
+    }
 }

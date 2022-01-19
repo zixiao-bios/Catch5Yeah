@@ -34,6 +34,7 @@ private:
 
     [[noreturn]] static void rainbow(void *pv);
     [[noreturn]] static void theaterRainbow(void *pv);
+    [[noreturn]] static void RGBLoop(void *pv);
 };
 
 

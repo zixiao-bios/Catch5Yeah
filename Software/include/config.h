@@ -1,6 +1,8 @@
 #ifndef SOFTWARE_CONFIG_H
 #define SOFTWARE_CONFIG_H
 
+#include <freertos/FreeRTOSConfig.h>
+
 
 /**======================
  * 1. ESP32 pin settings
