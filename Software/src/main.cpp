@@ -14,9 +14,9 @@ RGB_Strip *rgb3;
         delay(1000);
         rgb3->setEffect("theaterRainbow");
         rgb2->turnOff();
-        delay(1000);
-        rgb2->setEffect("rainbow");
-        rgb3->turnOff();
+//        delay(1000);
+//        rgb2->setEffect("rainbow");
+//        rgb3->turnOff();
     }
 }
 
