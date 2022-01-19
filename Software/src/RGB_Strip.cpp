@@ -41,7 +41,7 @@ RGB_Strip::RGB_Strip(int id) : id(id) {
             Serial.println("Error! Please set dataPin:" + String(dataPin) + "in /src/RGB.cpp init function!");
     }
 
-//    this->turnOff();
+    this->turnOff();
 }
 
 void RGB_Strip::setPixel(CRGB *Pixel, byte red, byte green, byte blue) {
@@ -79,11 +79,15 @@ bool RGB_Strip::setEffect(const String &effect) {
     stopTask();
 
     if (effect == "rainbow") {
-        return xTaskCreatePinnedToCore(&RGB_Strip::rainbow, this->name, 10000, this, 2, &this->taskHandle, 0) == pdPASS;
+        return xTaskCreatePinnedToCore(&RGB_Strip::rainbow, this->name, 10000, this, 1, &this->taskHandle, 0) == pdPASS;
     } else if (effect == "theaterRainbow") {
-        return xTaskCreatePinnedToCore(&RGB_Strip::theaterRainbow, this->name, 10000, this, 2, &this->taskHandle, 0) == pdPASS;
+        return xTaskCreatePinnedToCore(&RGB_Strip::theaterRainbow, this->name, 10000, this, 1, &this->taskHandle, 0) ==
+               pdPASS;
     } else if (effect == "loopRGB") {
-        return xTaskCreatePinnedToCore(&RGB_Strip::RGBLoop, this->name, 10000, this, 2, &this->taskHandle, 0) == pdPASS;
+        // todo: 这里的优先级=2时卡死，=1时正常，为什么？
+        return xTaskCreatePinnedToCore(&RGB_Strip::RGBLoop, this->name, 10000, this, 1, &this->taskHandle, 0) == pdPASS;
+    } else if (effect == "test") {
+        return xTaskCreatePinnedToCore(&RGB_Strip::test, this->name, 10000, this, 1, &this->taskHandle, 0) == pdPASS;
     }
 }
 
@@ -162,46 +166,31 @@ void RGB_Strip::stopTask() {
         vTaskDelete(this->taskHandle);
         this->taskHandle = nullptr;
     }
-    vTaskDelay(5);
+    delay(500);
 }
 
 void RGB_Strip::RGBLoop(void *pv) {
     auto *self = (RGB_Strip *) pv;
 
     while (true) {
-        for (int j = 0; j < 3; j++) {
-            // Fade IN
-            for (int k = 0; k < 256; k++) {
-                switch (j) {
-                    case 0:
-                        setAll(k, 0, 0, self->leds, self->ledNum);
-                        break;
-                    case 1:
-                        setAll(0, k, 0, self->leds, self->ledNum);
-                        break;
-                    case 2:
-                        setAll(0, 0, k, self->leds, self->ledNum);
-                        break;
-                }
-                FastLED.show();
-                delay(3);
-            }
-            // Fade OUT
-            for (int k = 255; k >= 0; k--) {
-                switch (j) {
-                    case 0:
-                        setAll(k, 0, 0, self->leds, self->ledNum);
-                        break;
-                    case 1:
-                        setAll(0, k, 0, self->leds, self->ledNum);
-                        break;
-                    case 2:
-                        setAll(0, 0, k, self->leds, self->ledNum);
-                        break;
-                }
-                FastLED.show();
-                delay(3);
-            }
+        for (int k = 0; k < 200; k++) {
+            setAll(k, k, k, self->leds, self->ledNum);
+            delay(3);
         }
+        for (int k = 200; k >= 0; k--) {
+            setAll(k, k, k, self->leds, self->ledNum);
+            delay(3);
+        }
+    }
+}
+
+void RGB_Strip::test(void *pv) {
+    auto *self = (RGB_Strip *) pv;
+
+    while (true) {
+        setAll(10, 10, 10, self->leds, self->ledNum);
+        delay(50);
+        setAll(5, 5, 5, self->leds, self->ledNum);
+        delay(50);
     }
 }

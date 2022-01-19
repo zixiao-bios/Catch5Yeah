@@ -20,7 +20,7 @@
 #define RGB2 1
 #define RGB3 25
 #define RGB4 27
-#define RGB1_NUM_LEDS 16
+#define RGB1_NUM_LEDS 111
 #define RGB2_NUM_LEDS 111
 #define RGB3_NUM_LEDS 113
 #define RGB4_NUM_LEDS 16
