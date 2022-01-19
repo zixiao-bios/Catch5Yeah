@@ -14,8 +14,8 @@ RGB_Strip *rgb3;
     rgb1 = new RGB_Strip(1);
     rgb1->inverse = true;
     rgb3->inverse = true;
-    rgb1->setEffect("loopRGB");
-    rgb3->setEffect("loopRGB");
+    rgb1->setEffect("theaterRainbow");
+    rgb3->setEffect("rainbow");
 
     delay(3000);
     rgb1->turnOff();
@@ -33,7 +33,8 @@ __attribute__((unused)) void setup() {
 //    displayInit();
 //    displayTaskRun();
 
-    xTaskCreatePinnedToCore(mainTask, "mainTask", 10000, nullptr, 1, nullptr, 0);
+    // todo: 这里优先级=1时卡死，=2时正常，为什么？
+    xTaskCreatePinnedToCore(mainTask, "mainTask", 10000, nullptr, 2, nullptr, 0);
 }
 
 __attribute__((unused)) void loop() {

@@ -166,7 +166,7 @@ void RGB_Strip::stopTask() {
         vTaskDelete(this->taskHandle);
         this->taskHandle = nullptr;
     }
-    delay(500);
+    delay(5);
 }
 
 void RGB_Strip::RGBLoop(void *pv) {
