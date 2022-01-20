@@ -12,6 +12,11 @@ class RGB_Strip {
 public:
     // RGB effect rotation direction
     bool inverse = false;
+    int brightness = RGB_BRIGHTNESS;
+    int rainbowDelay = 10;
+    int theaterDelay = 20;
+    static SemaphoreHandle_t refreshMutex;
+    SemaphoreHandle_t taskMutex;
 
     explicit RGB_Strip(int id);
 
@@ -25,7 +30,9 @@ private:
     CLEDController *controller;
     TaskHandle_t taskHandle = nullptr;
     char name[5]{};
+    bool stopFlag = false;
 
+    static void refresh(RGB_Strip *strip);
     void stopTask();
 
     static void setPixel(CRGB *Pixel, byte red, byte green, byte blue);

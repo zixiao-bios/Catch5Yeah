@@ -45,6 +45,7 @@
 /**======================
  * 3. RGB settings
  **======================*/
-#define  RGB_BRIGHTNESS 128
+#define STRIP_NUM 2
+#define RGB_BRIGHTNESS 128
 
 #endif //SOFTWARE_CONFIG_H

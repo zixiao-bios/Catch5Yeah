@@ -1,6 +1,9 @@
 #include "RGB_Strip.h"
 
+SemaphoreHandle_t RGB_Strip::refreshMutex = xSemaphoreCreateMutex();
+
 RGB_Strip::RGB_Strip(int id) : id(id) {
+    this->taskMutex = xSemaphoreCreateMutex();
     String("RGB" + String(id)).toCharArray(name, 5);
     switch (id) {
         case 1:
@@ -28,18 +31,22 @@ RGB_Strip::RGB_Strip(int id) : id(id) {
         case 1:
 //            CFastLED::addLeds<NEOPIXEL, 1>(leds, ledNum);
             this->controller = &CFastLED::addLeds<NEOPIXEL, 1>(leds, ledNum);
+//            this->controller = &CFastLED::addLeds<TM1809, 1>(leds, ledNum);
             break;
         case 23:
 //            CFastLED::addLeds<NEOPIXEL, 23>(leds, ledNum);
             this->controller = &CFastLED::addLeds<NEOPIXEL, 23>(leds, ledNum);
+//            this->controller = &CFastLED::addLeds<TM1809, 23>(leds, ledNum);
             break;
         case 25:
 //            CFastLED::addLeds<NEOPIXEL, 25>(leds, ledNum);
             this->controller = &CFastLED::addLeds<NEOPIXEL, 25>(leds, ledNum);
+//            this->controller = &CFastLED::addLeds<TM1809, 25>(leds, ledNum);
             break;
         case 27:
 //            CFastLED::addLeds<NEOPIXEL, 27>(leds, ledNum);
             this->controller = &CFastLED::addLeds<NEOPIXEL, 27>(leds, ledNum);
+//            this->controller = &CFastLED::addLeds<TM1809, 27>(leds, ledNum);
             break;
         default:
             Serial.println("Error! Please set dataPin:" + String(dataPin) + "in /src/RGB.cpp init function!");
@@ -79,26 +86,35 @@ void RGB_Strip::Wheel(byte WheelPos, byte c[3]) {
 }
 
 bool RGB_Strip::setEffect(const String &effect) {
+    Serial.println("setEffect:" + effect);
     stopTask();
 
     if (effect == "rainbow") {
-        return xTaskCreatePinnedToCore(&RGB_Strip::rainbow, this->name, 10000, this, 1, &this->taskHandle, 0) == pdPASS;
+        xSemaphoreTake(RGB_Strip::taskMutex, portMAX_DELAY);
+        Serial.println("setEffect finished");
+        return xTaskCreatePinnedToCore(&RGB_Strip::rainbow, this->name, 4096, this, 1, &this->taskHandle, 0) == pdPASS;
     } else if (effect == "theaterRainbow") {
-        return xTaskCreatePinnedToCore(&RGB_Strip::theaterRainbow, this->name, 10000, this, 1, &this->taskHandle, 0) ==
-               pdPASS;
+        xSemaphoreTake(RGB_Strip::taskMutex, portMAX_DELAY);
+        Serial.println("setEffect finished");
+        return xTaskCreatePinnedToCore(&RGB_Strip::theaterRainbow, this->name, 4096, this, 1, &this->taskHandle, 0) == pdPASS;
     } else if (effect == "loopRGB") {
-        // todo: 这里的优先级=2时卡死，=1时正常，为什么？
-        return xTaskCreatePinnedToCore(&RGB_Strip::RGBLoop, this->name, 10000, this, 1, &this->taskHandle, 0) == pdPASS;
+        xSemaphoreTake(RGB_Strip::taskMutex, portMAX_DELAY);
+        Serial.println("setEffect finished");
+        return xTaskCreatePinnedToCore(&RGB_Strip::RGBLoop, this->name, 4096, this, 1, &this->taskHandle, 0) == pdPASS;
     } else if (effect == "test") {
-        return xTaskCreatePinnedToCore(&RGB_Strip::test, this->name, 10000, this, 1, &this->taskHandle, 0) == pdPASS;
+        xSemaphoreTake(RGB_Strip::taskMutex, portMAX_DELAY);
+        Serial.println("setEffect finished");
+        return xTaskCreatePinnedToCore(&RGB_Strip::test, this->name, 4096, this, 1, &this->taskHandle, 0) == pdPASS;
     }
+
 }
 
 [[noreturn]] void RGB_Strip::theaterRainbow(void *pv) {
     auto *self = (RGB_Strip *) pv;
     byte c[3];
+    TickType_t lastWakeTime;
 
-    while (true) {
+    while (!self->stopFlag) {
         for (int j = 0; j < 256; j++) {     // cycle all 256 colors in the wheel
             for (int q = 0; q < 3; q++) {
                 for (int i = 0; i < self->ledNum; i = i + 3) {
@@ -116,9 +132,11 @@ bool RGB_Strip::setEffect(const String &effect) {
                                  *(c + 2));    //turn every third pixel on
                     }
                 }
-//                FastLED.show();
-                self->controller->showLeds(RGB_BRIGHTNESS);
-                delay(20);
+                RGB_Strip::refresh(self);
+                if (self->stopFlag) {
+                    break;
+                }
+                vTaskDelayUntil(&lastWakeTime, self->theaterDelay / portTICK_PERIOD_MS);
 
                 for (int i = 0; i < self->ledNum; i = i + 3) {
                     if (self->inverse) {
@@ -134,15 +152,22 @@ bool RGB_Strip::setEffect(const String &effect) {
                     }
                 }
             }
+            if (self->stopFlag) {
+                break;
+            }
         }
     }
+
+    xSemaphoreGive(self->taskMutex);
+    vTaskDelete(nullptr);
 }
 
 [[noreturn]] void RGB_Strip::rainbow(void *pv) {
     auto *self = (RGB_Strip *) pv;
     byte c[3];
+    TickType_t lastWakeTime;
 
-    while (true) {
+    while (!self->stopFlag) {
         for (int j = 0; j < 256 * 5; j++) { // 5 cycles of all colors on wheel
             for (int i = 0; i < self->ledNum; i++) {
                 Wheel(((i * 256 / self->ledNum) + j) & 255, c);
@@ -152,29 +177,35 @@ bool RGB_Strip::setEffect(const String &effect) {
                     setPixel(&self->leds[i], *c, *(c + 1), *(c + 2));
                 }
             }
-//            FastLED.show();
-            self->controller->showLeds(RGB_BRIGHTNESS);
-            delay(10);
+            RGB_Strip::refresh(self);
+            if (self->stopFlag) {
+                break;
+            }
+            vTaskDelayUntil(&lastWakeTime, self->rainbowDelay / portTICK_PERIOD_MS);
         }
-        Serial.println("rainbow");
     }
+
+    xSemaphoreGive(self->taskMutex);
+    vTaskDelete(nullptr);
 }
 
 void RGB_Strip::turnOff() {
     Serial.println("turnoff");
     stopTask();
     RGB_Strip::setAll(0, 0, 0, this->leds, this->ledNum);
-//    FastLED.show();
-    this->controller->showLeds(RGB_BRIGHTNESS);
+    RGB_Strip::refresh(this);
+    Serial.println("turn off finished");
 }
 
 void RGB_Strip::stopTask() {
-    if (this->taskHandle != nullptr) {
-        vTaskDelete(this->taskHandle);
-        this->taskHandle = nullptr;
-    }
-    // todo: 删除这个delay后，mainTask的优先级=1也能正常运行
-//    delay(5);
+    Serial.println("stopTask");
+
+    this->stopFlag = true;
+    xSemaphoreTake(RGB_Strip::taskMutex, portMAX_DELAY);
+    this->stopFlag = false;
+    xSemaphoreGive(RGB_Strip::taskMutex);
+
+    Serial.println("stopTask finished");
 }
 
 void RGB_Strip::RGBLoop(void *pv) {
@@ -209,4 +240,12 @@ void RGB_Strip::test(void *pv) {
         self->controller->showLeds(RGB_BRIGHTNESS);
         delay(50);
     }
+}
+
+void RGB_Strip::refresh(RGB_Strip *strip) {
+//    xSemaphoreTake(RGB_Strip::refreshMutex, portMAX_DELAY);
+    for (int i = 0; i < STRIP_NUM; ++i) {
+        strip->controller->showLeds(strip->brightness);
+    }
+//    xSemaphoreGive(RGB_Strip::refreshMutex);
 }
