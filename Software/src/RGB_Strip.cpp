@@ -26,16 +26,20 @@ RGB_Strip::RGB_Strip(int id) : id(id) {
 
     switch (dataPin) {
         case 1:
-            CFastLED::addLeds<NEOPIXEL, 1>(leds, ledNum);
+//            CFastLED::addLeds<NEOPIXEL, 1>(leds, ledNum);
+            this->controller = &CFastLED::addLeds<NEOPIXEL, 1>(leds, ledNum);
             break;
         case 23:
-            CFastLED::addLeds<NEOPIXEL, 23>(leds, ledNum);
+//            CFastLED::addLeds<NEOPIXEL, 23>(leds, ledNum);
+            this->controller = &CFastLED::addLeds<NEOPIXEL, 23>(leds, ledNum);
             break;
         case 25:
-            CFastLED::addLeds<NEOPIXEL, 25>(leds, ledNum);
+//            CFastLED::addLeds<NEOPIXEL, 25>(leds, ledNum);
+            this->controller = &CFastLED::addLeds<NEOPIXEL, 25>(leds, ledNum);
             break;
         case 27:
-            CFastLED::addLeds<NEOPIXEL, 27>(leds, ledNum);
+//            CFastLED::addLeds<NEOPIXEL, 27>(leds, ledNum);
+            this->controller = &CFastLED::addLeds<NEOPIXEL, 27>(leds, ledNum);
             break;
         default:
             Serial.println("Error! Please set dataPin:" + String(dataPin) + "in /src/RGB.cpp init function!");
@@ -54,7 +58,6 @@ void RGB_Strip::setAll(byte red, byte green, byte blue, CRGB *leds, int ledNum) 
     for (int i = ledNum - 1; i >= 0; i--) {
         setPixel(&leds[i], red, green, blue);
     }
-    FastLED.show();
 }
 
 void RGB_Strip::Wheel(byte WheelPos, byte c[3]) {
@@ -113,7 +116,8 @@ bool RGB_Strip::setEffect(const String &effect) {
                                  *(c + 2));    //turn every third pixel on
                     }
                 }
-                FastLED.show();
+//                FastLED.show();
+                self->controller->showLeds(RGB_BRIGHTNESS);
                 delay(20);
 
                 for (int i = 0; i < self->ledNum; i = i + 3) {
@@ -148,7 +152,8 @@ bool RGB_Strip::setEffect(const String &effect) {
                     setPixel(&self->leds[i], *c, *(c + 1), *(c + 2));
                 }
             }
-            FastLED.show();
+//            FastLED.show();
+            self->controller->showLeds(RGB_BRIGHTNESS);
             delay(10);
         }
         Serial.println("rainbow");
@@ -159,6 +164,8 @@ void RGB_Strip::turnOff() {
     Serial.println("turnoff");
     stopTask();
     RGB_Strip::setAll(0, 0, 0, this->leds, this->ledNum);
+//    FastLED.show();
+    this->controller->showLeds(RGB_BRIGHTNESS);
 }
 
 void RGB_Strip::stopTask() {
@@ -176,10 +183,14 @@ void RGB_Strip::RGBLoop(void *pv) {
     while (true) {
         for (int k = 0; k < 200; k++) {
             setAll(k, k, k, self->leds, self->ledNum);
+//            FastLED.show();
+            self->controller->showLeds(RGB_BRIGHTNESS);
             delay(3);
         }
         for (int k = 200; k >= 0; k--) {
             setAll(k, k, k, self->leds, self->ledNum);
+//            FastLED.show();
+            self->controller->showLeds(RGB_BRIGHTNESS);
             delay(3);
         }
     }
@@ -190,8 +201,12 @@ void RGB_Strip::test(void *pv) {
 
     while (true) {
         setAll(10, 10, 10, self->leds, self->ledNum);
+//        FastLED.show();
+        self->controller->showLeds(RGB_BRIGHTNESS);
         delay(50);
         setAll(5, 5, 5, self->leds, self->ledNum);
+//        FastLED.show();
+        self->controller->showLeds(RGB_BRIGHTNESS);
         delay(50);
     }
 }

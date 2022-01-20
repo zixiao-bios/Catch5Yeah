@@ -41,4 +41,10 @@
 #define SCREEN_ROTATION 3
 #define CALIBRATION_FILE "/TouchCalData"
 
+
+/**======================
+ * 3. RGB settings
+ **======================*/
+#define  RGB_BRIGHTNESS 128
+
 #endif //SOFTWARE_CONFIG_H

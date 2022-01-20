@@ -22,6 +22,7 @@ public:
 private:
     int id, dataPin, ledNum;
     CRGB *leds;
+    CLEDController *controller;
     TaskHandle_t taskHandle = nullptr;
     char name[5]{};
 
