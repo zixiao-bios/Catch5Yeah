@@ -34,7 +34,7 @@
 
 
 /**======================
- * 2. Display settings
+ * 2. Display & Touch screen
  **======================*/
 #define SCREEN_WIDTH 320
 #define SCREEN_HEIGHT 480
@@ -43,9 +43,16 @@
 
 
 /**======================
- * 3. RGB settings
+ * 3. RGB Strip
  **======================*/
+
+// settings
 #define STRIP_NUM 2
 #define RGB_BRIGHTNESS 128
+
+// RGB effect definition
+# define RGB_OFF 0
+# define RGB_RAINBOW 1
+# define RGB_THEATER_RAINBOW 2
 
 #endif //SOFTWARE_CONFIG_H

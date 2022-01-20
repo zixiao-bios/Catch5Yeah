@@ -12,38 +12,36 @@ class RGB_Strip {
 public:
     // RGB effect rotation direction
     bool inverse = false;
+
     int brightness = RGB_BRIGHTNESS;
     int rainbowDelay = 10;
     int theaterDelay = 20;
+
     static SemaphoreHandle_t refreshMutex;
-    SemaphoreHandle_t taskMutex;
 
     explicit RGB_Strip(int id);
 
-    bool setEffect(const String& effect);
-
-    void turnOff();
+    void setEffect(int rgbEffect);
 
 private:
     int id, dataPin, ledNum;
     CRGB *leds;
+    int effect = 0;
     CLEDController *controller;
-    TaskHandle_t taskHandle = nullptr;
     char name[5]{};
-    bool stopFlag = false;
+    bool changeEffect = false;
 
     static void refresh(RGB_Strip *strip);
-    void stopTask();
 
     static void setPixel(CRGB *Pixel, byte red, byte green, byte blue);
     static void setAll(byte red, byte green, byte blue, CRGB* leds, int ledNum);
 
     static void Wheel(byte WheelPos, byte c[3]);
 
-    [[noreturn]] static void rainbow(void *pv);
-    [[noreturn]] static void theaterRainbow(void *pv);
-    [[noreturn]] static void RGBLoop(void *pv);
-    [[noreturn]] static void test(void *pv);
+    [[noreturn]] static void task(void *pv);
+    static void off(RGB_Strip *self);
+    static void rainbow(RGB_Strip *self);
+    static void theaterRainbow(RGB_Strip *self);
 };
 
 

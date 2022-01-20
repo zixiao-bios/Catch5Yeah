@@ -10,31 +10,30 @@ RGB_Strip *rgb1, *rgb3;
 
 [[noreturn]] void mainTask(void *pv) {
     rgb1 = new RGB_Strip(1);
-//    rgb3 = new RGB_Strip(3);
+    rgb3 = new RGB_Strip(3);
     rgb1->inverse = true;
-//    rgb3->inverse = true;
-    rgb1->setEffect("theaterRainbow");
-//    rgb3->setEffect("theaterRainbow");
-
-
+    rgb1->setEffect(RGB_THEATER_RAINBOW);
+    rgb3->setEffect(RGB_THEATER_RAINBOW);
     while (true) {
         delay(3000);
-        rgb1->turnOff();
-//        rgb3->setEffect("rainbow");
+        rgb1->setEffect(RGB_OFF);
+        rgb3->setEffect(RGB_OFF);
         delay(3000);
-        rgb1->setEffect("theaterRainbow");
-//        rgb3->turnOff();
+        rgb1->setEffect(RGB_THEATER_RAINBOW);
+        rgb3->setEffect(RGB_THEATER_RAINBOW);
     }
 }
 
 __attribute__((unused)) void setup() {
     Serial.begin(115200);
 
+    pinMode(2, OUTPUT);
+    digitalWrite(2, LOW);
+
 //    displayInit();
 //    displayTaskRun();
 
-    // todo: 这里优先级=1时卡死，=2时正常，为什么？
-    xTaskCreatePinnedToCore(mainTask, "mainTask", 10000, nullptr, 1, nullptr, 0);
+    xTaskCreatePinnedToCore(mainTask, "mainTask", 4096, nullptr, 1, nullptr, 0);
 }
 
 __attribute__((unused)) void loop() {
