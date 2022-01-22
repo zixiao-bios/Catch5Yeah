@@ -9,19 +9,20 @@
 RGB_Strip *rgb1, *rgb3;
 
 [[noreturn]] void mainTask(void *pv) {
-    rgb1 = new RGB_Strip(1);
-    rgb3 = new RGB_Strip(3);
-    rgb1->inverse = true;
-    rgb1->setEffect(RGB_THEATER_RAINBOW);
-    rgb3->setEffect(RGB_THEATER_RAINBOW);
-    while (true) {
-        delay(3000);
-        rgb1->setEffect(RGB_OFF);
-        rgb3->setEffect(RGB_OFF);
-        delay(3000);
-        rgb1->setEffect(RGB_THEATER_RAINBOW);
-        rgb3->setEffect(RGB_THEATER_RAINBOW);
-    }
+    /// RGB demo
+//    rgb1 = new RGB_Strip(1);
+//    rgb3 = new RGB_Strip(3);
+//    rgb1->inverse = true;
+//    rgb1->setEffect(RGB_THEATER_RAINBOW);
+//    rgb3->setEffect(RGB_THEATER_RAINBOW);
+//    while (true) {
+//        delay(3000);
+//        rgb1->setEffect(RGB_OFF);
+//        rgb3->setEffect(RGB_OFF);
+//        delay(3000);
+//        rgb1->setEffect(RGB_THEATER_RAINBOW);
+//        rgb3->setEffect(RGB_THEATER_RAINBOW);
+//    }
 }
 
 __attribute__((unused)) void setup() {
@@ -30,6 +31,7 @@ __attribute__((unused)) void setup() {
     pinMode(2, OUTPUT);
     digitalWrite(2, LOW);
 
+    /// Display demo
 //    displayInit();
 //    displayTaskRun();
 
