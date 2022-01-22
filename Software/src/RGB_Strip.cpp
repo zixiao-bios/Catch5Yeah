@@ -3,7 +3,6 @@
 SemaphoreHandle_t RGB_Strip::refreshMutex = xSemaphoreCreateMutex();
 
 RGB_Strip::RGB_Strip(int id) : id(id) {
-    this->taskMutex = xSemaphoreCreateMutex();
     String("RGB" + String(id)).toCharArray(name, 5);
     switch (id) {
         case 1:
