@@ -120,3 +120,5 @@ compile_commands.json
 CTestTestfile.cmake
 _deps
 
+# my config
+MyConfig.h
