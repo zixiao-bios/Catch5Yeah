@@ -121,4 +121,4 @@ CTestTestfile.cmake
 _deps
 
 # my config
-MyConfig.h
+ConfigPrivate.h
