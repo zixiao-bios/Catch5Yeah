@@ -56,34 +56,38 @@ void displayInit() {
     indev_drv.read_cb = touchpadRead;
     lv_indev_drv_register(&indev_drv);
 
+    // start lvgl handler task
+    displayTaskRun();
+
     // test
     /* Create simple label */
-    String LVGL_Arduino = "Hello Arduino! ";
-    LVGL_Arduino += String('V') + lv_version_major() + "." + lv_version_minor() + "." + lv_version_patch();
-    lv_obj_t *label = lv_label_create(lv_scr_act());
-    lv_label_set_text(label, LVGL_Arduino.c_str());
-    lv_obj_align(label, LV_ALIGN_CENTER, 0, 0);
-
-
-    lv_obj_t *label1;
-
-    lv_obj_t *btn1 = lv_btn_create(lv_scr_act());
-    lv_obj_add_event_cb(btn1, eventHandler, LV_EVENT_ALL, nullptr);
-    lv_obj_align(btn1, LV_ALIGN_CENTER, 0, -40);
-
-    label1 = lv_label_create(btn1);
-    lv_label_set_text(label1, "Button");
-    lv_obj_center(label1);
-
-    lv_obj_t *btn2 = lv_btn_create(lv_scr_act());
-    lv_obj_add_event_cb(btn2, eventHandler, LV_EVENT_ALL, nullptr);
-    lv_obj_align(btn2, LV_ALIGN_CENTER, 0, 40);
-    lv_obj_add_flag(btn2, LV_OBJ_FLAG_CHECKABLE);
-    lv_obj_set_height(btn2, LV_SIZE_CONTENT);
-
-    label1 = lv_label_create(btn2);
-    lv_label_set_text(label1, "Toggle");
-    lv_obj_center(label1);
+//    String LVGL_Arduino = "Hello Arduino! ";
+//    LVGL_Arduino += String('V') + lv_version_major() + "." + lv_version_minor() + "." + lv_version_patch();
+//    lv_obj_t *label = lv_label_create(lv_scr_act());
+//    lv_label_set_text(label, LVGL_Arduino.c_str());
+//    lv_obj_align(label, LV_ALIGN_CENTER, 0, 0);
+//
+//
+//    lv_obj_t *label1;
+//
+//    lv_obj_t *btn1 = lv_btn_create(lv_scr_act());
+//    lv_obj_add_event_cb(btn1, eventHandler, LV_EVENT_ALL, nullptr);
+//    lv_obj_align(btn1, LV_ALIGN_CENTER, 0, -40);
+//
+//    label1 = lv_label_create(btn1);
+//    lv_label_set_text(label1, "Button");
+//    lv_obj_center(label1);
+//
+//    lv_obj_t *btn2 = lv_btn_create(lv_scr_act());
+//    lv_obj_add_event_cb(btn2, eventHandler, LV_EVENT_ALL, nullptr);
+//    lv_obj_align(btn2, LV_ALIGN_CENTER, 0, 40);
+//    lv_obj_add_flag(btn2, LV_OBJ_FLAG_CHECKABLE);
+//    lv_obj_set_height(btn2, LV_SIZE_CONTENT);
+//
+//    label1 = lv_label_create(btn2);
+//    lv_label_set_text(label1, "Toggle");
+//    lv_obj_center(label1);
+    showImg();
 }
 
 bool displayTaskRun() {
@@ -172,4 +176,10 @@ void touch_calibrate(bool repeat) {
             f.close();
         }
     }
+}
+
+void showImg() {
+    LV_IMG_DECLARE(img1_src)
+    lv_obj_t *img1 = lv_img_create(lv_scr_act());
+    lv_img_set_src(img1, &img1_src);
 }

@@ -7,18 +7,20 @@
 #include "FS.h"
 #include "../Config.h"
 
-    void displayInit();
+void displayInit();
 
-    bool displayTaskRun();
+bool displayTaskRun();
 
-    void dispFlush(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *color_p);
+void dispFlush(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *color_p);
 
-    void touchpadRead(lv_indev_drv_t *indev_driver, lv_indev_data_t *data);
+void touchpadRead(lv_indev_drv_t *indev_driver, lv_indev_data_t *data);
 
-    [[noreturn]] void displayTask(void *pv);
+[[noreturn]] void displayTask(void *pv);
 
-    void eventHandler(lv_event_t *e);
+void eventHandler(lv_event_t *e);
 
-    void touch_calibrate(bool repeat);
+void touch_calibrate(bool repeat);
+
+void showImg();
 
 #endif //SOFTWARE_DISPLAY_H

@@ -9,19 +9,26 @@
 RGB_Strip *rgb1, *rgb3;
 
 [[noreturn]] void mainTask(void *pv) {
-    /// Network demo
-    WiFiInit();
-    printWifiList();
-    WiFiConnect();
-
+    /// Display demo
+    displayInit();
     while (true) {
-        if (WiFiClass::status() != WL_CONNECTED) {
-            WiFiConnect();
-        }
-
-        httpGet("https://www.runoob.com/http/http-tutorial.html");
-        delay(5000);
+        delay(100);
     }
+
+
+    /// Network demo
+//    WiFiInit();
+//    printWifiList();
+//    WiFiConnect();
+//
+//    while (true) {
+//        if (WiFiClass::status() != WL_CONNECTED) {
+//            WiFiConnect();
+//        }
+//
+//        httpGet("https://www.runoob.com/http/http-tutorial.html");
+//        delay(5000);
+//    }
 
     /// RGB demo
 //    rgb1 = new RGB_Strip(1);
@@ -47,10 +54,6 @@ __attribute__((unused)) void setup() {
     pinMode(K3, INPUT);
     pinMode(K4, INPUT);
     pinMode(BTN, INPUT);
-
-    /// Display demo
-//    displayInit();
-//    displayTaskRun();
 
     xTaskCreatePinnedToCore(mainTask, "mainTask", 10000, nullptr, 1, nullptr, 0);
 }
