@@ -13,7 +13,7 @@
 #include "AudioOutputI2S.h"
 #include "AudioFileSourceSD.h"
 #include "AudioFileSourceHTTPStream.h"
-#include "config.h"
+#include "../Config.h"
 
 enum playMode {
     Once, Loop

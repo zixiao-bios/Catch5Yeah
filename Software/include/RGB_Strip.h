@@ -6,7 +6,7 @@
 #include <FastLED.h>
 #include <freertos/FreeRTOS.h>
 #include <freertos/FreeRTOSConfig.h>
-#include "config.h"
+#include "../Config.h"
 
 class RGB_Strip {
 public:

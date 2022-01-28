@@ -5,7 +5,7 @@
 #include <lvgl.h>
 #include <freertos/FreeRTOS.h>
 #include "FS.h"
-#include "config.h"
+#include "../Config.h"
 
     void displayInit();
 
