@@ -122,3 +122,4 @@ _deps
 
 # my config
 ConfigPrivate.h
+/data/
