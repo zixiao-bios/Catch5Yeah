@@ -1,10 +1,77 @@
 #include "Display.h"
 
+// Display
 static lv_disp_draw_buf_t draw_buf;
-static lv_color_t buf[SCREEN_WIDTH * 10];
+static lv_color_t disp_buf[SCREEN_WIDTH * 10];
 TFT_eSPI tft = TFT_eSPI(SCREEN_WIDTH, SCREEN_HEIGHT);
 
+// File system
+static lv_fs_drv_t flashDrv;
+
 TaskHandle_t displayTaskHandler = nullptr;
+
+static void *openSpiffsFile(lv_fs_drv_t *drv, const char *path, lv_fs_mode_t mode) {
+    auto *file = new fs::File();
+    char filename[32];
+    snprintf_P(filename, sizeof(filename), PSTR("/%s"), path);
+    *file = SPIFFS.open(filename, mode == LV_FS_MODE_WR ? FILE_WRITE : FILE_READ);
+
+    if (!*file || file->isDirectory()) {
+        Serial.print("failed to open file: ");
+        Serial.println(path);
+        return nullptr;
+    }
+
+    return file;
+}
+
+static lv_fs_res_t closeSpiffsFile(lv_fs_drv_t *drv, void *file_p) {
+    fs::File file = *(fs::File *) file_p;
+    if (!file) {
+        return LV_FS_RES_NOT_EX;
+
+    } else if (file.isDirectory()) {
+        return LV_FS_RES_UNKNOWN;
+
+    } else {
+        file.close();
+        return LV_FS_RES_OK;
+    }
+}
+
+static lv_fs_res_t readSpiffsFile(lv_fs_drv_t *drv, void *file_p, void *buf, uint32_t btr, uint32_t *br) {
+    auto *fp = (fs::File *) file_p;
+    fs::File file = *fp;
+
+    if (!file) {
+        return LV_FS_RES_NOT_EX;
+    } else {
+        *br = (uint32_t) file.readBytes((char *) buf, btr);
+        return LV_FS_RES_OK;
+    }
+}
+
+static lv_fs_res_t seekSpiffsFile(lv_fs_drv_t *drv, void *file_p, uint32_t pos, lv_fs_whence_t whence) {
+    fs::File file = *(fs::File *) file_p;
+
+    if (!file) {
+        return LV_FS_RES_NOT_EX;
+    } else {
+        file.seek(pos, fs::SeekSet);
+        return LV_FS_RES_OK;
+    }
+}
+
+static lv_fs_res_t tellSpiffsFile(lv_fs_drv_t *drv, void *file_p, uint32_t *pos_p) {
+    fs::File file = *(fs::File *) file_p;
+
+    if (!file) {
+        return LV_FS_RES_NOT_EX;
+    } else {
+        *pos_p = (uint32_t) file.position();
+        return LV_FS_RES_OK;
+    }
+}
 
 void dispFlush(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *color_p) {
     uint32_t w = (area->x2 - area->x1 + 1);
@@ -37,56 +104,43 @@ void displayInit() {
     tft.setRotation(SCREEN_ROTATION);
     touch_calibrate(false);
 
-    lv_disp_draw_buf_init(&draw_buf, buf, nullptr, SCREEN_WIDTH * 10);
+    lv_disp_draw_buf_init(&draw_buf, disp_buf, nullptr, SCREEN_WIDTH * 10);
 
-    /*Initialize the display*/
+    // init display
     static lv_disp_drv_t disp_drv;
     lv_disp_drv_init(&disp_drv);
-    /*Change the following line to your display resolution*/
     disp_drv.hor_res = SCREEN_HEIGHT;
     disp_drv.ver_res = SCREEN_WIDTH;
     disp_drv.flush_cb = dispFlush;
     disp_drv.draw_buf = &draw_buf;
     lv_disp_drv_register(&disp_drv);
 
-    /*Initialize the (dummy) input device driver*/
+    // init touch screen
     static lv_indev_drv_t indev_drv;
     lv_indev_drv_init(&indev_drv);
     indev_drv.type = LV_INDEV_TYPE_POINTER;
     indev_drv.read_cb = touchpadRead;
     lv_indev_drv_register(&indev_drv);
 
+    // init file system
+    lv_fs_drv_init(&flashDrv);
+    flashDrv.letter = 'F';
+//    flashDrv.cache_size = 0;
+    flashDrv.ready_cb = nullptr;
+    flashDrv.open_cb = openSpiffsFile;
+    flashDrv.close_cb = closeSpiffsFile;
+    flashDrv.read_cb = readSpiffsFile;
+    flashDrv.write_cb = nullptr;
+    flashDrv.seek_cb = seekSpiffsFile;
+    flashDrv.tell_cb = tellSpiffsFile;
+    flashDrv.dir_close_cb = nullptr;
+    flashDrv.dir_open_cb = nullptr;
+    flashDrv.dir_read_cb = nullptr;
+    lv_fs_drv_register(&flashDrv);
+
     // start lvgl handler task
     displayTaskRun();
 
-    // test
-    /* Create simple label */
-//    String LVGL_Arduino = "Hello Arduino! ";
-//    LVGL_Arduino += String('V') + lv_version_major() + "." + lv_version_minor() + "." + lv_version_patch();
-//    lv_obj_t *label = lv_label_create(lv_scr_act());
-//    lv_label_set_text(label, LVGL_Arduino.c_str());
-//    lv_obj_align(label, LV_ALIGN_CENTER, 0, 0);
-//
-//
-//    lv_obj_t *label1;
-//
-//    lv_obj_t *btn1 = lv_btn_create(lv_scr_act());
-//    lv_obj_add_event_cb(btn1, eventHandler, LV_EVENT_ALL, nullptr);
-//    lv_obj_align(btn1, LV_ALIGN_CENTER, 0, -40);
-//
-//    label1 = lv_label_create(btn1);
-//    lv_label_set_text(label1, "Button");
-//    lv_obj_center(label1);
-//
-//    lv_obj_t *btn2 = lv_btn_create(lv_scr_act());
-//    lv_obj_add_event_cb(btn2, eventHandler, LV_EVENT_ALL, nullptr);
-//    lv_obj_align(btn2, LV_ALIGN_CENTER, 0, 40);
-//    lv_obj_add_flag(btn2, LV_OBJ_FLAG_CHECKABLE);
-//    lv_obj_set_height(btn2, LV_SIZE_CONTENT);
-//
-//    label1 = lv_label_create(btn2);
-//    lv_label_set_text(label1, "Toggle");
-//    lv_obj_center(label1);
     showImg();
 }
 
@@ -102,7 +156,9 @@ bool displayTaskRun() {
     // delayTime = 5 ms
     const TickType_t delayTick = 5 / portTICK_PERIOD_MS;
     while (true) {
+        Serial.println("<");
         lv_timer_handler();
+        Serial.println(">");
         vTaskDelayUntil(&lastWakeTime, delayTick);
     }
 }
@@ -179,7 +235,35 @@ void touch_calibrate(bool repeat) {
 }
 
 void showImg() {
-    LV_IMG_DECLARE(img1_src)
     lv_obj_t *img1 = lv_img_create(lv_scr_act());
-    lv_img_set_src(img1, &img1_src);
+    lv_img_set_src(img1, "F:480x320.bin");
+}
+
+void showTestPage() {
+    String LVGL_Arduino = "Hello Arduino! ";
+    LVGL_Arduino += String('V') + lv_version_major() + "." + lv_version_minor() + "." + lv_version_patch();
+    lv_obj_t *label = lv_label_create(lv_scr_act());
+    lv_label_set_text(label, LVGL_Arduino.c_str());
+    lv_obj_align(label, LV_ALIGN_CENTER, 0, 0);
+
+
+    lv_obj_t *label1;
+
+    lv_obj_t *btn1 = lv_btn_create(lv_scr_act());
+    lv_obj_add_event_cb(btn1, eventHandler, LV_EVENT_ALL, nullptr);
+    lv_obj_align(btn1, LV_ALIGN_CENTER, 0, -40);
+
+    label1 = lv_label_create(btn1);
+    lv_label_set_text(label1, "Button");
+    lv_obj_center(label1);
+
+    lv_obj_t *btn2 = lv_btn_create(lv_scr_act());
+    lv_obj_add_event_cb(btn2, eventHandler, LV_EVENT_ALL, nullptr);
+    lv_obj_align(btn2, LV_ALIGN_CENTER, 0, 40);
+    lv_obj_add_flag(btn2, LV_OBJ_FLAG_CHECKABLE);
+    lv_obj_set_height(btn2, LV_SIZE_CONTENT);
+
+    label1 = lv_label_create(btn2);
+    lv_label_set_text(label1, "Toggle");
+    lv_obj_center(label1);
 }

@@ -5,6 +5,8 @@
 #include "Display.h"
 #include "RGB_Strip.h"
 #include "Network.h"
+#include <Tool.h>
+#include "SPIFFS.h"
 
 RGB_Strip *rgb1, *rgb3;
 
@@ -55,7 +57,12 @@ __attribute__((unused)) void setup() {
     pinMode(K4, INPUT);
     pinMode(BTN, INPUT);
 
-    xTaskCreatePinnedToCore(mainTask, "mainTask", 10000, nullptr, 1, nullptr, 0);
+    // start SPIFFS
+    if (!SPIFFS.begin(true)) {
+        Serial.println("SPIFFS Mount Failed!");
+    }
+
+    xTaskCreatePinnedToCore(mainTask, "mainTask", 50000, nullptr, 1, nullptr, 0);
 }
 
 __attribute__((unused)) void loop() {
