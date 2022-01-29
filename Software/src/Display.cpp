@@ -8,6 +8,9 @@ TFT_eSPI tft = TFT_eSPI(SCREEN_WIDTH, SCREEN_HEIGHT);
 // File system
 static lv_fs_drv_t flashDrv;
 
+// declare custom font
+LV_FONT_DECLARE(my_font)
+
 TaskHandle_t displayTaskHandler = nullptr;
 
 static void *openSpiffsFile(lv_fs_drv_t *drv, const char *path, lv_fs_mode_t mode) {
@@ -141,7 +144,7 @@ void displayInit() {
     // start lvgl handler task
     displayTaskRun();
 
-    showImg();
+    showTestPage();
 }
 
 bool displayTaskRun() {
@@ -240,30 +243,7 @@ void showImg() {
 }
 
 void showTestPage() {
-    String LVGL_Arduino = "Hello Arduino! ";
-    LVGL_Arduino += String('V') + lv_version_major() + "." + lv_version_minor() + "." + lv_version_patch();
-    lv_obj_t *label = lv_label_create(lv_scr_act());
-    lv_label_set_text(label, LVGL_Arduino.c_str());
-    lv_obj_align(label, LV_ALIGN_CENTER, 0, 0);
-
-
-    lv_obj_t *label1;
-
-    lv_obj_t *btn1 = lv_btn_create(lv_scr_act());
-    lv_obj_add_event_cb(btn1, eventHandler, LV_EVENT_ALL, nullptr);
-    lv_obj_align(btn1, LV_ALIGN_CENTER, 0, -40);
-
-    label1 = lv_label_create(btn1);
-    lv_label_set_text(label1, "Button");
-    lv_obj_center(label1);
-
-    lv_obj_t *btn2 = lv_btn_create(lv_scr_act());
-    lv_obj_add_event_cb(btn2, eventHandler, LV_EVENT_ALL, nullptr);
-    lv_obj_align(btn2, LV_ALIGN_CENTER, 0, 40);
-    lv_obj_add_flag(btn2, LV_OBJ_FLAG_CHECKABLE);
-    lv_obj_set_height(btn2, LV_SIZE_CONTENT);
-
-    label1 = lv_label_create(btn2);
-    lv_label_set_text(label1, "Toggle");
-    lv_obj_center(label1);
+    lv_obj_t *label1 = lv_label_create(lv_scr_act());
+    lv_label_set_text(label1, "每日要闻");
+    lv_obj_set_style_text_font(label1, &my_font, 0);
 }
