@@ -21,8 +21,7 @@ void eventHandler(lv_event_t *e);
 
 void touch_calibrate(bool repeat);
 
-void showImg();
-void showTestPage();
+void showMainPage();
 
 // lvgl fs callback
 static void * openSpiffsFile (lv_fs_drv_t * drv, const char * path, lv_fs_mode_t mode);

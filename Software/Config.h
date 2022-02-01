@@ -33,8 +33,10 @@
 /**======================
  * 2. Display & Touch screen
  **======================*/
-#define SCREEN_WIDTH 320
-#define SCREEN_HEIGHT 480
+#define DISPLAY_WIDTH 320
+#define DISPLAY_HEIGHT 480
+#define SCREEN_WIDTH DISPLAY_HEIGHT
+#define SCREEN_HEIGHT DISPLAY_WIDTH
 #define SCREEN_ROTATION 3
 #define CALIBRATION_FILE "/TouchCalData"
 

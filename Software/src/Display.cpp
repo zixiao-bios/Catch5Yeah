@@ -2,14 +2,14 @@
 
 // Display
 static lv_disp_draw_buf_t draw_buf;
-static lv_color_t disp_buf[SCREEN_WIDTH * 10];
-TFT_eSPI tft = TFT_eSPI(SCREEN_WIDTH, SCREEN_HEIGHT);
+static lv_color_t disp_buf[DISPLAY_WIDTH * 10];
+TFT_eSPI tft = TFT_eSPI(DISPLAY_WIDTH, DISPLAY_HEIGHT);
 
 // File system
 static lv_fs_drv_t flashDrv;
 
 // declare custom font
-LV_FONT_DECLARE(my_font)
+LV_FONT_DECLARE(font_middle)
 
 TaskHandle_t displayTaskHandler = nullptr;
 
@@ -107,13 +107,13 @@ void displayInit() {
     tft.setRotation(SCREEN_ROTATION);
     touch_calibrate(false);
 
-    lv_disp_draw_buf_init(&draw_buf, disp_buf, nullptr, SCREEN_WIDTH * 10);
+    lv_disp_draw_buf_init(&draw_buf, disp_buf, nullptr, DISPLAY_WIDTH * 10);
 
     // init display
     static lv_disp_drv_t disp_drv;
     lv_disp_drv_init(&disp_drv);
-    disp_drv.hor_res = SCREEN_HEIGHT;
-    disp_drv.ver_res = SCREEN_WIDTH;
+    disp_drv.hor_res = DISPLAY_HEIGHT;
+    disp_drv.ver_res = DISPLAY_WIDTH;
     disp_drv.flush_cb = dispFlush;
     disp_drv.draw_buf = &draw_buf;
     lv_disp_drv_register(&disp_drv);
@@ -144,7 +144,7 @@ void displayInit() {
     // start lvgl handler task
     displayTaskRun();
 
-    showTestPage();
+    showMainPage();
 }
 
 bool displayTaskRun() {
@@ -237,13 +237,34 @@ void touch_calibrate(bool repeat) {
     }
 }
 
-void showImg() {
-    lv_obj_t *img1 = lv_img_create(lv_scr_act());
-    lv_img_set_src(img1, "F:480x320.bin");
-}
+void showMainPage() {
+    // background
+    lv_obj_t *bg_box1 = lv_obj_create(lv_scr_act());
+    lv_coord_t bg_box1_height = 100;
+    lv_obj_set_size(bg_box1, SCREEN_WIDTH, bg_box1_height);
+    lv_obj_set_align(bg_box1, LV_ALIGN_TOP_MID);
+    lv_obj_set_style_bg_color(bg_box1, lv_color_hex(0x2F3243), 0);
+    lv_obj_set_style_border_width(bg_box1, 0, 0);
+    lv_obj_set_style_radius(bg_box1, 0, 0);
 
-void showTestPage() {
-    lv_obj_t *label1 = lv_label_create(lv_scr_act());
-    lv_label_set_text(label1, "每日要闻");
-    lv_obj_set_style_text_font(label1, &my_font, 0);
+    lv_obj_t *bg_box2 = lv_obj_create(lv_scr_act());
+    lv_obj_set_size(bg_box2, 480, SCREEN_HEIGHT - bg_box1_height);
+    lv_obj_set_align(bg_box2, LV_ALIGN_BOTTOM_MID);
+    lv_obj_set_style_bg_color(bg_box2, lv_color_hex(0xF3F8FE), 0);
+    lv_obj_set_style_border_width(bg_box2, 0, 0);
+    lv_obj_set_style_radius(bg_box2, 0, 0);
+
+    // status bar
+    // icon
+    lv_obj_t *network_img = lv_img_create(lv_scr_act());
+    lv_img_set_src(network_img, "F:icn_NoNetwork.bin");
+    lv_obj_set_pos(network_img, 30, 28);
+
+    // datetime
+    lv_obj_t *datetime_label = lv_label_create(lv_scr_act());
+    lv_label_set_text(datetime_label, "2022年2月1日 23:47");
+    lv_obj_set_align(datetime_label, LV_ALIGN_TOP_RIGHT);
+    lv_obj_set_pos(datetime_label, -30, 28);
+    lv_obj_set_style_text_color(datetime_label, lv_color_hex(0xffffff), 0);
+    lv_obj_set_style_text_font(datetime_label, &font_middle, 0);
 }
