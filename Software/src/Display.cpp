@@ -240,7 +240,7 @@ void touch_calibrate(bool repeat) {
 void showMainPage() {
     // background
     lv_obj_t *bg_box1 = lv_obj_create(lv_scr_act());
-    lv_coord_t bg_box1_height = 100;
+    lv_coord_t bg_box1_height = 70;
     lv_obj_set_size(bg_box1, SCREEN_WIDTH, bg_box1_height);
     lv_obj_set_align(bg_box1, LV_ALIGN_TOP_MID);
     lv_obj_set_style_bg_color(bg_box1, lv_color_hex(0x2F3243), 0);
@@ -250,21 +250,89 @@ void showMainPage() {
     lv_obj_t *bg_box2 = lv_obj_create(lv_scr_act());
     lv_obj_set_size(bg_box2, 480, SCREEN_HEIGHT - bg_box1_height);
     lv_obj_set_align(bg_box2, LV_ALIGN_BOTTOM_MID);
-    lv_obj_set_style_bg_color(bg_box2, lv_color_hex(0xF3F8FE), 0);
+    lv_obj_set_style_bg_color(bg_box2, lv_color_white(), 0);
     lv_obj_set_style_border_width(bg_box2, 0, 0);
     lv_obj_set_style_radius(bg_box2, 0, 0);
 
-    // status bar
-    // icon
+    // status bar pos
+    lv_coord_t status_pos_y = 20;
+
+    // status bar icon
     lv_obj_t *network_img = lv_img_create(lv_scr_act());
     lv_img_set_src(network_img, "F:icn_NoNetwork.bin");
-    lv_obj_set_pos(network_img, 30, 28);
+    lv_obj_set_pos(network_img, 30, status_pos_y);
 
-    // datetime
+    // status bar datetime
     lv_obj_t *datetime_label = lv_label_create(lv_scr_act());
     lv_label_set_text(datetime_label, "2022年2月1日 23:47");
     lv_obj_set_align(datetime_label, LV_ALIGN_TOP_RIGHT);
-    lv_obj_set_pos(datetime_label, -30, 28);
+    lv_obj_set_pos(datetime_label, -30, status_pos_y);
     lv_obj_set_style_text_color(datetime_label, lv_color_hex(0xffffff), 0);
     lv_obj_set_style_text_font(datetime_label, &font_middle, 0);
+
+    // buttons style
+    static lv_style_t btn_style;
+    lv_style_init(&btn_style);
+    lv_style_set_text_font(&btn_style, &font_middle);
+    lv_style_set_text_color(&btn_style, lv_color_white());
+    lv_style_set_align(&btn_style, LV_ALIGN_CENTER);
+    lv_style_set_radius(&btn_style, 20);
+    lv_style_set_shadow_width(&btn_style, 10);
+    lv_style_set_shadow_ofs_x(&btn_style, 5);
+    lv_style_set_shadow_ofs_y(&btn_style, 5);
+
+    // buttons pos & size
+    lv_coord_t button_x = 140;
+    lv_coord_t button_y = 10;
+    lv_coord_t button_width = 100;
+    lv_coord_t button_height = 130;
+    lv_coord_t button_icn_x = 5;
+
+    // button1
+    lv_obj_t *btn1 = lv_btn_create(lv_scr_act());
+    lv_obj_add_style(btn1, &btn_style, 0);
+    lv_obj_set_style_bg_color(btn1, lv_color_hex(0x4D55C4), 0);
+    lv_obj_set_size(btn1, button_width, button_height);
+    lv_obj_set_pos(btn1, -button_x, button_y);
+
+    lv_obj_t *label1 = lv_label_create(btn1);
+    lv_obj_set_align(label1, LV_ALIGN_BOTTOM_LEFT);
+    lv_label_set_text(label1, "要闻");
+
+    lv_obj_t *icn1 = lv_img_create(btn1);
+    lv_obj_set_align(icn1, LV_ALIGN_TOP_RIGHT);
+    lv_obj_set_pos(icn1, button_icn_x, 0);
+    lv_img_set_src(icn1, "F:icn_News.bin");
+
+    // button2
+    lv_obj_t *btn2 = lv_btn_create(lv_scr_act());
+    lv_obj_add_style(btn2, &btn_style, 0);
+    lv_obj_set_style_bg_color(btn2, lv_color_hex(0x46B147), 0);
+    lv_obj_set_size(btn2, button_width, button_height);
+    lv_obj_set_pos(btn2, 0, button_y);
+
+    lv_obj_t *label2 = lv_label_create(btn2);
+    lv_obj_set_align(label2, LV_ALIGN_BOTTOM_LEFT);
+    lv_label_set_text(label2, "抓取");
+
+    lv_obj_t *icn2 = lv_img_create(btn2);
+    lv_obj_set_align(icn2, LV_ALIGN_TOP_RIGHT);
+    lv_obj_set_pos(icn2, button_icn_x, 0);
+    lv_img_set_src(icn2, "F:icn_Claw.bin");
+
+    // button3
+    lv_obj_t *btn3 = lv_btn_create(lv_scr_act());
+    lv_obj_add_style(btn3, &btn_style, 0);
+    lv_obj_set_style_bg_color(btn3, lv_color_hex(0xE22E2F), 0);
+    lv_obj_set_size(btn3, button_width, button_height);
+    lv_obj_set_pos(btn3, button_x, button_y);
+
+    lv_obj_t *label3 = lv_label_create(btn3);
+    lv_obj_set_align(label3, LV_ALIGN_BOTTOM_LEFT);
+    lv_label_set_text(label3, "设置");
+
+    lv_obj_t *icn3 = lv_img_create(btn3);
+    lv_obj_set_align(icn3, LV_ALIGN_TOP_RIGHT);
+    lv_obj_set_pos(icn3, button_icn_x, 0);
+    lv_img_set_src(icn3, "F:icn_Settings.bin");
 }
