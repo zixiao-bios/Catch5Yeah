@@ -17,8 +17,6 @@ void touchpadRead(lv_indev_drv_t *indev_driver, lv_indev_data_t *data);
 
 [[noreturn]] void displayTask(void *pv);
 
-void eventHandler(lv_event_t *e);
-
 void touch_calibrate(bool repeat);
 
 void showMainPage();
