@@ -2,4 +2,4 @@
     "abcdefghijklmnopqrstuvwxyz"
     "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     " "
-    "系统 连接 声音 灯效 其它 关于"
+    "通用 连接 声音 灯效 其它 系统升级 关于 静音"

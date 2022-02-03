@@ -1,5 +1,6 @@
 "0123456789"
     "abcdefghijklmnopqrstuvwxyz"
-    ".,!?/\()*%-+=: "
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    ".,!?/\()*%-+=: <《"
     "年月日"
     "要闻 抓取 设置"

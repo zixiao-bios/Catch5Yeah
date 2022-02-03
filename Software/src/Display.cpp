@@ -364,7 +364,7 @@ void settingScreenLoad() {
     // section 1
     cont = lv_menu_cont_create(root_page);
     label = lv_label_create(cont);
-    lv_label_set_text(label, "系统");
+    lv_label_set_text(label, "通用");
     lv_obj_set_style_text_font(label, &font_small, 0);
 
     section = lv_menu_section_create(root_page);
@@ -378,18 +378,26 @@ void settingScreenLoad() {
     label = lv_label_create(cont);
     lv_label_set_text(label, "声音");
 
+    cont = lv_menu_cont_create(section);
+    label = lv_label_create(cont);
+    lv_label_set_text(label, "RGB 灯效");
+
     // section 2
     cont = lv_menu_cont_create(root_page);
     label = lv_label_create(cont);
     lv_label_set_text(label, "其它");
     lv_obj_set_style_text_font(label, &font_small, 0);
 
-//    section = lv_menu_section_create(root_page);
-//    lv_obj_set_style_text_font(section, &font_small, 0);
+    section = lv_menu_section_create(root_page);
+    lv_obj_set_style_text_font(section, &font_small, 0);
 
-//    cont = lv_menu_cont_create(section);
-//    label = lv_label_create(cont);
-//    lv_label_set_text(label, "关于");
+    cont = lv_menu_cont_create(section);
+    label = lv_label_create(cont);
+    lv_label_set_text(label, "系统升级");
+
+    cont = lv_menu_cont_create(section);
+    label = lv_label_create(cont);
+    lv_label_set_text(label, "关于");
 
     lv_menu_set_page(menu, root_page);
 }
