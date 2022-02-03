@@ -11,8 +11,16 @@ static lv_fs_drv_t flashDrv;
 // declare custom font
 LV_FONT_DECLARE(font_middle)
 
+// declare imgs
+LV_IMG_DECLARE(icn_Claw)
+LV_IMG_DECLARE(icn_News)
+LV_IMG_DECLARE(icn_Settings)
+LV_IMG_DECLARE(icn_NoNetwork)
+LV_IMG_DECLARE(img_DST)
+
 // lvgl screens
 lv_obj_t *main_screen = nullptr;
+lv_obj_t *test_screen = nullptr;
 
 TaskHandle_t displayTaskHandler = nullptr;
 
@@ -147,7 +155,8 @@ void displayInit() {
     // start lvgl handler task
     displayTaskRun();
 
-    mainPageInit();
+    mainScreenInit();
+    testScreenInit();
 }
 
 void showScreen(const String& screen_name) {
@@ -157,6 +166,14 @@ void showScreen(const String& screen_name) {
         } else {
             Serial.println("Error! main_screen hasn't been init");
         }
+    } else if (screen_name == "test") {
+        if (test_screen) {
+            lv_scr_load(test_screen);
+        } else {
+            Serial.println("Error! test_screen hasn't been init");
+        }
+    } else {
+        Serial.println("Screen don't exists!");
     }
 }
 
@@ -248,7 +265,7 @@ void touch_calibrate(bool repeat) {
     }
 }
 
-void mainPageInit() {
+void mainScreenInit() {
     main_screen = lv_obj_create(nullptr);
 
     // background
@@ -272,7 +289,7 @@ void mainPageInit() {
 
     // status bar icon
     lv_obj_t *network_img = lv_img_create(main_screen);
-    lv_img_set_src(network_img, "F:icn_NoNetwork.bin");
+    lv_img_set_src(network_img, &icn_NoNetwork);
     lv_obj_set_pos(network_img, 30, status_pos_y);
 
     // status bar datetime
@@ -315,7 +332,7 @@ void mainPageInit() {
     lv_obj_t *icn1 = lv_img_create(btn1);
     lv_obj_set_align(icn1, LV_ALIGN_TOP_RIGHT);
     lv_obj_set_pos(icn1, button_icn_x, 0);
-    lv_img_set_src(icn1, "F:icn_News.bin");
+    lv_img_set_src(icn1, &icn_News);
 
     // button2
     lv_obj_t *btn2 = lv_btn_create(main_screen);
@@ -331,7 +348,7 @@ void mainPageInit() {
     lv_obj_t *icn2 = lv_img_create(btn2);
     lv_obj_set_align(icn2, LV_ALIGN_TOP_RIGHT);
     lv_obj_set_pos(icn2, button_icn_x, 0);
-    lv_img_set_src(icn2, "F:icn_Claw.bin");
+    lv_img_set_src(icn2, &icn_Claw);
 
     // button3
     lv_obj_t *btn3 = lv_btn_create(main_screen);
@@ -347,7 +364,14 @@ void mainPageInit() {
     lv_obj_t *icn3 = lv_img_create(btn3);
     lv_obj_set_align(icn3, LV_ALIGN_TOP_RIGHT);
     lv_obj_set_pos(icn3, button_icn_x, 0);
-    lv_img_set_src(icn3, "F:icn_Settings.bin");
+    lv_img_set_src(icn3, &icn_Settings);
+}
+
+void testScreenInit() {
+    test_screen = lv_obj_create(nullptr);
+
+    lv_obj_t *img = lv_img_create(test_screen);
+    lv_img_set_src(img, &img_DST);
 }
 
 void testMenu() {
