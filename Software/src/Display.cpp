@@ -10,6 +10,7 @@ static lv_fs_drv_t flashDrv;
 
 // declare custom font
 LV_FONT_DECLARE(font_middle)
+LV_FONT_DECLARE(font_small)
 
 // declare imgs
 LV_IMG_DECLARE(icn_Claw)
@@ -341,20 +342,56 @@ void mainScreenLoad() {
 }
 
 void settingScreenLoad() {
+    // menu
     lv_obj_t *menu = lv_menu_create(lv_scr_act());
-    lv_obj_set_size(menu, lv_disp_get_hor_res(NULL), lv_disp_get_ver_res(NULL));
+    lv_obj_set_size(menu, lv_disp_get_hor_res(nullptr), lv_disp_get_ver_res(nullptr));
     lv_obj_center(menu);
     lv_menu_set_mode_root_back_btn(menu, LV_MENU_ROOT_BACK_BTN_ENABLED);
-    lv_obj_set_style_bg_color(menu, lv_color_hex(0xff0000), 0);
+    lv_obj_set_style_bg_color(menu, lv_color_hex(0xEEEEEE), 0);
+    lv_obj_set_style_text_font(menu, &font_middle, 0);
 
-    lv_obj_t *main_page = lv_menu_page_create(menu, "Settings");
+    // back button
+    lv_obj_t * back_btn = lv_menu_get_main_header_back_btn(menu);
+    lv_obj_t * back_btn_label = lv_label_create(back_btn);
+    lv_label_set_text(back_btn_label, "<<");
 
-    lv_obj_t *cont = lv_menu_cont_create(main_page);
+    // root page
+    lv_obj_t *root_page = lv_menu_page_create(menu, "设置");
+    lv_obj_set_style_pad_hor(root_page, 15, 0);
 
-    lv_obj_t *label = lv_label_create(cont);
-    lv_label_set_text(label, "Item 1");
+    lv_obj_t *cont, *section, *label;
 
-    lv_menu_set_page(menu, main_page);
+    // section 1
+    cont = lv_menu_cont_create(root_page);
+    label = lv_label_create(cont);
+    lv_label_set_text(label, "系统");
+    lv_obj_set_style_text_font(label, &font_small, 0);
+
+    section = lv_menu_section_create(root_page);
+    lv_obj_set_style_text_font(section, &font_small, 0);
+
+    cont = lv_menu_cont_create(section);
+    label = lv_label_create(cont);
+    lv_label_set_text(label, "WiFi 连接");
+
+    cont = lv_menu_cont_create(section);
+    label = lv_label_create(cont);
+    lv_label_set_text(label, "声音");
+
+    // section 2
+    cont = lv_menu_cont_create(root_page);
+    label = lv_label_create(cont);
+    lv_label_set_text(label, "其它");
+    lv_obj_set_style_text_font(label, &font_small, 0);
+
+//    section = lv_menu_section_create(root_page);
+//    lv_obj_set_style_text_font(section, &font_small, 0);
+
+//    cont = lv_menu_cont_create(section);
+//    label = lv_label_create(cont);
+//    lv_label_set_text(label, "关于");
+
+    lv_menu_set_page(menu, root_page);
 }
 
 void testScreenLoad() {
