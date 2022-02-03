@@ -13,6 +13,8 @@ RGB_Strip *rgb1, *rgb3;
 [[noreturn]] void mainTask(void *pv) {
     /// Display demo
     displayInit();
+    delay(3000);
+    showScreen("main");
     while (true) {
         delay(100);
     }

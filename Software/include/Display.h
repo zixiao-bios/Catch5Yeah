@@ -5,6 +5,7 @@
 #include <lvgl.h>
 #include <freertos/FreeRTOS.h>
 #include "FS.h"
+#include <Arduino.h>
 #include "../Config.h"
 
 void displayInit();
@@ -19,7 +20,9 @@ void touchpadRead(lv_indev_drv_t *indev_driver, lv_indev_data_t *data);
 
 void touch_calibrate(bool repeat);
 
-void showMainPage();
+void showScreen(const String& screen_name);
+
+void mainPageInit();
 
 void testMenu();
 
