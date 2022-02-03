@@ -13,12 +13,11 @@ RGB_Strip *rgb1, *rgb3;
 [[noreturn]] void mainTask(void *pv) {
     /// Display demo
     displayInit();
-    delay(3000);
-    showScreen("main");
+    mainScreenLoad();
+
     while (true) {
         delay(100);
     }
-
 
     /// Network demo
 //    WiFiInit();

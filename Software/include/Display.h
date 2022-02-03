@@ -20,13 +20,11 @@ void touchpadRead(lv_indev_drv_t *indev_driver, lv_indev_data_t *data);
 
 void touch_calibrate(bool repeat);
 
-void showScreen(const String &screen_name);
+void mainScreenLoad();
 
-void mainScreenInit();
+void settingScreenLoad();
 
-void settingScreenInit();
-
-void testScreenInit();
+void testScreenLoad();
 
 void testMenu();
 
