@@ -342,54 +342,148 @@ void mainScreenLoad() {
 }
 
 void settingScreenLoad() {
+    // layout config
+    lv_coord_t padding_x = 15;
+
     // menu
     lv_obj_t *menu = lv_menu_create(lv_scr_act());
     lv_obj_set_size(menu, lv_disp_get_hor_res(nullptr), lv_disp_get_ver_res(nullptr));
     lv_obj_center(menu);
     lv_menu_set_mode_root_back_btn(menu, LV_MENU_ROOT_BACK_BTN_ENABLED);
     lv_obj_set_style_bg_color(menu, lv_color_hex(0xEEEEEE), 0);
-    lv_obj_set_style_text_font(menu, &font_middle, 0);
-
-    // back button
-    lv_obj_t * back_btn = lv_menu_get_main_header_back_btn(menu);
-    lv_obj_t * back_btn_label = lv_label_create(back_btn);
-    lv_label_set_text(back_btn_label, "<<");
-
-    // root page
-    lv_obj_t *root_page = lv_menu_page_create(menu, "设置");
-    lv_obj_set_style_pad_hor(root_page, 15, 0);
 
     lv_obj_t *cont, *section, *label;
+
+
+    // WiFi page
+    lv_obj_t *wifi_page = lv_menu_page_create(menu, nullptr);
+    lv_obj_set_style_pad_hor(wifi_page, padding_x, 0);
+    lv_obj_set_style_text_font(wifi_page, &font_small, 0);
+
+    lv_menu_separator_create(wifi_page);
+    section = lv_menu_section_create(wifi_page);
+
+    cont = lv_menu_cont_create(section);
+    label = lv_label_create(cont);
+    lv_label_set_text(label, "使用 WiFi");
+
+
+    // sound page
+    lv_obj_t *sound_page = lv_menu_page_create(menu, nullptr);
+    lv_obj_set_style_pad_hor(sound_page, padding_x, 0);
+    lv_obj_set_style_text_font(sound_page, &font_small, 0);
+
+    lv_menu_separator_create(sound_page);
+    section = lv_menu_section_create(sound_page);
+
+    cont = lv_menu_cont_create(section);
+    label = lv_label_create(cont);
+    lv_label_set_text(label, "静音");
+
+
+    // RGB page
+    lv_obj_t *rgb_page = lv_menu_page_create(menu, nullptr);
+    lv_obj_set_style_pad_hor(rgb_page, padding_x, 0);
+    lv_obj_set_style_text_font(rgb_page, &font_small, 0);
+
+    // section 1
+    lv_menu_separator_create(rgb_page);
+    cont = lv_menu_cont_create(rgb_page);
+    label = lv_label_create(cont);
+    lv_label_set_text(label, "顶部灯条");
+
+    section = lv_menu_section_create(rgb_page);
+
+    cont = lv_menu_cont_create(section);
+    label = lv_label_create(cont);
+    lv_label_set_text(label, "开启");
+
+    cont = lv_menu_cont_create(section);
+    label = lv_label_create(cont);
+    lv_label_set_text(label, "效果");
+
+    // section 2
+    lv_menu_separator_create(rgb_page);
+    cont = lv_menu_cont_create(rgb_page);
+    label = lv_label_create(cont);
+    lv_label_set_text(label, "侧壁灯条（上）");
+
+    section = lv_menu_section_create(rgb_page);
+
+    cont = lv_menu_cont_create(section);
+    label = lv_label_create(cont);
+    lv_label_set_text(label, "开启");
+
+    cont = lv_menu_cont_create(section);
+    label = lv_label_create(cont);
+    lv_label_set_text(label, "效果");
+
+    // section 3
+    lv_menu_separator_create(rgb_page);
+    cont = lv_menu_cont_create(rgb_page);
+    label = lv_label_create(cont);
+    lv_label_set_text(label, "侧壁灯条（下）");
+
+    section = lv_menu_section_create(rgb_page);
+
+    cont = lv_menu_cont_create(section);
+    label = lv_label_create(cont);
+    lv_label_set_text(label, "开启");
+
+    cont = lv_menu_cont_create(section);
+    label = lv_label_create(cont);
+    lv_label_set_text(label, "效果");
+
+    // section 4
+    lv_menu_separator_create(rgb_page);
+    cont = lv_menu_cont_create(rgb_page);
+    label = lv_label_create(cont);
+    lv_label_set_text(label, "灯塔");
+
+    section = lv_menu_section_create(rgb_page);
+
+    cont = lv_menu_cont_create(section);
+    label = lv_label_create(cont);
+    lv_label_set_text(label, "开启");
+
+    cont = lv_menu_cont_create(section);
+    label = lv_label_create(cont);
+    lv_label_set_text(label, "效果");
+
+
+    // root page
+    lv_obj_t *root_page = lv_menu_page_create(menu, "Settings");
+    lv_obj_set_style_text_font(root_page, &font_small, 0);
+    lv_obj_set_style_pad_hor(root_page, padding_x, 0);
 
     // section 1
     cont = lv_menu_cont_create(root_page);
     label = lv_label_create(cont);
     lv_label_set_text(label, "通用");
-    lv_obj_set_style_text_font(label, &font_small, 0);
 
     section = lv_menu_section_create(root_page);
-    lv_obj_set_style_text_font(section, &font_small, 0);
 
     cont = lv_menu_cont_create(section);
     label = lv_label_create(cont);
     lv_label_set_text(label, "WiFi 连接");
+    lv_menu_set_load_page_event(menu, cont, wifi_page);
 
     cont = lv_menu_cont_create(section);
     label = lv_label_create(cont);
     lv_label_set_text(label, "声音");
+    lv_menu_set_load_page_event(menu, cont, sound_page);
 
     cont = lv_menu_cont_create(section);
     label = lv_label_create(cont);
     lv_label_set_text(label, "RGB 灯效");
+    lv_menu_set_load_page_event(menu, cont, rgb_page);
 
     // section 2
     cont = lv_menu_cont_create(root_page);
     label = lv_label_create(cont);
     lv_label_set_text(label, "其它");
-    lv_obj_set_style_text_font(label, &font_small, 0);
 
     section = lv_menu_section_create(root_page);
-    lv_obj_set_style_text_font(section, &font_small, 0);
 
     cont = lv_menu_cont_create(section);
     label = lv_label_create(cont);
@@ -399,7 +493,8 @@ void settingScreenLoad() {
     label = lv_label_create(cont);
     lv_label_set_text(label, "关于");
 
-    lv_menu_set_page(menu, root_page);
+    lv_menu_set_sidebar_page(menu, root_page);
+    lv_event_send(lv_obj_get_child(lv_obj_get_child(lv_menu_get_cur_sidebar_page(menu), 1), 0), LV_EVENT_CLICKED, nullptr);
 }
 
 void testScreenLoad() {
