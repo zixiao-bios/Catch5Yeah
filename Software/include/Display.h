@@ -8,6 +8,7 @@
 #include <Arduino.h>
 #include "../Config.h"
 
+// lvgl init function
 void displayInit();
 
 bool displayTaskRun();
@@ -20,6 +21,13 @@ void touchpadRead(lv_indev_drv_t *indev_driver, lv_indev_data_t *data);
 
 void touch_calibrate(bool repeat);
 
+
+// lvgl callback function
+void click_setting_button(lv_event_t *e);
+void click_menu(lv_event_t *e);
+
+
+// screen load function
 void mainScreenLoad();
 
 void settingScreenLoad();
@@ -27,6 +35,7 @@ void settingScreenLoad();
 void testScreenLoad();
 
 void testMenu();
+
 
 // lvgl fs callback
 static void *openSpiffsFile(lv_fs_drv_t *drv, const char *path, lv_fs_mode_t mode);

@@ -170,16 +170,6 @@ bool displayTaskRun() {
     }
 }
 
-void eventHandler(lv_event_t *e) {
-    lv_event_code_t code = lv_event_get_code(e);
-
-    if (code == LV_EVENT_CLICKED) {
-        LV_LOG_USER("Clicked");
-    } else if (code == LV_EVENT_VALUE_CHANGED) {
-        LV_LOG_USER("Toggled");
-    }
-}
-
 void touch_calibrate(bool repeat) {
     uint16_t calData[5];
     uint8_t calDataOK = 0;
@@ -238,6 +228,19 @@ void touch_calibrate(bool repeat) {
             f.write((const unsigned char *) calData, 14);
             f.close();
         }
+    }
+}
+
+void click_setting_button(lv_event_t *e) {
+    settingScreenLoad();
+}
+
+void click_menu(lv_event_t *e) {
+    lv_obj_t *obj = lv_event_get_target(e);
+    auto *menu = (lv_obj_t *) lv_event_get_user_data(e);
+
+    if (lv_menu_back_btn_is_root(menu, obj)) {
+        mainScreenLoad();
     }
 }
 
@@ -330,6 +333,7 @@ void mainScreenLoad() {
     lv_obj_set_style_bg_color(btn3, lv_color_hex(0xE22E2F), 0);
     lv_obj_set_size(btn3, button_width, button_height);
     lv_obj_set_pos(btn3, button_x, button_y);
+    lv_obj_add_event_cb(btn3, click_setting_button, LV_EVENT_CLICKED, nullptr);
 
     lv_obj_t *label3 = lv_label_create(btn3);
     lv_obj_set_align(label3, LV_ALIGN_BOTTOM_LEFT);
@@ -351,6 +355,7 @@ void settingScreenLoad() {
     lv_obj_center(menu);
     lv_menu_set_mode_root_back_btn(menu, LV_MENU_ROOT_BACK_BTN_ENABLED);
     lv_obj_set_style_bg_color(menu, lv_color_hex(0xEEEEEE), 0);
+    lv_obj_add_event_cb(menu, click_menu, LV_EVENT_CLICKED, menu);
 
     lv_obj_t *cont, *section, *label;
 
@@ -494,7 +499,8 @@ void settingScreenLoad() {
     lv_label_set_text(label, "关于");
 
     lv_menu_set_sidebar_page(menu, root_page);
-    lv_event_send(lv_obj_get_child(lv_obj_get_child(lv_menu_get_cur_sidebar_page(menu), 1), 0), LV_EVENT_CLICKED, nullptr);
+    lv_event_send(lv_obj_get_child(lv_obj_get_child(lv_menu_get_cur_sidebar_page(menu), 1), 0), LV_EVENT_CLICKED,
+                  nullptr);
 }
 
 void testScreenLoad() {
