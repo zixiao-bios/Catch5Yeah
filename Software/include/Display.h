@@ -24,6 +24,8 @@ void showScreen(const String &screen_name);
 
 void mainScreenInit();
 
+void settingScreenInit();
+
 void testScreenInit();
 
 void testMenu();

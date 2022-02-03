@@ -20,6 +20,7 @@ LV_IMG_DECLARE(img_DST)
 
 // lvgl screens
 lv_obj_t *main_screen = nullptr;
+lv_obj_t *setting_screen = nullptr;
 lv_obj_t *test_screen = nullptr;
 
 TaskHandle_t displayTaskHandler = nullptr;
@@ -155,26 +156,18 @@ void displayInit() {
     // start lvgl handler task
     displayTaskRun();
 
-    mainScreenInit();
-    testScreenInit();
+//    mainScreenInit();
+    settingScreenInit();
+//    testScreenInit();
 }
 
-void showScreen(const String& screen_name) {
-    if (screen_name == "main") {
-        if (main_screen) {
-            lv_scr_load(main_screen);
-        } else {
-            Serial.println("Error! main_screen hasn't been init");
-        }
-    } else if (screen_name == "test") {
-        if (test_screen) {
-            lv_scr_load(test_screen);
-        } else {
-            Serial.println("Error! test_screen hasn't been init");
-        }
-    } else {
-        Serial.println("Screen don't exists!");
-    }
+void showScreen(const String &screen_name) {
+    if (screen_name == "main")
+        lv_scr_load(main_screen);
+    else if (screen_name == "test")
+        lv_scr_load(test_screen);
+    else if (screen_name == "setting")
+        lv_scr_load(setting_screen);
 }
 
 bool displayTaskRun() {
@@ -367,6 +360,23 @@ void mainScreenInit() {
     lv_img_set_src(icn3, &icn_Settings);
 }
 
+void settingScreenInit() {
+    lv_obj_t *menu = lv_menu_create(lv_scr_act());
+    lv_obj_set_size(menu, lv_disp_get_hor_res(NULL), lv_disp_get_ver_res(NULL));
+    lv_obj_center(menu);
+    lv_menu_set_mode_root_back_btn(menu, LV_MENU_ROOT_BACK_BTN_ENABLED);
+    lv_obj_set_style_bg_color(menu, lv_color_hex(0xff0000), 0);
+
+    lv_obj_t *main_page = lv_menu_page_create(menu, "Settings");
+
+    lv_obj_t *cont = lv_menu_cont_create(main_page);
+
+    lv_obj_t *label = lv_label_create(cont);
+    lv_label_set_text(label, "Item 1");
+
+    lv_menu_set_page(menu, main_page);
+}
+
 void testScreenInit() {
     test_screen = lv_obj_create(nullptr);
 
@@ -376,22 +386,22 @@ void testScreenInit() {
 
 void testMenu() {
     /*Create a menu object*/
-    lv_obj_t * menu = lv_menu_create(lv_scr_act());
+    lv_obj_t *menu = lv_menu_create(lv_scr_act());
     lv_obj_set_size(menu, lv_disp_get_hor_res(nullptr), lv_disp_get_ver_res(nullptr));
     lv_obj_center(menu);
 
-    lv_obj_t * cont;
-    lv_obj_t * label;
+    lv_obj_t *cont;
+    lv_obj_t *label;
 
     /*Create a sub page*/
-    lv_obj_t * sub_page = lv_menu_page_create(menu, nullptr);
+    lv_obj_t *sub_page = lv_menu_page_create(menu, nullptr);
 
     cont = lv_menu_cont_create(sub_page);
     label = lv_label_create(cont);
     lv_label_set_text(label, "Hello, I am hiding here");
 
     /*Create a main page*/
-    lv_obj_t * main_page = lv_menu_page_create(menu, nullptr);
+    lv_obj_t *main_page = lv_menu_page_create(menu, nullptr);
 
     cont = lv_menu_cont_create(main_page);
     label = lv_label_create(cont);
