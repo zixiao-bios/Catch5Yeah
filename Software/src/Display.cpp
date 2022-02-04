@@ -260,7 +260,7 @@ void UI_update_wifi_state() {
     }
 
     if (state_wifi_connect) {
-        lv_label_set_text(wifi_connect_state_label, state_wifi_name);
+        lv_label_set_text(wifi_connect_state_label, state_wifi_name.c_str());
         lv_obj_clear_flag(wifi_disconnect_button, LV_OBJ_FLAG_HIDDEN);
     } else {
         lv_label_set_text(wifi_connect_state_label, "无");
