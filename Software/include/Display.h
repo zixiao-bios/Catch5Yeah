@@ -36,9 +36,9 @@ void UI_update_wifi_state();
 
 
 // screen load function
-void mainScreenLoad();
+void mainScreenInit();
 
-void settingScreenLoad();
+void settingScreenInit();
 
 void testScreenLoad();
 
