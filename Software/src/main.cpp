@@ -14,15 +14,13 @@ RGB_Strip *rgb1, *rgb3;
 [[noreturn]] void mainTask(void *pv) {
     /// set system state
     state_wifi_on = true;
-    state_wifi_connect = false;
+    state_wifi_connect = true;
+    state_wifi_name = "wzx_5G";
 
     /// Display demo
     displayInit();
 //    mainScreenLoad();
     settingScreenLoad();
-
-    delay(1000);
-    update_wifi_state();
 
     while (true) {
         delay(100);
@@ -72,7 +70,7 @@ __attribute__((unused)) void setup() {
         Serial.println("SPIFFS Mount Failed!");
     }
 
-    xTaskCreatePinnedToCore(mainTask, "mainTask", 50000, nullptr, 1, nullptr, 0);
+    xTaskCreatePinnedToCore(mainTask, "mainTask", 10000, nullptr, 2, nullptr, 1);
 }
 
 __attribute__((unused)) void loop() {
