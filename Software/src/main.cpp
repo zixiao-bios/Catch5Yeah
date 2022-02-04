@@ -11,7 +11,7 @@
 
 RGB_Strip *rgb1, *rgb3;
 
-[[noreturn]] void mainTask(void *pv) {
+[[noreturn]] void displayTask(void *pv) {
     /// set system state
     state_wifi_on = true;
     state_wifi_connect = true;
@@ -19,11 +19,11 @@ RGB_Strip *rgb1, *rgb3;
 
     /// Display demo
     displayInit();
-//    mainScreenLoad();
-    settingScreenLoad();
+    show_screen("setting");
 
     while (true) {
-        delay(100);
+        delay(5);
+        lv_task_handler();
     }
 
     /// Network demo
@@ -70,7 +70,7 @@ __attribute__((unused)) void setup() {
         Serial.println("SPIFFS Mount Failed!");
     }
 
-    xTaskCreatePinnedToCore(mainTask, "mainTask", 10000, nullptr, 2, nullptr, 1);
+    xTaskCreatePinnedToCore(displayTask, "DisplayTask", 10000, nullptr, 1, nullptr, 1);
 }
 
 __attribute__((unused)) void loop() {

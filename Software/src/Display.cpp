@@ -25,7 +25,7 @@ LV_IMG_DECLARE(img_DST)
 // widgets
 lv_obj_t *wifi_switch, *wifi_state_section, *wifi_connect_state_label, *wifi_disconnect_button;
 
-TaskHandle_t displayTaskHandler = nullptr;
+lv_obj_t *screen = nullptr;
 
 static void *openSpiffsFile(lv_fs_drv_t *drv, const char *path, lv_fs_mode_t mode) {
     auto *file = new fs::File();
@@ -154,27 +154,6 @@ void displayInit() {
     flashDrv.dir_open_cb = nullptr;
     flashDrv.dir_read_cb = nullptr;
     lv_fs_drv_register(&flashDrv);
-
-    // start lvgl handler task
-    displayTaskRun();
-}
-
-bool displayTaskRun() {
-    if (displayTaskHandler != nullptr) {
-        vTaskDelete(displayTaskHandler);
-    }
-    return xTaskCreatePinnedToCore(&displayTask, "DisplayTask", 4096, nullptr, 1, &displayTaskHandler, 1) == pdPASS;
-}
-
-[[noreturn]] void displayTask(void *pv) {
-    TickType_t lastWakeTime;
-    // delayTime = 5 ms
-    const TickType_t delayTick = 5 / portTICK_PERIOD_MS;
-    while (true) {
-        lv_timer_handler();
-        delay(5);
-//        vTaskDelayUntil(&lastWakeTime, delayTick);
-    }
 }
 
 void touch_calibrate(bool repeat) {
@@ -238,8 +217,29 @@ void touch_calibrate(bool repeat) {
     }
 }
 
+void show_screen(const String& screen_name) {
+    if (screen) {
+        Serial.println("start show");
+//        lv_obj_del(screen);
+        lv_obj_del_delayed(screen, 1000);
+        Serial.println("end show");
+        screen = nullptr;
+    }
+    screen = lv_obj_create(nullptr);
+
+    if (screen_name == "main") {
+        mainScreenLoad();
+    } else if (screen_name == "setting") {
+        settingScreenLoad();
+    } else {
+        return;
+    }
+
+    lv_scr_load(screen);
+}
+
 void click_setting_button(lv_event_t *e) {
-    settingScreenLoad();
+    show_screen("setting");
 }
 
 void click_menu(lv_event_t *e) {
@@ -247,7 +247,7 @@ void click_menu(lv_event_t *e) {
     auto *menu = (lv_obj_t *) lv_event_get_user_data(e);
 
     if (lv_menu_back_btn_is_root(menu, obj)) {
-        mainScreenLoad();
+        show_screen("main");
     }
 }
 
@@ -281,7 +281,7 @@ void UI_update_wifi_state() {
 
 void mainScreenLoad() {
     // background
-    lv_obj_t *bg_box1 = lv_obj_create(lv_scr_act());
+    lv_obj_t *bg_box1 = lv_obj_create(screen);
     lv_coord_t bg_box1_height = 70;
     lv_obj_set_size(bg_box1, SCREEN_WIDTH, bg_box1_height);
     lv_obj_set_align(bg_box1, LV_ALIGN_TOP_MID);
@@ -289,7 +289,7 @@ void mainScreenLoad() {
     lv_obj_set_style_border_width(bg_box1, 0, 0);
     lv_obj_set_style_radius(bg_box1, 0, 0);
 
-    lv_obj_t *bg_box2 = lv_obj_create(lv_scr_act());
+    lv_obj_t *bg_box2 = lv_obj_create(screen);
     lv_obj_set_size(bg_box2, 480, SCREEN_HEIGHT - bg_box1_height);
     lv_obj_set_align(bg_box2, LV_ALIGN_BOTTOM_MID);
     lv_obj_set_style_bg_color(bg_box2, lv_color_white(), 0);
@@ -300,12 +300,12 @@ void mainScreenLoad() {
     lv_coord_t status_pos_y = 20;
 
     // status bar icon
-    lv_obj_t *network_img = lv_img_create(lv_scr_act());
+    lv_obj_t *network_img = lv_img_create(screen);
     lv_img_set_src(network_img, &icn_NoNetwork);
     lv_obj_set_pos(network_img, 30, status_pos_y);
 
     // status bar datetime
-    lv_obj_t *datetime_label = lv_label_create(lv_scr_act());
+    lv_obj_t *datetime_label = lv_label_create(screen);
     lv_label_set_text(datetime_label, "2022年2月1日 23:47");
     lv_obj_set_align(datetime_label, LV_ALIGN_TOP_RIGHT);
     lv_obj_set_pos(datetime_label, -30, status_pos_y);
@@ -331,7 +331,7 @@ void mainScreenLoad() {
     lv_coord_t button_icn_x = 5;
 
     // button1
-    lv_obj_t *btn1 = lv_btn_create(lv_scr_act());
+    lv_obj_t *btn1 = lv_btn_create(screen);
     lv_obj_add_style(btn1, &btn_style, 0);
     lv_obj_set_style_bg_color(btn1, lv_color_hex(0x4D55C4), 0);
     lv_obj_set_size(btn1, button_width, button_height);
@@ -347,7 +347,7 @@ void mainScreenLoad() {
     lv_img_set_src(icn1, &icn_News);
 
     // button2
-    lv_obj_t *btn2 = lv_btn_create(lv_scr_act());
+    lv_obj_t *btn2 = lv_btn_create(screen);
     lv_obj_add_style(btn2, &btn_style, 0);
     lv_obj_set_style_bg_color(btn2, lv_color_hex(0x46B147), 0);
     lv_obj_set_size(btn2, button_width, button_height);
@@ -363,7 +363,7 @@ void mainScreenLoad() {
     lv_img_set_src(icn2, &icn_Claw);
 
     // button3
-    lv_obj_t *btn3 = lv_btn_create(lv_scr_act());
+    lv_obj_t *btn3 = lv_btn_create(screen);
     lv_obj_add_style(btn3, &btn_style, 0);
     lv_obj_set_style_bg_color(btn3, lv_color_hex(0xE22E2F), 0);
     lv_obj_set_size(btn3, button_width, button_height);
@@ -385,7 +385,7 @@ void settingScreenLoad() {
     lv_coord_t padding_x = 15;
 
     // menu
-    lv_obj_t *menu = lv_menu_create(lv_scr_act());
+    lv_obj_t *menu = lv_menu_create(screen);
     lv_obj_set_size(menu, lv_disp_get_hor_res(nullptr), lv_disp_get_ver_res(nullptr));
     lv_obj_center(menu);
     lv_menu_set_mode_root_back_btn(menu, LV_MENU_ROOT_BACK_BTN_ENABLED);

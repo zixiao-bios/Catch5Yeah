@@ -12,15 +12,15 @@
 // lvgl init function
 void displayInit();
 
-bool displayTaskRun();
-
 void dispFlush(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *color_p);
 
 void touchpadRead(lv_indev_drv_t *indev_driver, lv_indev_data_t *data);
 
-[[noreturn]] void displayTask(void *pv);
-
 void touch_calibrate(bool repeat);
+
+
+// show screen
+void show_screen(const String& screen_name);
 
 
 // lvgl callback function
