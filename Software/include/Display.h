@@ -28,9 +28,11 @@ void click_setting_button(lv_event_t *e);
 
 void click_menu(lv_event_t *e);
 
+void change_wifi_switch(lv_event_t *e);
+
 
 // UI update function
-void update_wifi_state();
+void UI_update_wifi_state();
 
 
 // screen load function

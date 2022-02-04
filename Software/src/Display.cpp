@@ -23,7 +23,7 @@ LV_IMG_DECLARE(icn_RGB)
 LV_IMG_DECLARE(img_DST)
 
 // widgets
-lv_obj_t *wifi_switch;
+lv_obj_t *wifi_switch, *wifi_state_section, *wifi_connect_state_label, *wifi_disconnect_button;
 
 TaskHandle_t displayTaskHandler = nullptr;
 
@@ -163,7 +163,7 @@ bool displayTaskRun() {
     if (displayTaskHandler != nullptr) {
         vTaskDelete(displayTaskHandler);
     }
-    return xTaskCreate(&displayTask, "DisplayTask", 4096, nullptr, 1, &displayTaskHandler) == pdPASS;
+    return xTaskCreatePinnedToCore(&displayTask, "DisplayTask", 4096, nullptr, 1, &displayTaskHandler, 1) == pdPASS;
 }
 
 [[noreturn]] void displayTask(void *pv) {
@@ -172,7 +172,8 @@ bool displayTaskRun() {
     const TickType_t delayTick = 5 / portTICK_PERIOD_MS;
     while (true) {
         lv_timer_handler();
-        vTaskDelayUntil(&lastWakeTime, delayTick);
+        delay(5);
+//        vTaskDelayUntil(&lastWakeTime, delayTick);
     }
 }
 
@@ -250,13 +251,31 @@ void click_menu(lv_event_t *e) {
     }
 }
 
-void update_wifi_state() {
+void change_wifi_switch(lv_event_t *e) {
+    lv_obj_t * sw = lv_event_get_target(e);
+    state_wifi_on = lv_obj_has_state(sw, LV_STATE_CHECKED);
+    UI_update_wifi_state();
+}
+
+void UI_update_wifi_state() {
     if (state_wifi_on) {
         lv_obj_add_state(wifi_switch, LV_STATE_CHECKED);
-        Serial.println("wifi on");
+        lv_obj_clear_flag(wifi_state_section, LV_OBJ_FLAG_HIDDEN);
     } else {
         lv_obj_clear_state(wifi_switch, LV_STATE_CHECKED);
-        Serial.println("wifi off");
+        lv_obj_add_flag(wifi_state_section, LV_OBJ_FLAG_HIDDEN);
+    }
+
+    if (state_wifi_connect) {
+        if (state_wifi_name) {
+            lv_label_set_text(wifi_connect_state_label, state_wifi_name);
+        }
+        if (wifi_disconnect_button) {
+            lv_obj_clear_flag(wifi_disconnect_button, LV_OBJ_FLAG_HIDDEN);
+        }
+    } else {
+        lv_label_set_text(wifi_connect_state_label, "无");
+        lv_obj_add_flag(wifi_disconnect_button, LV_OBJ_FLAG_HIDDEN);
     }
 }
 
@@ -390,12 +409,22 @@ void settingScreenLoad() {
     lv_label_set_text(label, "使用 WiFi");
     lv_obj_set_flex_grow(label, 1);
     wifi_switch = lv_switch_create(cont);
+    lv_obj_add_event_cb(wifi_switch, change_wifi_switch, LV_EVENT_VALUE_CHANGED, nullptr);
 
     lv_menu_separator_create(wifi_page);
-    section = lv_menu_section_create(wifi_page);
-    cont = lv_menu_cont_create(section);
+    wifi_state_section = lv_menu_section_create(wifi_page);
+    cont = lv_menu_cont_create(wifi_state_section);
     label = lv_label_create(cont);
-    lv_label_set_text(label, "WiFi 状态");
+    lv_label_set_text(label, "连接的网络");
+    lv_obj_set_flex_grow(label, 1);
+    wifi_connect_state_label = lv_label_create(cont);
+    lv_label_set_text(wifi_connect_state_label, "");
+    wifi_disconnect_button = lv_btn_create(cont);
+    lv_obj_set_style_bg_color(wifi_disconnect_button, lv_color_hex(0xD00000), 0);
+    lv_obj_set_style_text_color(wifi_disconnect_button, lv_color_white(), 0);
+    label = lv_label_create(wifi_disconnect_button);
+    lv_label_set_text(label, "断开");
+    lv_obj_set_style_pad_all(label, -5, 0);
 
 
     // sound page
@@ -532,6 +561,8 @@ void settingScreenLoad() {
     lv_menu_set_sidebar_page(menu, root_page);
     lv_event_send(lv_obj_get_child(lv_obj_get_child(lv_menu_get_cur_sidebar_page(menu), 1), 0), LV_EVENT_CLICKED,
                   nullptr);
+
+    UI_update_wifi_state();
 }
 
 void testScreenLoad() {
