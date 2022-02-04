@@ -221,7 +221,7 @@ void touch_calibrate(bool repeat) {
     }
 }
 
-void show_screen(const String& screen_name) {
+void show_screen(const String &screen_name) {
     if (screen_name == "main") {
         lv_scr_load(main_screen);
     } else if (screen_name == "setting") {
@@ -243,7 +243,7 @@ void click_menu(lv_event_t *e) {
 }
 
 void change_wifi_switch(lv_event_t *e) {
-    lv_obj_t * sw = lv_event_get_target(e);
+    lv_obj_t *sw = lv_event_get_target(e);
     state_wifi_on = lv_obj_has_state(sw, LV_STATE_CHECKED);
     UI_update_wifi_state();
 }
@@ -258,12 +258,8 @@ void UI_update_wifi_state() {
     }
 
     if (state_wifi_connect) {
-        if (state_wifi_name) {
-            lv_label_set_text(wifi_connect_state_label, state_wifi_name);
-        }
-        if (wifi_disconnect_button) {
-            lv_obj_clear_flag(wifi_disconnect_button, LV_OBJ_FLAG_HIDDEN);
-        }
+        lv_label_set_text(wifi_connect_state_label, state_wifi_name);
+        lv_obj_clear_flag(wifi_disconnect_button, LV_OBJ_FLAG_HIDDEN);
     } else {
         lv_label_set_text(wifi_connect_state_label, "无");
         lv_obj_add_flag(wifi_disconnect_button, LV_OBJ_FLAG_HIDDEN);
@@ -272,7 +268,7 @@ void UI_update_wifi_state() {
 
 void mainScreenInit() {
     main_screen = lv_obj_create(nullptr);
-    
+
     // background
     lv_obj_t *bg_box1 = lv_obj_create(main_screen);
     lv_coord_t bg_box1_height = 70;
