@@ -8,6 +8,7 @@
 #include <Arduino.h>
 #include "../Config.h"
 #include "State.h"
+#include "Network.h"
 
 extern SemaphoreHandle_t lvgl_mutex;
 
@@ -32,9 +33,13 @@ void click_menu(lv_event_t *e);
 
 void change_wifi_switch(lv_event_t *e);
 
+void click_wifi_refresh(lv_event_t *e);
+
 
 // UI update function
 void UI_update_wifi_state();
+
+void UI_refresh_wifi_list();
 
 
 // screen load function

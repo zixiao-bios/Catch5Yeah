@@ -2,7 +2,7 @@
 
 // Display
 static lv_disp_draw_buf_t draw_buf;
-static lv_color_t disp_buf[DISPLAY_WIDTH * 10];
+static lv_color_t disp_buf[SCREEN_WIDTH * 10];
 TFT_eSPI tft = TFT_eSPI(DISPLAY_WIDTH, DISPLAY_HEIGHT);
 
 // File system
@@ -26,7 +26,7 @@ LV_IMG_DECLARE(img_DST)
 lv_obj_t *main_screen, *setting_screen;
 
 // widgets
-lv_obj_t *wifi_switch, *wifi_state_section, *wifi_connect_state_label, *wifi_disconnect_button;
+lv_obj_t *wifi_page, *wifi_switch, *wifi_state_section, *wifi_connect_state_label, *wifi_disconnect_button, *wifi_list_label, *wifi_list_section, *wifi_refresh_button;
 
 SemaphoreHandle_t lvgl_mutex;
 
@@ -250,6 +250,10 @@ void change_wifi_switch(lv_event_t *e) {
     UI_update_wifi_state();
 }
 
+void click_wifi_refresh(lv_event_t *e) {
+    UI_refresh_wifi_list();
+}
+
 void UI_update_wifi_state() {
     if (state_wifi_on) {
         lv_obj_add_state(wifi_switch, LV_STATE_CHECKED);
@@ -265,6 +269,39 @@ void UI_update_wifi_state() {
     } else {
         lv_label_set_text(wifi_connect_state_label, "无");
         lv_obj_add_flag(wifi_disconnect_button, LV_OBJ_FLAG_HIDDEN);
+    }
+}
+
+void UI_refresh_wifi_list() {
+    if (wifi_list_section) {
+        lv_obj_del(wifi_list_section);
+    }
+
+    lv_obj_t *cont, *obj;
+    wifi_list_section = lv_menu_section_create(wifi_page);
+
+    int n = scanWiFiList();
+    int rssi;
+    for (int i = 0; i < n; ++i) {
+        cont = lv_menu_cont_create(wifi_list_section);
+
+        obj = lv_label_create(cont);
+        lv_label_set_text(obj, WiFi.SSID(i).c_str());
+        lv_label_set_long_mode(obj, LV_LABEL_LONG_SCROLL_CIRCULAR);
+        lv_obj_set_flex_grow(obj, 1);
+
+        obj = lv_label_create(cont);
+        rssi = WiFi.RSSI(i);
+        if (rssi > -70) {
+            lv_label_set_text(obj, "强");
+            lv_obj_set_style_text_color(obj, lv_color_hex(0x00cc00), 0);
+        } else if (rssi > -90) {
+            lv_label_set_text(obj, "中");
+            lv_obj_set_style_text_color(obj, lv_color_hex(0xffcc00), 0);
+        } else {
+            lv_label_set_text(obj, "弱");
+            lv_obj_set_style_text_color(obj, lv_color_hex(0xff0000), 0);
+        }
     }
 }
 
@@ -389,7 +426,7 @@ void settingScreenInit() {
 
 
     // WiFi page
-    lv_obj_t *wifi_page = lv_menu_page_create(menu, nullptr);
+    wifi_page = lv_menu_page_create(menu, nullptr);
     lv_obj_set_style_pad_hor(wifi_page, padding_x, 0);
     lv_obj_set_style_text_font(wifi_page, &font_small, 0);
 
@@ -417,7 +454,20 @@ void settingScreenInit() {
     lv_obj_set_style_text_color(wifi_disconnect_button, lv_color_white(), 0);
     label = lv_label_create(wifi_disconnect_button);
     lv_label_set_text(label, "断开");
-    lv_obj_set_style_pad_all(label, -5, 0);
+    lv_obj_set_style_pad_all(label, -7, 0);
+
+    lv_menu_separator_create(wifi_page);
+    cont = lv_menu_cont_create(wifi_page);
+    wifi_list_label = lv_label_create(cont);
+    lv_label_set_text(wifi_list_label, "可用的网络");
+    lv_obj_set_flex_grow(wifi_list_label, 1);
+    wifi_refresh_button = lv_btn_create(cont);
+    lv_obj_add_event_cb(wifi_refresh_button, click_wifi_refresh, LV_EVENT_CLICKED, nullptr);
+    lv_obj_set_style_bg_color(wifi_refresh_button, lv_color_hex(0xFF7800), 0);
+    lv_obj_set_style_text_color(wifi_refresh_button, lv_color_white(), 0);
+    label = lv_label_create(wifi_refresh_button);
+    lv_label_set_text(label, "刷新");
+    lv_obj_set_style_pad_all(label, -7, 0);
 
 
     // sound page

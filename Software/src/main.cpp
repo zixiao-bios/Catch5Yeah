@@ -42,6 +42,9 @@ __attribute__((unused)) void setup() {
     state_wifi_connect = true;
     state_wifi_name = "wzx_5G";
 
+    // init WiFi
+    WiFiInit();
+
     // start SPIFFS
     if (!SPIFFS.begin(true)) {
         Serial.println("SPIFFS Mount Failed!");

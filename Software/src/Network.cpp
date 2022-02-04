@@ -42,6 +42,10 @@ void printWifiList() {
     Serial.println("=======================================\n\n");
 }
 
+int scanWiFiList() {
+    return WiFi.scanNetworks();
+}
+
 void httpGet(const String &url) {
     HTTPClient http;
 

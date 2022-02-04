@@ -14,4 +14,6 @@ void WiFiConnect();
 
 void httpGet(const String& url);
 
+int scanWiFiList();
+
 #endif //SOFTWARE_NETWORK_H
