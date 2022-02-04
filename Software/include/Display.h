@@ -7,6 +7,7 @@
 #include "FS.h"
 #include <Arduino.h>
 #include "../Config.h"
+#include "State.h"
 
 // lvgl init function
 void displayInit();
@@ -24,7 +25,12 @@ void touch_calibrate(bool repeat);
 
 // lvgl callback function
 void click_setting_button(lv_event_t *e);
+
 void click_menu(lv_event_t *e);
+
+
+// UI update function
+void update_wifi_state();
 
 
 // screen load function

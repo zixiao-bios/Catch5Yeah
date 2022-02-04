@@ -7,14 +7,22 @@
 #include "Network.h"
 #include <Tool.h>
 #include "SPIFFS.h"
+#include "State.h"
 
 RGB_Strip *rgb1, *rgb3;
 
 [[noreturn]] void mainTask(void *pv) {
+    /// set system state
+    state_wifi_on = true;
+    state_wifi_connect = false;
+
     /// Display demo
     displayInit();
-    mainScreenLoad();
-//    settingScreenLoad();
+//    mainScreenLoad();
+    settingScreenLoad();
+
+    delay(1000);
+    update_wifi_state();
 
     while (true) {
         delay(100);

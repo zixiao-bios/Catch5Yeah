@@ -2,7 +2,7 @@
 
 /*******************************************************************************
  * Tool: MCU_Font V2.0
- * Time: 2022-02-04 02:02:16
+ * Time: 2022-02-04 12:42:35
  * Bpp: 4
  * LineHeight: 24 px
  * BaseLine: 5
@@ -811,6 +811,24 @@ static LV_ATTRIBUTE_LARGE_CONST const uint8_t gylph_bitmap[] = {
     0x0, 0x5, 0xcf, 0xfa, 0x0, 0x0, 0xcf, 0xa0, 
     0x0, 0x7, 0x95, 0x30, 0x0, 0x0, 0x5f, 0x50, 
 
+    /* U+6001 "态" */
+    0x0, 0x0, 0x0, 0x9, 0x70, 0x0, 0x0, 0x0, 
+    0x0, 0x0, 0x3, 0xe3, 0x0, 0x0, 0x0, 0x0, 
+    0x0, 0x0, 0xaa, 0x0, 0x0, 0x0, 0x0, 0x0, 
+    0x0, 0x3e, 0x30, 0x0, 0x0, 0x0, 0xaa, 0xaa, 
+    0xad, 0xfe, 0xdd, 0xef, 0xff, 0xe3, 0x55, 0x57, 
+    0xfb, 0xaa, 0xaa, 0xa9, 0x64, 0x0, 0x0, 0xae, 
+    0x10, 0x0, 0x0, 0x0, 0x0, 0x0, 0x1e, 0xa3, 
+    0xf9, 0x0, 0x0, 0x0, 0x0, 0x7, 0xf3, 0x0, 
+    0xaf, 0x91, 0x0, 0x0, 0x1, 0xef, 0x91, 0x0, 
+    0x5d, 0xfd, 0x20, 0x0, 0x5f, 0x7d, 0xfc, 0x10, 
+    0x5, 0xd8, 0x0, 0xa, 0xc0, 0x1, 0x40, 0x0, 
+    0x0, 0x0, 0x0, 0x2, 0x30, 0x3, 0x10, 0x0, 
+    0x0, 0x0, 0x0, 0x77, 0x18, 0x3d, 0x4b, 0x20, 
+    0x0, 0x0, 0xc, 0x51, 0xa0, 0x40, 0x7e, 0x10, 
+    0x0, 0x3, 0xe3, 0x3e, 0xbf, 0x70, 0x50, 0x0, 
+    0x0, 0x2, 0x0, 0xcf, 0xa0, 0x0, 0x0, 0x0, 
+
     /* U+63a5 "接" */
     0x0, 0x0, 0x0, 0x0, 0x0, 0xa7, 0x0, 0x0, 
     0x0, 0x0, 0x0, 0x7a, 0xaa, 0xcf, 0xba, 0x83, 
@@ -922,6 +940,27 @@ static LV_ATTRIBUTE_LARGE_CONST const uint8_t gylph_bitmap[] = {
     0x0, 0x0, 0xcf, 0x3a, 0xc0, 0x0, 0x0, 0x10, 
     0x0, 0x0, 0x3, 0xff, 0xec, 0x0, 0x0, 0x0, 
     0x0, 0x0, 0x0, 0x3, 0xff, 0xa0, 0x0, 0x0, 
+
+    /* U+72b6 "状" */
+    0x0, 0x0, 0x0, 0x0, 0x0, 0x5, 0x1, 0x0, 
+    0x0, 0x0, 0x0, 0x0, 0x0, 0x3, 0x90, 0x5c, 
+    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x57, 0x0, 
+    0xaf, 0x30, 0x0, 0x4, 0x0, 0x0, 0xa, 0x50, 
+    0x1, 0xda, 0x0, 0x0, 0x93, 0x0, 0x1, 0xe5, 
+    0x0, 0x0, 0x0, 0x0, 0xc, 0x50, 0x0, 0x3e, 
+    0x30, 0x0, 0x0, 0xb9, 0x66, 0xd5, 0x0, 0x5, 
+    0xc0, 0x0, 0x0, 0x0, 0x5c, 0xff, 0x67, 0xaa, 
+    0xde, 0xdd, 0xdd, 0x90, 0x0, 0x0, 0xc5, 0x1, 
+    0x4d, 0xca, 0xaa, 0xc6, 0x0, 0x0, 0xc, 0x70, 
+    0x1, 0xe5, 0x0, 0x0, 0x0, 0x0, 0x5d, 0xf7, 
+    0x0, 0x5f, 0x50, 0x0, 0x0, 0x2, 0xaf, 0xbf, 
+    0x70, 0x7, 0xe1, 0x0, 0x0, 0x0, 0x31, 0x1, 
+    0xe7, 0x0, 0xad, 0x20, 0x0, 0x0, 0x0, 0x0, 
+    0x1e, 0x70, 0xc, 0xef, 0xe7, 0x10, 0x0, 0x0, 
+    0x1, 0xe7, 0x1, 0xe7, 0x9, 0xff, 0xa0, 0x0, 
+    0x0, 0x0, 0x0, 0x3f, 0x50, 0x0, 0x42, 0x0, 
+    0x0, 0x0, 0x0, 0x1, 0xa0, 0x0, 0x0, 0x0, 
+    0x0, 
 
     /* U+7528 "用" */
     0x7d, 0xdd, 0xdd, 0xdd, 0xff, 0xf7, 0x0, 0x73, 
@@ -1212,24 +1251,26 @@ static const lv_font_fmt_txt_glyph_dsc_t glyph_dsc[] = {
 /* U+5b83 "它" */  {.bitmap_index = 4451, .adv_w = 296, .box_w = 15, .box_h = 16, .ofs_x = 2, .ofs_y = -2},
 /* U+5f00 "开" */  {.bitmap_index = 4571, .adv_w = 296, .box_w = 15, .box_h = 14, .ofs_x = 2, .ofs_y = -1},
 /* U+5f0f "式" */  {.bitmap_index = 4676, .adv_w = 296, .box_w = 16, .box_h = 17, .ofs_x = 1, .ofs_y = -1},
-/* U+63a5 "接" */  {.bitmap_index = 4812, .adv_w = 296, .box_w = 16, .box_h = 16, .ofs_x = 1, .ofs_y = -2},
-/* U+6548 "效" */  {.bitmap_index = 4940, .adv_w = 296, .box_w = 17, .box_h = 17, .ofs_x = 1, .ofs_y = -2},
-/* U+6761 "条" */  {.bitmap_index = 5085, .adv_w = 296, .box_w = 16, .box_h = 17, .ofs_x = 2, .ofs_y = -2},
-/* U+679c "果" */  {.bitmap_index = 5221, .adv_w = 296, .box_w = 13, .box_h = 16, .ofs_x = 3, .ofs_y = -2},
-/* U+6a21 "模" */  {.bitmap_index = 5325, .adv_w = 296, .box_w = 17, .box_h = 17, .ofs_x = 1, .ofs_y = -2},
-/* U+706f "灯" */  {.bitmap_index = 5470, .adv_w = 296, .box_w = 17, .box_h = 15, .ofs_x = 1, .ofs_y = -2},
-/* U+7528 "用" */  {.bitmap_index = 5598, .adv_w = 296, .box_w = 14, .box_h = 14, .ofs_x = 3, .ofs_y = -1},
-/* U+7cfb "系" */  {.bitmap_index = 5696, .adv_w = 296, .box_w = 17, .box_h = 16, .ofs_x = 1, .ofs_y = -2},
-/* U+7ea7 "级" */  {.bitmap_index = 5832, .adv_w = 296, .box_w = 17, .box_h = 16, .ofs_x = 1, .ofs_y = -2},
-/* U+7edf "统" */  {.bitmap_index = 5968, .adv_w = 296, .box_w = 17, .box_h = 18, .ofs_x = 1, .ofs_y = -2},
-/* U+8fde "连" */  {.bitmap_index = 6121, .adv_w = 296, .box_w = 17, .box_h = 17, .ofs_x = 1, .ofs_y = -2},
-/* U+901a "通" */  {.bitmap_index = 6266, .adv_w = 296, .box_w = 16, .box_h = 15, .ofs_x = 1, .ofs_y = -1},
-/* U+90e8 "部" */  {.bitmap_index = 6386, .adv_w = 296, .box_w = 17, .box_h = 16, .ofs_x = 1, .ofs_y = -1},
-/* U+9759 "静" */  {.bitmap_index = 6522, .adv_w = 296, .box_w = 18, .box_h = 17, .ofs_x = 0, .ofs_y = -2},
-/* U+97f3 "音" */  {.bitmap_index = 6675, .adv_w = 296, .box_w = 16, .box_h = 17, .ofs_x = 1, .ofs_y = -2},
-/* U+9876 "顶" */  {.bitmap_index = 6811, .adv_w = 296, .box_w = 17, .box_h = 16, .ofs_x = 1, .ofs_y = -2},
-/* U+ff08 "（" */  {.bitmap_index = 6947, .adv_w = 296, .box_w = 4, .box_h = 15, .ofs_x = 11, .ofs_y = -1},
-/* U+ff09 "）" */  {.bitmap_index = 6977, .adv_w = 296, .box_w = 4, .box_h = 15, .ofs_x = 3, .ofs_y = -1},
+/* U+6001 "态" */  {.bitmap_index = 4812, .adv_w = 296, .box_w = 15, .box_h = 17, .ofs_x = 2, .ofs_y = -2},
+/* U+63a5 "接" */  {.bitmap_index = 4940, .adv_w = 296, .box_w = 16, .box_h = 16, .ofs_x = 1, .ofs_y = -2},
+/* U+6548 "效" */  {.bitmap_index = 5068, .adv_w = 296, .box_w = 17, .box_h = 17, .ofs_x = 1, .ofs_y = -2},
+/* U+6761 "条" */  {.bitmap_index = 5213, .adv_w = 296, .box_w = 16, .box_h = 17, .ofs_x = 2, .ofs_y = -2},
+/* U+679c "果" */  {.bitmap_index = 5349, .adv_w = 296, .box_w = 13, .box_h = 16, .ofs_x = 3, .ofs_y = -2},
+/* U+6a21 "模" */  {.bitmap_index = 5453, .adv_w = 296, .box_w = 17, .box_h = 17, .ofs_x = 1, .ofs_y = -2},
+/* U+706f "灯" */  {.bitmap_index = 5598, .adv_w = 296, .box_w = 17, .box_h = 15, .ofs_x = 1, .ofs_y = -2},
+/* U+72b6 "状" */  {.bitmap_index = 5726, .adv_w = 296, .box_w = 17, .box_h = 17, .ofs_x = 1, .ofs_y = -2},
+/* U+7528 "用" */  {.bitmap_index = 5871, .adv_w = 296, .box_w = 14, .box_h = 14, .ofs_x = 3, .ofs_y = -1},
+/* U+7cfb "系" */  {.bitmap_index = 5969, .adv_w = 296, .box_w = 17, .box_h = 16, .ofs_x = 1, .ofs_y = -2},
+/* U+7ea7 "级" */  {.bitmap_index = 6105, .adv_w = 296, .box_w = 17, .box_h = 16, .ofs_x = 1, .ofs_y = -2},
+/* U+7edf "统" */  {.bitmap_index = 6241, .adv_w = 296, .box_w = 17, .box_h = 18, .ofs_x = 1, .ofs_y = -2},
+/* U+8fde "连" */  {.bitmap_index = 6394, .adv_w = 296, .box_w = 17, .box_h = 17, .ofs_x = 1, .ofs_y = -2},
+/* U+901a "通" */  {.bitmap_index = 6539, .adv_w = 296, .box_w = 16, .box_h = 15, .ofs_x = 1, .ofs_y = -1},
+/* U+90e8 "部" */  {.bitmap_index = 6659, .adv_w = 296, .box_w = 17, .box_h = 16, .ofs_x = 1, .ofs_y = -1},
+/* U+9759 "静" */  {.bitmap_index = 6795, .adv_w = 296, .box_w = 18, .box_h = 17, .ofs_x = 0, .ofs_y = -2},
+/* U+97f3 "音" */  {.bitmap_index = 6948, .adv_w = 296, .box_w = 16, .box_h = 17, .ofs_x = 1, .ofs_y = -2},
+/* U+9876 "顶" */  {.bitmap_index = 7084, .adv_w = 296, .box_w = 17, .box_h = 16, .ofs_x = 1, .ofs_y = -2},
+/* U+ff08 "（" */  {.bitmap_index = 7220, .adv_w = 296, .box_w = 4, .box_h = 15, .ofs_x = 11, .ofs_y = -1},
+/* U+ff09 "）" */  {.bitmap_index = 7250, .adv_w = 296, .box_w = 4, .box_h = 15, .ofs_x = 3, .ofs_y = -1},
 };
 
 /*---------------------
@@ -1247,9 +1288,10 @@ static const uint16_t unicode_list_1[] = {
     0x6c, 0x6d, 0x6e, 0x6f, 0x70, 0x71, 0x72, 0x73, 
     0x74, 0x75, 0x76, 0x77, 0x78, 0x79, 0x7a, 0x4e0a, 
     0x4e0b, 0x4e8e, 0x4f7f, 0x4fa7, 0x5173, 0x5176, 0x5347, 0x542f, 
-    0x5854, 0x58c1, 0x58f0, 0x5b83, 0x5f00, 0x5f0f, 0x63a5, 0x6548, 
-    0x6761, 0x679c, 0x6a21, 0x706f, 0x7528, 0x7cfb, 0x7ea7, 0x7edf, 
-    0x8fde, 0x901a, 0x90e8, 0x9759, 0x97f3, 0x9876, 0xff08, 0xff09, 
+    0x5854, 0x58c1, 0x58f0, 0x5b83, 0x5f00, 0x5f0f, 0x6001, 0x63a5, 
+    0x6548, 0x6761, 0x679c, 0x6a21, 0x706f, 0x72b6, 0x7528, 0x7cfb, 
+    0x7ea7, 0x7edf, 0x8fde, 0x901a, 0x90e8, 0x9759, 0x97f3, 0x9876, 
+    0xff08, 0xff09, 
 };
 
 /*Collect the unicode lists and glyph_id offsets*/
@@ -1257,7 +1299,7 @@ static const lv_font_fmt_txt_cmap_t cmaps[] =
 {
     {
         .range_start = 0, .range_length = 65289, .glyph_id_start = 1,
-        .unicode_list = unicode_list_1, .glyph_id_ofs_list = NULL, .list_length = 96, .type = LV_FONT_FMT_TXT_CMAP_SPARSE_TINY
+        .unicode_list = unicode_list_1, .glyph_id_ofs_list = NULL, .list_length = 98, .type = LV_FONT_FMT_TXT_CMAP_SPARSE_TINY
     }
 };
 

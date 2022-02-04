@@ -17,7 +17,13 @@ LV_IMG_DECLARE(icn_Claw)
 LV_IMG_DECLARE(icn_News)
 LV_IMG_DECLARE(icn_Settings)
 LV_IMG_DECLARE(icn_NoNetwork)
+LV_IMG_DECLARE(icn_WiFi)
+LV_IMG_DECLARE(icn_Sound)
+LV_IMG_DECLARE(icn_RGB)
 LV_IMG_DECLARE(img_DST)
+
+// widgets
+lv_obj_t *wifi_switch;
 
 TaskHandle_t displayTaskHandler = nullptr;
 
@@ -244,6 +250,16 @@ void click_menu(lv_event_t *e) {
     }
 }
 
+void update_wifi_state() {
+    if (state_wifi_on) {
+        lv_obj_add_state(wifi_switch, LV_STATE_CHECKED);
+        Serial.println("wifi on");
+    } else {
+        lv_obj_clear_state(wifi_switch, LV_STATE_CHECKED);
+        Serial.println("wifi off");
+    }
+}
+
 void mainScreenLoad() {
     // background
     lv_obj_t *bg_box1 = lv_obj_create(lv_scr_act());
@@ -357,7 +373,7 @@ void settingScreenLoad() {
     lv_obj_set_style_bg_color(menu, lv_color_hex(0xEEEEEE), 0);
     lv_obj_add_event_cb(menu, click_menu, LV_EVENT_CLICKED, menu);
 
-    lv_obj_t *cont, *section, *label;
+    lv_obj_t *cont, *section, *label, *img;
 
 
     // WiFi page
@@ -367,10 +383,19 @@ void settingScreenLoad() {
 
     lv_menu_separator_create(wifi_page);
     section = lv_menu_section_create(wifi_page);
-
     cont = lv_menu_cont_create(section);
+    img = lv_img_create(cont);
+    lv_img_set_src(img, &icn_WiFi);
     label = lv_label_create(cont);
     lv_label_set_text(label, "使用 WiFi");
+    lv_obj_set_flex_grow(label, 1);
+    wifi_switch = lv_switch_create(cont);
+
+    lv_menu_separator_create(wifi_page);
+    section = lv_menu_section_create(wifi_page);
+    cont = lv_menu_cont_create(section);
+    label = lv_label_create(cont);
+    lv_label_set_text(label, "WiFi 状态");
 
 
     // sound page
@@ -469,18 +494,24 @@ void settingScreenLoad() {
     section = lv_menu_section_create(root_page);
 
     cont = lv_menu_cont_create(section);
+    img = lv_img_create(cont);
+    lv_img_set_src(img, &icn_WiFi);
     label = lv_label_create(cont);
-    lv_label_set_text(label, "WiFi 连接");
+    lv_label_set_text(label, "WiFi");
     lv_menu_set_load_page_event(menu, cont, wifi_page);
 
     cont = lv_menu_cont_create(section);
+    img = lv_img_create(cont);
+    lv_img_set_src(img, &icn_Sound);
     label = lv_label_create(cont);
     lv_label_set_text(label, "声音");
     lv_menu_set_load_page_event(menu, cont, sound_page);
 
     cont = lv_menu_cont_create(section);
+    img = lv_img_create(cont);
+    lv_img_set_src(img, &icn_RGB);
     label = lv_label_create(cont);
-    lv_label_set_text(label, "RGB 灯效");
+    lv_label_set_text(label, "灯效");
     lv_menu_set_load_page_event(menu, cont, rgb_page);
 
     // section 2
