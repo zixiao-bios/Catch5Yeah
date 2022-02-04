@@ -42,10 +42,6 @@ void mainScreenInit();
 
 void settingScreenInit();
 
-void testScreenLoad();
-
-void testMenu();
-
 
 // lvgl fs callback
 static void *openSpiffsFile(lv_fs_drv_t *drv, const char *path, lv_fs_mode_t mode);
