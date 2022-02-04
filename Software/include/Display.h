@@ -9,6 +9,8 @@
 #include "../Config.h"
 #include "State.h"
 
+extern SemaphoreHandle_t lvgl_mutex;
+
 // lvgl init function
 void displayInit();
 

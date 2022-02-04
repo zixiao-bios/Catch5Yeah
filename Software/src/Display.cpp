@@ -28,6 +28,8 @@ lv_obj_t *main_screen, *setting_screen;
 // widgets
 lv_obj_t *wifi_switch, *wifi_state_section, *wifi_connect_state_label, *wifi_disconnect_button;
 
+SemaphoreHandle_t lvgl_mutex;
+
 static void *openSpiffsFile(lv_fs_drv_t *drv, const char *path, lv_fs_mode_t mode) {
     auto *file = new fs::File();
     char filename[32];
