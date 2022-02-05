@@ -26,7 +26,7 @@ LV_IMG_DECLARE(img_DST)
 lv_obj_t *main_screen, *setting_screen;
 
 // widgets
-lv_obj_t *wifi_page, *wifi_switch, *wifi_state_section, *wifi_connect_state_label, *wifi_disconnect_button, *wifi_list_label, *wifi_list_section, *wifi_refresh_button;
+lv_obj_t *wifi_page, *wifi_switch, *wifi_state_section, *wifi_connect_state_label, *wifi_disconnect_button, *wifi_list_label, *wifi_list_section, *wifi_refresh_button, *wifi_connect_win_bg;
 
 SemaphoreHandle_t lvgl_mutex;
 
@@ -259,6 +259,52 @@ void click_wifi_item(lv_event_t *e) {
     String wifi_name = lv_label_get_text(lv_obj_get_child(cont, 0));
     Serial.println("click wifi item:");
     Serial.println(wifi_name);
+
+    wifi_connect_win_bg = lv_obj_create(setting_screen);
+    lv_obj_center(wifi_connect_win_bg);
+    lv_obj_set_size(wifi_connect_win_bg, SCREEN_WIDTH, SCREEN_HEIGHT);
+    lv_obj_set_style_bg_color(wifi_connect_win_bg, lv_color_black(), 0);
+    lv_obj_set_style_bg_opa(wifi_connect_win_bg, LV_OPA_50, 0);
+    lv_obj_set_style_border_width(wifi_connect_win_bg, 0, 0);
+    lv_obj_set_style_radius(wifi_connect_win_bg, 0, 0);
+    lv_obj_set_style_pad_all(wifi_connect_win_bg, 0, 0);
+    lv_obj_set_style_text_font(wifi_connect_win_bg, &font_small, 0);
+
+    lv_obj_t * mbox = lv_msgbox_create(wifi_connect_win_bg, String("连接到 " + wifi_name).c_str(), nullptr, nullptr, false);
+    lv_obj_add_flag(lv_msgbox_get_content(mbox), LV_OBJ_FLAG_HIDDEN);
+    lv_obj_set_align(mbox, LV_ALIGN_TOP_MID);
+
+    lv_obj_t * pwd_ta = lv_textarea_create(mbox);
+    lv_textarea_set_text(pwd_ta, "");
+    lv_textarea_set_placeholder_text(pwd_ta, "请输入密码");
+    lv_textarea_set_password_mode(pwd_ta, true);
+    lv_textarea_set_one_line(pwd_ta, true);
+    lv_obj_set_width(pwd_ta, 220);
+
+    lv_obj_t *btn = lv_btn_create(mbox);
+    lv_obj_set_style_text_color(btn, lv_color_white(), 0);
+    lv_obj_set_style_bg_color(btn, lv_color_hex(COLOR_GOOD), 0);
+    lv_obj_t *label = lv_label_create(btn);
+    lv_label_set_text(label, "连接");
+    lv_obj_set_style_pad_all(label, -4, 0);
+
+    btn = lv_btn_create(mbox);
+    lv_obj_set_style_text_color(btn, lv_color_white(), 0);
+    lv_obj_set_style_bg_color(btn, lv_color_hex(COLOR_NORMAL), 0);
+    label = lv_label_create(btn);
+    lv_label_set_text(label, "取消");
+    lv_obj_set_style_pad_all(label, -4, 0);
+    lv_obj_add_event_cb(btn, click_close_wifi_connect_win, LV_EVENT_CLICKED, nullptr);
+
+    lv_obj_t *kb = lv_keyboard_create(wifi_connect_win_bg);
+    lv_obj_set_size(kb,  LV_HOR_RES, LV_VER_RES / 2);
+    lv_keyboard_set_textarea(kb, pwd_ta);
+}
+
+void click_close_wifi_connect_win(lv_event_t *e) {
+    Serial.println("close win");
+    lv_obj_del(wifi_connect_win_bg);
+    Serial.println("finish");
 }
 
 void UI_update_wifi_state() {
@@ -307,17 +353,17 @@ void UI_refresh_wifi_list(void *pv) {
         rssi = WiFi.RSSI(i);
         if (rssi > -70) {
             lv_label_set_text(obj, "强");
-            lv_obj_set_style_text_color(obj, lv_color_hex(0x00cc00), 0);
+            lv_obj_set_style_text_color(obj, lv_color_hex(COLOR_GOOD), 0);
         } else if (rssi > -90) {
             lv_label_set_text(obj, "中");
-            lv_obj_set_style_text_color(obj, lv_color_hex(0xffcc00), 0);
+            lv_obj_set_style_text_color(obj, lv_color_hex(COLOR_NORMAL), 0);
         } else {
             lv_label_set_text(obj, "弱");
-            lv_obj_set_style_text_color(obj, lv_color_hex(0xff0000), 0);
+            lv_obj_set_style_text_color(obj, lv_color_hex(COLOR_BAD), 0);
         }
 
         obj = lv_btn_create(cont);
-        lv_obj_set_style_bg_color(obj, lv_color_hex(0x00cc00), 0);
+        lv_obj_set_style_bg_color(obj, lv_color_hex(COLOR_GOOD), 0);
         lv_obj_add_event_cb(obj, click_wifi_item, LV_EVENT_CLICKED, nullptr);
         lv_obj_set_style_text_color(obj, lv_color_white(), 0);
 

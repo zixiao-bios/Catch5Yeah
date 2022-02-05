@@ -37,6 +37,8 @@ void click_wifi_refresh(lv_event_t *e);
 
 void click_wifi_item(lv_event_t *e);
 
+void click_close_wifi_connect_win(lv_event_t *e);
+
 
 // UI update function
 void UI_update_wifi_state();
