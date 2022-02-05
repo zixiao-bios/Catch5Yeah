@@ -268,9 +268,9 @@ void click_wifi_item(lv_event_t *e) {
     lv_obj_set_style_border_width(wifi_connect_win_bg, 0, 0);
     lv_obj_set_style_radius(wifi_connect_win_bg, 0, 0);
     lv_obj_set_style_pad_all(wifi_connect_win_bg, 0, 0);
-    lv_obj_set_style_text_font(wifi_connect_win_bg, &font_small, 0);
 
     lv_obj_t * mbox = lv_msgbox_create(wifi_connect_win_bg, String("连接到 " + wifi_name).c_str(), nullptr, nullptr, false);
+    lv_obj_set_style_text_font(mbox, &font_small, 0);
     lv_obj_add_flag(lv_msgbox_get_content(mbox), LV_OBJ_FLAG_HIDDEN);
     lv_obj_set_align(mbox, LV_ALIGN_TOP_MID);
 
