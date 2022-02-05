@@ -255,10 +255,9 @@ void click_wifi_refresh(lv_event_t *e) {
 }
 
 void click_wifi_item(lv_event_t *e) {
+    // open Wi-Fi connect window
     lv_obj_t *cont = lv_obj_get_parent(lv_event_get_target(e));
     String wifi_name = lv_label_get_text(lv_obj_get_child(cont, 0));
-    Serial.println("click wifi item:");
-    Serial.println(wifi_name);
 
     wifi_connect_win_bg = lv_obj_create(setting_screen);
     lv_obj_center(wifi_connect_win_bg);
@@ -269,12 +268,12 @@ void click_wifi_item(lv_event_t *e) {
     lv_obj_set_style_radius(wifi_connect_win_bg, 0, 0);
     lv_obj_set_style_pad_all(wifi_connect_win_bg, 0, 0);
 
-    lv_obj_t * mbox = lv_msgbox_create(wifi_connect_win_bg, String("连接到 " + wifi_name).c_str(), nullptr, nullptr, false);
+    lv_obj_t *mbox = lv_msgbox_create(wifi_connect_win_bg, String("连接到 " + wifi_name).c_str(), nullptr, nullptr, false);
     lv_obj_set_style_text_font(mbox, &font_small, 0);
     lv_obj_add_flag(lv_msgbox_get_content(mbox), LV_OBJ_FLAG_HIDDEN);
     lv_obj_set_align(mbox, LV_ALIGN_TOP_MID);
 
-    lv_obj_t * pwd_ta = lv_textarea_create(mbox);
+    lv_obj_t *pwd_ta = lv_textarea_create(mbox);
     lv_textarea_set_text(pwd_ta, "");
     lv_textarea_set_placeholder_text(pwd_ta, "请输入密码");
     lv_textarea_set_password_mode(pwd_ta, true);
@@ -287,6 +286,10 @@ void click_wifi_item(lv_event_t *e) {
     lv_obj_t *label = lv_label_create(btn);
     lv_label_set_text(label, "连接");
     lv_obj_set_style_pad_all(label, -4, 0);
+    void **data = new void *[2];
+    data[0] = new String(wifi_name);
+    data[1] = pwd_ta;
+    lv_obj_add_event_cb(btn, click_wifi_connect, LV_EVENT_CLICKED, data);
 
     btn = lv_btn_create(mbox);
     lv_obj_set_style_text_color(btn, lv_color_white(), 0);
@@ -297,14 +300,23 @@ void click_wifi_item(lv_event_t *e) {
     lv_obj_add_event_cb(btn, click_close_wifi_connect_win, LV_EVENT_CLICKED, nullptr);
 
     lv_obj_t *kb = lv_keyboard_create(wifi_connect_win_bg);
-    lv_obj_set_size(kb,  LV_HOR_RES, LV_VER_RES / 2);
+    lv_obj_set_size(kb, LV_HOR_RES, LV_VER_RES / 2);
     lv_keyboard_set_textarea(kb, pwd_ta);
 }
 
 void click_close_wifi_connect_win(lv_event_t *e) {
-    Serial.println("close win");
     lv_obj_del(wifi_connect_win_bg);
-    Serial.println("finish");
+}
+
+void click_wifi_connect(lv_event_t *e) {
+    // get Wi-Fi name and password
+    void **data = (void **) lv_event_get_user_data(e);
+    auto *wifi_name = (String *) data[0];
+    auto *pwd_ta = (lv_obj_t *) data[1];
+    delete[] data;
+
+    Serial.println(*wifi_name);
+    Serial.println(lv_textarea_get_text(pwd_ta));
 }
 
 void UI_update_wifi_state() {
