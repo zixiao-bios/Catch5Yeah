@@ -39,7 +39,7 @@ void click_wifi_refresh(lv_event_t *e);
 // UI update function
 void UI_update_wifi_state();
 
-void UI_refresh_wifi_list();
+void UI_refresh_wifi_list(void *pv);
 
 
 // screen load function

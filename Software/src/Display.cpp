@@ -251,7 +251,7 @@ void change_wifi_switch(lv_event_t *e) {
 }
 
 void click_wifi_refresh(lv_event_t *e) {
-    UI_refresh_wifi_list();
+    xTaskCreatePinnedToCore(UI_refresh_wifi_list, "RefreshWifiList", 2048, nullptr, 1, nullptr, 0);
 }
 
 void UI_update_wifi_state() {
@@ -272,7 +272,11 @@ void UI_update_wifi_state() {
     }
 }
 
-void UI_refresh_wifi_list() {
+void UI_refresh_wifi_list(void *pv) {
+    int n = scanWiFiList();
+
+    xSemaphoreTake(lvgl_mutex, portMAX_DELAY);
+
     if (wifi_list_section) {
         lv_obj_del(wifi_list_section);
     }
@@ -280,7 +284,6 @@ void UI_refresh_wifi_list() {
     lv_obj_t *cont, *obj;
     wifi_list_section = lv_menu_section_create(wifi_page);
 
-    int n = scanWiFiList();
     int rssi;
     for (int i = 0; i < n; ++i) {
         cont = lv_menu_cont_create(wifi_list_section);
@@ -303,6 +306,10 @@ void UI_refresh_wifi_list() {
             lv_obj_set_style_text_color(obj, lv_color_hex(0xff0000), 0);
         }
     }
+
+    xSemaphoreGive(lvgl_mutex);
+
+    vTaskDelete(nullptr);
 }
 
 void mainScreenInit() {
