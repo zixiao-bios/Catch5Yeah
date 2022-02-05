@@ -42,7 +42,7 @@
 
 // colors
 #define COLOR_GOOD 0x00cc00
-#define COLOR_NORMAL 0xffcc00
+#define COLOR_NORMAL 0xFF7800
 #define COLOR_BAD 0xff0000
 
 

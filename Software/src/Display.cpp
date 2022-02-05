@@ -323,6 +323,20 @@ void UI_update_wifi_state() {
         lv_label_set_text(wifi_connect_state_label, "无");
         lv_obj_add_flag(wifi_disconnect_button, LV_OBJ_FLAG_HIDDEN);
     }
+
+    if (state_wifi_on && !state_wifi_connect) {
+        lv_obj_clear_flag(wifi_list_label, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_clear_flag(wifi_refresh_button, LV_OBJ_FLAG_HIDDEN);
+        if (wifi_list_section) {
+            lv_obj_clear_flag(wifi_list_section, LV_OBJ_FLAG_HIDDEN);
+        }
+    } else {
+        lv_obj_add_flag(wifi_list_label, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(wifi_refresh_button, LV_OBJ_FLAG_HIDDEN);
+        if (wifi_list_section) {
+            lv_obj_add_flag(wifi_list_section, LV_OBJ_FLAG_HIDDEN);
+        }
+    }
 }
 
 void UI_refresh_wifi_list(void *pv) {
@@ -409,7 +423,7 @@ void mainScreenInit() {
     lv_label_set_text(datetime_label, "2022年2月1日 23:47");
     lv_obj_set_align(datetime_label, LV_ALIGN_TOP_RIGHT);
     lv_obj_set_pos(datetime_label, -30, status_pos_y);
-    lv_obj_set_style_text_color(datetime_label, lv_color_hex(0xffffff), 0);
+    lv_obj_set_style_text_color(datetime_label, lv_color_white(), 0);
     lv_obj_set_style_text_font(datetime_label, &font_middle, 0);
 
     // buttons style
@@ -522,7 +536,7 @@ void settingScreenInit() {
     wifi_connect_state_label = lv_label_create(cont);
     lv_label_set_text(wifi_connect_state_label, "");
     wifi_disconnect_button = lv_btn_create(cont);
-    lv_obj_set_style_bg_color(wifi_disconnect_button, lv_color_hex(0xD00000), 0);
+    lv_obj_set_style_bg_color(wifi_disconnect_button, lv_color_hex(COLOR_BAD), 0);
     lv_obj_set_style_text_color(wifi_disconnect_button, lv_color_white(), 0);
     label = lv_label_create(wifi_disconnect_button);
     lv_label_set_text(label, "断开");
@@ -535,7 +549,7 @@ void settingScreenInit() {
     lv_obj_set_flex_grow(wifi_list_label, 1);
     wifi_refresh_button = lv_btn_create(cont);
     lv_obj_add_event_cb(wifi_refresh_button, click_wifi_refresh, LV_EVENT_CLICKED, nullptr);
-    lv_obj_set_style_bg_color(wifi_refresh_button, lv_color_hex(0xFF7800), 0);
+    lv_obj_set_style_bg_color(wifi_refresh_button, lv_color_hex(COLOR_NORMAL), 0);
     lv_obj_set_style_text_color(wifi_refresh_button, lv_color_white(), 0);
     label = lv_label_create(wifi_refresh_button);
     lv_label_set_text(label, "刷新");

@@ -40,8 +40,8 @@ __attribute__((unused)) void setup() {
 
     // set system state
     state_wifi_on = true;
-    state_wifi_connect = true;
-    state_wifi_name = "wzx_5G";
+    state_wifi_connect = false;
+    state_wifi_name = "";
 
     // init WiFi
     WiFiInit();
