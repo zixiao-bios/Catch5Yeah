@@ -254,6 +254,13 @@ void click_wifi_refresh(lv_event_t *e) {
     xTaskCreatePinnedToCore(UI_refresh_wifi_list, "RefreshWifiList", 2048, nullptr, 1, nullptr, 0);
 }
 
+void click_wifi_item(lv_event_t *e) {
+    lv_obj_t *cont = lv_obj_get_parent(lv_event_get_target(e));
+    String wifi_name = lv_label_get_text(lv_obj_get_child(cont, 0));
+    Serial.println("click wifi item:");
+    Serial.println(wifi_name);
+}
+
 void UI_update_wifi_state() {
     if (state_wifi_on) {
         lv_obj_add_state(wifi_switch, LV_STATE_CHECKED);
@@ -274,6 +281,9 @@ void UI_update_wifi_state() {
 
 void UI_refresh_wifi_list(void *pv) {
     int n = scanWiFiList();
+    if (n > 20) {
+        n = 20;
+    }
 
     xSemaphoreTake(lvgl_mutex, portMAX_DELAY);
 
@@ -305,6 +315,15 @@ void UI_refresh_wifi_list(void *pv) {
             lv_label_set_text(obj, "弱");
             lv_obj_set_style_text_color(obj, lv_color_hex(0xff0000), 0);
         }
+
+        obj = lv_btn_create(cont);
+        lv_obj_set_style_bg_color(obj, lv_color_hex(0x00cc00), 0);
+        lv_obj_add_event_cb(obj, click_wifi_item, LV_EVENT_CLICKED, nullptr);
+        lv_obj_set_style_text_color(obj, lv_color_white(), 0);
+
+        obj = lv_label_create(obj);
+        lv_label_set_text(obj, "连接");
+        lv_obj_set_style_pad_all(obj, -7, 0);
     }
 
     xSemaphoreGive(lvgl_mutex);

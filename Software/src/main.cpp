@@ -29,6 +29,7 @@ RGB_Strip *rgb1, *rgb3;
 
 __attribute__((unused)) void setup() {
     Serial.begin(115200);
+    Serial.println("\n===============start===============");
 
     // set pin
     pinMode(K1, INPUT);
