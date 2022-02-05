@@ -246,7 +246,7 @@ void click_menu(lv_event_t *e) {
 
 void change_wifi_switch(lv_event_t *e) {
     lv_obj_t *sw = lv_event_get_target(e);
-    state_wifi_on = lv_obj_has_state(sw, LV_STATE_CHECKED);
+    wifi_on_state = lv_obj_has_state(sw, LV_STATE_CHECKED);
     UI_update_wifi_state();
 }
 
@@ -313,14 +313,23 @@ void click_wifi_connect(lv_event_t *e) {
     void **data = (void **) lv_event_get_user_data(e);
     auto *wifi_name = (String *) data[0];
     auto *pwd_ta = (lv_obj_t *) data[1];
-    delete[] data;
 
     Serial.println(*wifi_name);
     Serial.println(lv_textarea_get_text(pwd_ta));
+    if (WiFiConnect(*wifi_name, lv_textarea_get_text(pwd_ta))) {
+        Serial.println(wifi_name_state());
+
+        // exit window
+        delete[] data;
+        delete wifi_name;
+        click_close_wifi_connect_win(nullptr);
+    } else {
+        Serial.println("fail");
+    }
 }
 
 void UI_update_wifi_state() {
-    if (state_wifi_on) {
+    if (wifi_on_state) {
         lv_obj_add_state(wifi_switch, LV_STATE_CHECKED);
         lv_obj_clear_flag(wifi_state_section, LV_OBJ_FLAG_HIDDEN);
     } else {
@@ -328,15 +337,15 @@ void UI_update_wifi_state() {
         lv_obj_add_flag(wifi_state_section, LV_OBJ_FLAG_HIDDEN);
     }
 
-    if (state_wifi_connect) {
-        lv_label_set_text(wifi_connect_state_label, state_wifi_name.c_str());
+    if (wifi_connect_state()) {
+        lv_label_set_text(wifi_connect_state_label, wifi_name_state().c_str());
         lv_obj_clear_flag(wifi_disconnect_button, LV_OBJ_FLAG_HIDDEN);
     } else {
         lv_label_set_text(wifi_connect_state_label, "无");
         lv_obj_add_flag(wifi_disconnect_button, LV_OBJ_FLAG_HIDDEN);
     }
 
-    if (state_wifi_on && !state_wifi_connect) {
+    if (wifi_on_state && !wifi_connect_state()) {
         lv_obj_clear_flag(wifi_list_label, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(wifi_refresh_button, LV_OBJ_FLAG_HIDDEN);
         if (wifi_list_section) {

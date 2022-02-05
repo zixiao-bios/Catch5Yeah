@@ -7,7 +7,6 @@
 #include "FS.h"
 #include <Arduino.h>
 #include "../Config.h"
-#include "State.h"
 #include "Network.h"
 
 extern SemaphoreHandle_t lvgl_mutex;

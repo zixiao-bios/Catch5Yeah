@@ -8,7 +8,6 @@
 #include "Network.h"
 #include <Tool.h>
 #include "SPIFFS.h"
-#include "State.h"
 
 RGB_Strip *rgb1, *rgb3;
 
@@ -39,9 +38,7 @@ __attribute__((unused)) void setup() {
     pinMode(BTN, INPUT);
 
     // set system state
-    state_wifi_on = true;
-    state_wifi_connect = false;
-    state_wifi_name = "";
+    wifi_on_state = true;
 
     // init WiFi
     WiFiInit();
@@ -55,11 +52,7 @@ __attribute__((unused)) void setup() {
 }
 
 __attribute__((unused)) void loop() {
-    /// Network demo
-//    WiFiInit();
-//    printWifiList();
-//    WiFiConnect();
-//
+
 //    while (true) {
 //        if (WiFiClass::status() != WL_CONNECTED) {
 //            WiFiConnect();
