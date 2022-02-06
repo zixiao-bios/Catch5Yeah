@@ -27,6 +27,7 @@ lv_obj_t *main_screen, *setting_screen;
 
 // widgets
 lv_obj_t *wifi_page, *wifi_switch, *wifi_state_section, *wifi_connect_state_label, *wifi_disconnect_button, *wifi_list_label, *wifi_list_section, *wifi_refresh_button, *wifi_connect_win_bg;
+String *wifi_name_clicked = nullptr;
 
 SemaphoreHandle_t lvgl_mutex;
 
@@ -255,10 +256,11 @@ void click_wifi_refresh(lv_event_t *e) {
 }
 
 void click_wifi_item(lv_event_t *e) {
-    // open Wi-Fi connect window
     lv_obj_t *cont = lv_obj_get_parent(lv_event_get_target(e));
-    String wifi_name = lv_label_get_text(lv_obj_get_child(cont, 0));
+    delete wifi_name_clicked;
+    wifi_name_clicked = new String(lv_label_get_text(lv_obj_get_child(cont, 0)));
 
+    // open Wi-Fi connect window
     wifi_connect_win_bg = lv_obj_create(setting_screen);
     lv_obj_center(wifi_connect_win_bg);
     lv_obj_set_size(wifi_connect_win_bg, SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -268,7 +270,7 @@ void click_wifi_item(lv_event_t *e) {
     lv_obj_set_style_radius(wifi_connect_win_bg, 0, 0);
     lv_obj_set_style_pad_all(wifi_connect_win_bg, 0, 0);
 
-    lv_obj_t *mbox = lv_msgbox_create(wifi_connect_win_bg, String("连接到 " + wifi_name).c_str(), nullptr, nullptr, false);
+    lv_obj_t *mbox = lv_msgbox_create(wifi_connect_win_bg, String("连接到 " + *wifi_name_clicked).c_str(), nullptr, nullptr, false);
     lv_obj_set_style_text_font(mbox, &font_small, 0);
     lv_obj_add_flag(lv_msgbox_get_content(mbox), LV_OBJ_FLAG_HIDDEN);
     lv_obj_set_align(mbox, LV_ALIGN_TOP_MID);
@@ -280,24 +282,25 @@ void click_wifi_item(lv_event_t *e) {
     lv_textarea_set_one_line(pwd_ta, true);
     lv_obj_set_width(pwd_ta, 220);
 
-    lv_obj_t *btn = lv_btn_create(mbox);
-    lv_obj_set_style_text_color(btn, lv_color_white(), 0);
-    lv_obj_set_style_bg_color(btn, lv_color_hex(COLOR_GOOD), 0);
-    lv_obj_t *label = lv_label_create(btn);
+    lv_obj_t *connect_btn = lv_btn_create(mbox);
+    lv_obj_set_style_text_color(connect_btn, lv_color_white(), 0);
+    lv_obj_set_style_bg_color(connect_btn, lv_color_hex(COLOR_GOOD), 0);
+    lv_obj_t *label = lv_label_create(connect_btn);
     lv_label_set_text(label, "连接");
     lv_obj_set_style_pad_all(label, -4, 0);
-    void **data = new void *[2];
-    data[0] = new String(wifi_name);
-    data[1] = pwd_ta;
-    lv_obj_add_event_cb(btn, click_wifi_connect, LV_EVENT_CLICKED, data);
+    lv_obj_add_event_cb(connect_btn, click_wifi_connect, LV_EVENT_CLICKED, nullptr);
 
-    btn = lv_btn_create(mbox);
-    lv_obj_set_style_text_color(btn, lv_color_white(), 0);
-    lv_obj_set_style_bg_color(btn, lv_color_hex(COLOR_NORMAL), 0);
-    label = lv_label_create(btn);
+    lv_obj_t *cancel_button = lv_btn_create(mbox);
+    lv_obj_set_style_text_color(cancel_button, lv_color_white(), 0);
+    lv_obj_set_style_bg_color(cancel_button, lv_color_hex(COLOR_NORMAL), 0);
+    label = lv_label_create(cancel_button);
     lv_label_set_text(label, "取消");
     lv_obj_set_style_pad_all(label, -4, 0);
-    lv_obj_add_event_cb(btn, click_close_wifi_connect_win, LV_EVENT_CLICKED, nullptr);
+    lv_obj_add_event_cb(cancel_button, click_close_wifi_connect_win, LV_EVENT_CLICKED, nullptr);
+
+    label = lv_label_create(mbox);
+    lv_obj_add_flag(label, LV_OBJ_FLAG_HIDDEN);
+
 
     lv_obj_t *kb = lv_keyboard_create(wifi_connect_win_bg);
     lv_obj_set_size(kb, LV_HOR_RES, LV_VER_RES / 2);
@@ -309,23 +312,7 @@ void click_close_wifi_connect_win(lv_event_t *e) {
 }
 
 void click_wifi_connect(lv_event_t *e) {
-    // get Wi-Fi name and password
-    void **data = (void **) lv_event_get_user_data(e);
-    auto *wifi_name = (String *) data[0];
-    auto *pwd_ta = (lv_obj_t *) data[1];
-
-    Serial.println(*wifi_name);
-    Serial.println(lv_textarea_get_text(pwd_ta));
-    if (WiFiConnect(*wifi_name, lv_textarea_get_text(pwd_ta))) {
-        Serial.println(wifi_name_state());
-
-        // exit window
-        delete[] data;
-        delete wifi_name;
-        click_close_wifi_connect_win(nullptr);
-    } else {
-        Serial.println("fail");
-    }
+    xTaskCreatePinnedToCore(UI_connect_wifi, "WiFiConnect", 2048, e, 1, nullptr, 1);
 }
 
 void UI_update_wifi_state() {
@@ -408,6 +395,60 @@ void UI_refresh_wifi_list(void *pv) {
     }
 
     xSemaphoreGive(lvgl_mutex);
+
+    vTaskDelete(nullptr);
+}
+
+void UI_connect_wifi(void *pv) {
+    // get Wi-Fi name and widgets
+    xSemaphoreTake(lvgl_mutex, portMAX_DELAY);
+    auto *mbox = lv_obj_get_child(wifi_connect_win_bg, 0);
+    auto *pwd_ta = lv_obj_get_child(mbox, -4);
+    auto *connect_btn = lv_obj_get_child(mbox, -3);
+    auto *cancel_btn = lv_obj_get_child(mbox, -2);
+    auto *label = lv_obj_get_child(mbox, -1);
+    String password = lv_textarea_get_text(pwd_ta);
+    Serial.println(*wifi_name_clicked);
+    Serial.println(password);
+
+    // show "connecting..." and hidden buttons
+    lv_label_set_text(label, "正在连接...");
+    lv_obj_set_style_text_color(label, lv_color_hex(COLOR_NORMAL), 0);
+    lv_obj_clear_flag(label, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(connect_btn, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(cancel_btn, LV_OBJ_FLAG_HIDDEN);
+    xSemaphoreGive(lvgl_mutex);
+
+    // connect wifi
+    if (WiFiConnect(*wifi_name_clicked, password)) {
+        // show "success"
+        xSemaphoreTake(lvgl_mutex, portMAX_DELAY);
+        lv_label_set_text(label, "连接成功！");
+        lv_obj_set_style_text_color(label, lv_color_hex(COLOR_GOOD), 0);
+        xSemaphoreGive(lvgl_mutex);
+
+        delay(2000);
+
+        // exit window
+        xSemaphoreTake(lvgl_mutex, portMAX_DELAY);
+        click_close_wifi_connect_win(nullptr);
+        xSemaphoreGive(lvgl_mutex);
+    } else {
+        // show "fail"
+        xSemaphoreTake(lvgl_mutex, portMAX_DELAY);
+        lv_label_set_text(label, "连接失败，请重试！");
+        lv_obj_set_style_text_color(label, lv_color_hex(COLOR_BAD), 0);
+        xSemaphoreGive(lvgl_mutex);
+
+        delay(2000);
+
+        // show buttons
+        xSemaphoreTake(lvgl_mutex, portMAX_DELAY);
+        lv_obj_add_flag(label, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_clear_flag(connect_btn, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_clear_flag(cancel_btn, LV_OBJ_FLAG_HIDDEN);
+        xSemaphoreGive(lvgl_mutex);
+    }
 
     vTaskDelete(nullptr);
 }

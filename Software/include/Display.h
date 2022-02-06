@@ -46,6 +46,8 @@ void UI_update_wifi_state();
 
 void UI_refresh_wifi_list(void *pv);
 
+void UI_connect_wifi(void *pv);
+
 
 // screen load function
 void mainScreenInit();
