@@ -6,20 +6,26 @@
 #include <HTTPClient.h>
 #include <../ConfigPrivate.h>
 
+
 // network state
-extern bool wifi_on_state;
+bool wifi_on_state();
 
 bool wifi_connect_state();
 
 String wifi_name_state();
 
-// network init
-void WiFiInit();
+
+// wifi operation
+void wifi_on();
+
+void wifi_off();
+
+bool wifi_connect(const String& wifi_name, const String& password);
+
+void wifi_disconnect();
+
 
 void printWifiList();
-
-bool WiFiConnect(const String& wifi_name, const String& password);
-
 void httpGet(const String& url);
 
 int scanWiFiList();

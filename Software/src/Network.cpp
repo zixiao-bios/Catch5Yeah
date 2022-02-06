@@ -1,6 +1,8 @@
 #include "Network.h"
 
-bool wifi_on_state;
+bool wifi_on_state() {
+    return WiFiClass::getMode() == WIFI_STA;
+}
 
 bool wifi_connect_state() {
     return WiFiClass::status() == WL_CONNECTED;
@@ -10,11 +12,17 @@ String wifi_name_state() {
     return WiFi.SSID();
 }
 
-void WiFiInit() {
+void wifi_on() {
     WiFiClass::mode(WIFI_STA);
+
+    // todo: auto connect
 }
 
-bool WiFiConnect(const String& wifi_name, const String& password) {
+void wifi_off() {
+    WiFi.disconnect(true);
+}
+
+bool wifi_connect(const String& wifi_name, const String& password) {
     WiFi.begin(wifi_name.c_str(), password.c_str());
     for (int i = 0; i < 20; ++i) {
         delay(500);
@@ -23,6 +31,10 @@ bool WiFiConnect(const String& wifi_name, const String& password) {
         }
     }
     return wifi_connect_state();
+}
+
+void wifi_disconnect() {
+    WiFi.disconnect();
 }
 
 void printWifiList() {

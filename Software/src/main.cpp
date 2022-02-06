@@ -37,11 +37,8 @@ __attribute__((unused)) void setup() {
     pinMode(K4, INPUT);
     pinMode(BTN, INPUT);
 
-    // set system state
-    wifi_on_state = true;
-
     // init WiFi
-    WiFiInit();
+    wifi_on();
 
     // start SPIFFS
     if (!SPIFFS.begin(true)) {

@@ -247,7 +247,17 @@ void click_menu(lv_event_t *e) {
 
 void change_wifi_switch(lv_event_t *e) {
     lv_obj_t *sw = lv_event_get_target(e);
-    wifi_on_state = lv_obj_has_state(sw, LV_STATE_CHECKED);
+    if (lv_obj_has_state(sw, LV_STATE_CHECKED)) {
+        // turn on wifi
+        wifi_on();
+    } else {
+        // turn off wifi
+        wifi_off();
+        if (wifi_list_section) {
+            lv_obj_del(wifi_list_section);
+            wifi_list_section = nullptr;
+        }
+    }
     UI_update_wifi_state();
 }
 
@@ -270,7 +280,8 @@ void click_wifi_item(lv_event_t *e) {
     lv_obj_set_style_radius(wifi_connect_win_bg, 0, 0);
     lv_obj_set_style_pad_all(wifi_connect_win_bg, 0, 0);
 
-    lv_obj_t *mbox = lv_msgbox_create(wifi_connect_win_bg, String("连接到 " + *wifi_name_clicked).c_str(), nullptr, nullptr, false);
+    lv_obj_t *mbox = lv_msgbox_create(wifi_connect_win_bg, String("连接到 " + *wifi_name_clicked).c_str(), nullptr,
+                                      nullptr, false);
     lv_obj_set_style_text_font(mbox, &font_small, 0);
     lv_obj_add_flag(lv_msgbox_get_content(mbox), LV_OBJ_FLAG_HIDDEN);
     lv_obj_set_align(mbox, LV_ALIGN_TOP_MID);
@@ -309,14 +320,15 @@ void click_wifi_item(lv_event_t *e) {
 
 void click_close_wifi_connect_win(lv_event_t *e) {
     lv_obj_del(wifi_connect_win_bg);
+    wifi_connect_win_bg = nullptr;
 }
 
 void click_wifi_connect(lv_event_t *e) {
-    xTaskCreatePinnedToCore(UI_connect_wifi, "WiFiConnect", 2048, e, 1, nullptr, 1);
+    xTaskCreatePinnedToCore(UI_connect_wifi, "wifi_connect", 2048, e, 1, nullptr, 1);
 }
 
 void UI_update_wifi_state() {
-    if (wifi_on_state) {
+    if (wifi_on_state()) {
         lv_obj_add_state(wifi_switch, LV_STATE_CHECKED);
         lv_obj_clear_flag(wifi_state_section, LV_OBJ_FLAG_HIDDEN);
     } else {
@@ -332,7 +344,7 @@ void UI_update_wifi_state() {
         lv_obj_add_flag(wifi_disconnect_button, LV_OBJ_FLAG_HIDDEN);
     }
 
-    if (wifi_on_state && !wifi_connect_state()) {
+    if (wifi_on_state() && !wifi_connect_state()) {
         lv_obj_clear_flag(wifi_list_label, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(wifi_refresh_button, LV_OBJ_FLAG_HIDDEN);
         if (wifi_list_section) {
@@ -357,6 +369,7 @@ void UI_refresh_wifi_list(void *pv) {
 
     if (wifi_list_section) {
         lv_obj_del(wifi_list_section);
+        wifi_list_section = nullptr;
     }
 
     lv_obj_t *cont, *obj;
@@ -420,7 +433,7 @@ void UI_connect_wifi(void *pv) {
     xSemaphoreGive(lvgl_mutex);
 
     // connect wifi
-    if (WiFiConnect(*wifi_name_clicked, password)) {
+    if (wifi_connect(*wifi_name_clicked, password)) {
         // show "success"
         xSemaphoreTake(lvgl_mutex, portMAX_DELAY);
         lv_label_set_text(label, "连接成功！");
