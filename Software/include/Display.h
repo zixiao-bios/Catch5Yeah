@@ -50,6 +50,8 @@ void UI_refresh_wifi_list(void *pv);
 
 void UI_connect_wifi(void *pv);
 
+void UI_turn_on_wifi(void *pv);
+
 
 // screen load function
 void mainScreenInit();

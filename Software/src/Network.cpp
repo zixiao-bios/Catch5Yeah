@@ -12,10 +12,16 @@ String wifi_name_state() {
     return WiFi.SSID();
 }
 
-void wifi_on() {
+bool wifi_on() {
     WiFiClass::mode(WIFI_STA);
 
-    // todo: auto connect
+    int n = scanWiFiList();
+    for (int i = 0; i < n; ++i) {
+        if (WiFi.SSID(i) == WIFI_SSID) {
+            return wifi_connect(WIFI_SSID, WIFI_PASSWORD);
+        }
+    }
+    return false;
 }
 
 void wifi_off() {

@@ -249,7 +249,8 @@ void change_wifi_switch(lv_event_t *e) {
     lv_obj_t *sw = lv_event_get_target(e);
     if (lv_obj_has_state(sw, LV_STATE_CHECKED)) {
         // turn on wifi
-        wifi_on();
+        lv_obj_add_state(wifi_switch, LV_STATE_DISABLED);
+        xTaskCreatePinnedToCore(UI_turn_on_wifi, "TurnOnWifi", 2048, nullptr, 1, nullptr, 0);
     } else {
         // turn off wifi
         wifi_off();
@@ -257,8 +258,8 @@ void change_wifi_switch(lv_event_t *e) {
             lv_obj_del(wifi_list_section);
             wifi_list_section = nullptr;
         }
+        UI_update_wifi_state();
     }
-    UI_update_wifi_state();
 }
 
 void click_wifi_refresh(lv_event_t *e) {
@@ -471,6 +472,17 @@ void UI_connect_wifi(void *pv) {
         lv_obj_clear_flag(cancel_btn, LV_OBJ_FLAG_HIDDEN);
     }
 
+    UI_update_wifi_state();
+    xSemaphoreGive(lvgl_mutex);
+
+    vTaskDelete(nullptr);
+}
+
+void UI_turn_on_wifi(void *pv) {
+    wifi_on();
+
+    xSemaphoreTake(lvgl_mutex, portMAX_DELAY);
+    lv_obj_clear_state(wifi_switch, LV_STATE_DISABLED);
     UI_update_wifi_state();
     xSemaphoreGive(lvgl_mutex);
 

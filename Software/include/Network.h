@@ -16,7 +16,7 @@ String wifi_name_state();
 
 
 // wifi operation
-void wifi_on();
+bool wifi_on();
 
 void wifi_off();
 
