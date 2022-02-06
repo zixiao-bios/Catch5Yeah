@@ -432,7 +432,6 @@ void UI_connect_wifi(void *pv) {
         // exit window
         xSemaphoreTake(lvgl_mutex, portMAX_DELAY);
         click_close_wifi_connect_win(nullptr);
-        xSemaphoreGive(lvgl_mutex);
     } else {
         // show "fail"
         xSemaphoreTake(lvgl_mutex, portMAX_DELAY);
@@ -447,8 +446,10 @@ void UI_connect_wifi(void *pv) {
         lv_obj_add_flag(label, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(connect_btn, LV_OBJ_FLAG_HIDDEN);
         lv_obj_clear_flag(cancel_btn, LV_OBJ_FLAG_HIDDEN);
-        xSemaphoreGive(lvgl_mutex);
     }
+
+    UI_update_wifi_state();
+    xSemaphoreGive(lvgl_mutex);
 
     vTaskDelete(nullptr);
 }
