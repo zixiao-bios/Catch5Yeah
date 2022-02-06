@@ -327,6 +327,15 @@ void click_wifi_connect(lv_event_t *e) {
     xTaskCreatePinnedToCore(UI_connect_wifi, "wifi_connect", 2048, e, 1, nullptr, 1);
 }
 
+void click_wifi_disconnect(lv_event_t *e) {
+    wifi_disconnect();
+    if (wifi_list_section) {
+        lv_obj_del(wifi_list_section);
+        wifi_list_section = nullptr;
+    }
+    UI_update_wifi_state();
+}
+
 void UI_update_wifi_state() {
     if (wifi_on_state()) {
         lv_obj_add_state(wifi_switch, LV_STATE_CHECKED);
@@ -612,6 +621,7 @@ void settingScreenInit() {
     wifi_connect_state_label = lv_label_create(cont);
     lv_label_set_text(wifi_connect_state_label, "");
     wifi_disconnect_button = lv_btn_create(cont);
+    lv_obj_add_event_cb(wifi_disconnect_button, click_wifi_disconnect, LV_EVENT_CLICKED, nullptr);
     lv_obj_set_style_bg_color(wifi_disconnect_button, lv_color_hex(COLOR_BAD), 0);
     lv_obj_set_style_text_color(wifi_disconnect_button, lv_color_white(), 0);
     label = lv_label_create(wifi_disconnect_button);
