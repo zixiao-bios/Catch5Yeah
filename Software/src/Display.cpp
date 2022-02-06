@@ -333,6 +333,7 @@ void click_wifi_disconnect(lv_event_t *e) {
         lv_obj_del(wifi_list_section);
         wifi_list_section = nullptr;
     }
+    delay(100);
     UI_update_wifi_state();
 }
 
