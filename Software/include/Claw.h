@@ -6,7 +6,7 @@
 
 void claw_init();
 
-void claw_set_movable(bool flag);
+void claw_set_controllable(bool flag);
 
 void move(int direction);
 

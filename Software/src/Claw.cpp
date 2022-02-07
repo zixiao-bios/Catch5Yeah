@@ -1,18 +1,20 @@
 #include "Claw.h"
 
 ShiftRegister74HC595<1> *sr;
-bool move_flag = false;
+bool controllable = false;
 
 [[noreturn]] void control_task(void *pv) {
     TickType_t lastWakeTime;
 
     while (true) {
-        if (!digitalRead(PIN_KEY_RIGHT)) {
-            move(CLAW_RIGHT);
-        } else if (!digitalRead(PIN_KEY_LEFT)) {
-            move(CLAW_LEFT);
-        } else {
-            stop_x();
+        if (controllable) {
+            if (!digitalRead(PIN_KEY_RIGHT)) {
+                move(CLAW_RIGHT);
+            } else if (!digitalRead(PIN_KEY_LEFT)) {
+                move(CLAW_LEFT);
+            } else {
+                stop_x();
+            }
         }
 
         vTaskDelayUntil(&lastWakeTime, 10 / portTICK_PERIOD_MS);
@@ -20,6 +22,10 @@ bool move_flag = false;
 }
 
 void claw_init() {
+    pinMode(PIN_S_RIGHT, INPUT);
+    pinMode(PIN_S_LEFT, INPUT);
+    pinMode(PIN_S_UP, INPUT);
+
     sr = new ShiftRegister74HC595<1>(PIN_SR_SI, PIN_SR_SCK, PIN_SR_RCK);
     sr->setAllLow();
     sr->setNoUpdate(SR_PIN_SCREEN, HIGH);
@@ -28,12 +34,23 @@ void claw_init() {
     xTaskCreatePinnedToCore(control_task, "ClawControl", 1024, nullptr, 2, nullptr, 0);
 }
 
-void claw_set_movable(bool flag) {
-    move_flag = flag;
+void claw_set_controllable(bool flag) {
+    controllable = flag;
 }
 
 void move(int direction) {
-    if (!move_flag) {
+    if (!digitalRead(PIN_S_LEFT) && direction == CLAW_LEFT) {
+        stop_x();
+        return;
+    }
+
+    if (!digitalRead(PIN_S_RIGHT) && direction == CLAW_RIGHT) {
+        stop_x();
+        return;
+    }
+
+    if (!digitalRead(PIN_S_UP) && direction == CLAW_UP) {
+        stop_y();
         return;
     }
 
