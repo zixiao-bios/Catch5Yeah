@@ -1,13 +1,12 @@
 #include <Arduino.h>
-#include <ShiftRegister74HC595.h>
+#include <SPIFFS.h>
 #include <freertos/FreeRTOS.h>
 
 #include "Audio.h"
 #include "Display.h"
 #include "RGB_Strip.h"
 #include "Network.h"
-#include <Tool.h>
-#include "SPIFFS.h"
+#include "Claw.h"
 
 RGB_Strip *rgb1, *rgb2, *rgb3, *rgb4;
 
@@ -32,11 +31,11 @@ __attribute__((unused)) void setup() {
 
 
     // set pin
-    pinMode(K1, INPUT);
-    pinMode(K2, INPUT);
-    pinMode(K3, INPUT);
-    pinMode(K4, INPUT);
-    pinMode(BTN, INPUT);
+    pinMode(PIN_K1, INPUT);
+    pinMode(PIN_K2, INPUT);
+    pinMode(PIN_K3, INPUT);
+    pinMode(PIN_K4, INPUT);
+    pinMode(PIN_BTN, INPUT);
 
 
     // init WiFi

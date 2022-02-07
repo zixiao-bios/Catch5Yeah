@@ -8,22 +8,32 @@
 // Display pin defined in ./platformio.ini
 
 // I2S pin
-#define I2S_LRC 13
-#define I2S_BLCK 12
-#define I2S_DIN 14
+#define PIN_I2S_LRC 13
+#define PIN_I2S_BLCK 12
+#define PIN_I2S_DIN 14
 
 // RGB pin
-#define RGB1 23
-#define RGB2 1
-#define RGB3 25
-#define RGB4 27
+#define PIN_RGB1 23
+#define PIN_RGB2 1
+#define PIN_RGB3 25
+#define PIN_RGB4 27
 
 // keypad, button
-#define K1 26
-#define K2 3
-#define K3 32
-#define K4 33
-#define BTN 35
+#define PIN_K1 26
+#define PIN_K2 3
+#define PIN_K3 32
+#define PIN_K4 33
+#define PIN_BTN 35
+
+// shift register
+#define PIN_SR_SCK 0
+#define PIN_SR_RCK 2
+#define PIN_SR_SI 15
+
+// proximity switch
+#define PIN_S1 36
+#define PIN_S2 39
+#define PIN_S3 34
 
 
 /**======================

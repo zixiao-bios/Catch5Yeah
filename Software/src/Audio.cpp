@@ -64,7 +64,7 @@ void Audio::initPlay() {
     file = new AudioFileSourceSPIFFS(this->fileName);
     mp3 = new AudioGeneratorMP3();
     out = new AudioOutputI2S();
-    out->SetPinout(I2S_BLCK, I2S_LRC, I2S_DIN);
+    out->SetPinout(PIN_I2S_BLCK, PIN_I2S_LRC, PIN_I2S_DIN);
 }
 
 void Audio::destroyPlayHandle() {

@@ -6,19 +6,19 @@ RGB_Strip::RGB_Strip(int id) : id(id) {
     String("RGB" + String(id)).toCharArray(name, 5);
     switch (id) {
         case 1:
-            dataPin = RGB1;
+            dataPin = PIN_RGB1;
             ledNum = RGB1_NUM_LEDS;
             break;
         case 2:
-            dataPin = RGB2;
+            dataPin = PIN_RGB2;
             ledNum = RGB2_NUM_LEDS;
             break;
         case 3:
-            dataPin = RGB3;
+            dataPin = PIN_RGB3;
             ledNum = RGB3_NUM_LEDS;
             break;
         case 4:
-            dataPin = RGB4;
+            dataPin = PIN_RGB4;
             ledNum = RGB4_NUM_LEDS;
             break;
         default:
