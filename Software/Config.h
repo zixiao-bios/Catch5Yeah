@@ -31,10 +31,10 @@
 #define PIN_SR_SI 15
 
 // motor, electromagnet
-#define SR_PIN_M1A 2
-#define SR_PIN_M1B 3
-#define SR_PIN_M2A 4
-#define SR_PIN_M2B 1
+#define SR_PIN_M1A 1
+#define SR_PIN_M1B 2
+#define SR_PIN_M2A 3
+#define SR_PIN_M2B 4
 #define SR_PIN_M3 5
 #define SR_PIN_MAG 6
 
