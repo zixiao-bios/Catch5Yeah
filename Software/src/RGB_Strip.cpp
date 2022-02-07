@@ -43,7 +43,7 @@ RGB_Strip::RGB_Strip(int id) : id(id) {
             Serial.println("Error! Please set dataPin:" + String(dataPin) + "in /src/RGB.cpp init function!");
     }
 
-    xTaskCreatePinnedToCore(&RGB_Strip::task, this->name, 1024, this, 1, nullptr, 0);
+    xTaskCreatePinnedToCore(&RGB_Strip::task, this->name, 1024, this, 1, nullptr, 1);
 }
 
 void RGB_Strip::setPixel(CRGB *Pixel, byte red, byte green, byte blue) {
