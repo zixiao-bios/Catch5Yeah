@@ -19,10 +19,10 @@
 #define PIN_RGB4 27
 
 // keypad, button
-#define PIN_K1 26
-#define PIN_K2 3
-#define PIN_K3 32
-#define PIN_K4 33
+#define PIN_KEY_DOWN 26
+#define PIN_KEY_UP 3
+#define PIN_KEY_RIGHT 32
+#define PIN_KEY_LEFT 33
 #define PIN_BTN 35
 
 // shift register
