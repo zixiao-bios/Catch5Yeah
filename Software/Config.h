@@ -39,9 +39,9 @@
 #define SR_PIN_MAG 6
 
 // proximity switch
-#define PIN_S1 36
-#define PIN_S2 39
-#define PIN_S3 34
+#define PIN_S_RIGHT 36
+#define PIN_S_LEFT 39
+#define PIN_S_UP 34
 
 // screen backlight
 #define SR_PIN_SCREEN 7
