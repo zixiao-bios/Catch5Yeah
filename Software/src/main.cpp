@@ -14,7 +14,7 @@ RGB_Strip *rgb1, *rgb2, *rgb3, *rgb4;
     lvgl_mutex = xSemaphoreCreateMutex();
     xSemaphoreTake(lvgl_mutex, portMAX_DELAY);
     displayInit();
-    show_screen("setting");
+//    show_screen("setting");
     xSemaphoreGive(lvgl_mutex);
 
     while (true) {
@@ -31,10 +31,10 @@ __attribute__((unused)) void setup() {
 
 
     // set pin
-    pinMode(PIN_K1, INPUT);
-    pinMode(PIN_K2, INPUT);
-    pinMode(PIN_K3, INPUT);
-    pinMode(PIN_K4, INPUT);
+    pinMode(PIN_KEY_DOWN, INPUT);
+    pinMode(PIN_KEY_UP, INPUT);
+    pinMode(PIN_KEY_RIGHT, INPUT);
+    pinMode(PIN_KEY_LEFT, INPUT);
     pinMode(PIN_BTN, INPUT);
 
 
@@ -46,8 +46,8 @@ __attribute__((unused)) void setup() {
     rgb1 = new RGB_Strip(1);
     rgb1->setEffect(RGB_OFF);
 
-    rgb2 = new RGB_Strip(2);
-    rgb2->setEffect(RGB_OFF);
+//    rgb2 = new RGB_Strip(2);
+//    rgb2->setEffect(RGB_OFF);
 
     rgb3 = new RGB_Strip(3);
     rgb3->setEffect(RGB_OFF);
@@ -63,6 +63,9 @@ __attribute__((unused)) void setup() {
 
 
     xTaskCreatePinnedToCore(displayTask, "DisplayTask", 10000, nullptr, 1, nullptr, 1);
+
+    claw_init();
+    claw_set_movable(true);
 }
 
 __attribute__((unused)) void loop() {}
