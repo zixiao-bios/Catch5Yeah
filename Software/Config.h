@@ -30,10 +30,21 @@
 #define PIN_SR_RCK 2
 #define PIN_SR_SI 15
 
+// motor, electromagnet
+#define SR_PIN_M1A 2
+#define SR_PIN_M1B 3
+#define SR_PIN_M2A 4
+#define SR_PIN_M2B 1
+#define SR_PIN_M3 5
+#define SR_PIN_MAG 6
+
 // proximity switch
 #define PIN_S1 36
 #define PIN_S2 39
 #define PIN_S3 34
+
+// screen backlight
+#define SR_PIN_SCREEN 7
 
 
 /**======================
@@ -55,9 +66,8 @@
 /**======================
  * 3. RGB Strip
  **======================*/
-
 // settings
-#define STRIP_NUM 4
+#define STRIP_NUM 3
 #define RGB_BRIGHTNESS 128
 #define RGB1_NUM_LEDS 111
 #define RGB2_NUM_LEDS 111
@@ -68,5 +78,14 @@
 # define RGB_OFF 0
 # define RGB_RAINBOW 1
 # define RGB_THEATER_RAINBOW 2
+
+
+/**======================
+ * 4. Claw movement
+ **======================*/
+#define CLAW_RIGHT 0
+#define CLAW_LEFT 1
+#define CLAW_UP 2
+#define CLAW_DOWN 3
 
 #endif //SOFTWARE_CONFIG_H
