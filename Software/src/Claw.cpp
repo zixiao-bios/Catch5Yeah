@@ -8,6 +8,10 @@ bool controllable = false;
 
     while (true) {
         if (controllable) {
+            if (!claw_at_end(CLAW_UP)) {
+                // don't allow control when claw not at top end
+                stop_x();
+            } else
             if (!digitalRead(PIN_KEY_RIGHT)) {
                 move(CLAW_RIGHT);
             } else if (!digitalRead(PIN_KEY_LEFT)) {
@@ -36,25 +40,32 @@ void claw_init() {
 
 void claw_set_controllable(bool flag) {
     controllable = flag;
+    stop_x();
+    stop_y();
 }
 
-void move(int direction) {
-    if (!digitalRead(PIN_S_LEFT) && direction == CLAW_LEFT) {
-        stop_x();
+bool claw_at_end(int dir) {
+    if (dir == CLAW_UP) {
+         return !digitalRead(PIN_S_UP);
+    } else if (dir == CLAW_RIGHT) {
+        return !digitalRead(PIN_S_RIGHT);
+    } else if (dir == CLAW_LEFT) {
+        return !digitalRead(PIN_S_LEFT);
+    }
+}
+
+void move(int dir) {
+    if (claw_at_end(dir)) {
+        // stop move
+        if (dir == CLAW_UP) {
+            stop_y();
+        } else {
+            stop_x();
+        }
         return;
     }
 
-    if (!digitalRead(PIN_S_RIGHT) && direction == CLAW_RIGHT) {
-        stop_x();
-        return;
-    }
-
-    if (!digitalRead(PIN_S_UP) && direction == CLAW_UP) {
-        stop_y();
-        return;
-    }
-
-    switch (direction) {
+    switch (dir) {
         case CLAW_LEFT:
             sr->setNoUpdate(SR_PIN_M1A, LOW);
             sr->setNoUpdate(SR_PIN_M1B, HIGH);

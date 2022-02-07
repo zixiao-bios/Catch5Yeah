@@ -8,9 +8,11 @@ void claw_init();
 
 void claw_set_controllable(bool flag);
 
-void move(int direction);
+bool claw_at_end(int dir);
 
-void move_to_end(int direction);
+void move(int dir);
+
+void move_to_end(int dir);
 
 void stop_x();
 
