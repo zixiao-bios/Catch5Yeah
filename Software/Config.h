@@ -47,7 +47,7 @@
  **======================*/
 
 // settings
-#define STRIP_NUM 1
+#define STRIP_NUM 4
 #define RGB_BRIGHTNESS 128
 #define RGB1_NUM_LEDS 111
 #define RGB2_NUM_LEDS 111
