@@ -10,8 +10,6 @@ void claw_set_controllable(bool flag);
 
 bool claw_at_end(int dir);
 
-void move(int dir);
-
 void move_to_end(int dir);
 
 void stop_x();
