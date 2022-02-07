@@ -17,10 +17,6 @@
 #define RGB2 1
 #define RGB3 25
 #define RGB4 27
-#define RGB1_NUM_LEDS 111
-#define RGB2_NUM_LEDS 111
-#define RGB3_NUM_LEDS 113
-#define RGB4_NUM_LEDS 16
 
 // keypad, button
 #define K1 26
@@ -51,8 +47,12 @@
  **======================*/
 
 // settings
-#define STRIP_NUM 2
+#define STRIP_NUM 1
 #define RGB_BRIGHTNESS 128
+#define RGB1_NUM_LEDS 111
+#define RGB2_NUM_LEDS 111
+#define RGB3_NUM_LEDS 113
+#define RGB4_NUM_LEDS 41
 
 // RGB effect definition
 # define RGB_OFF 0

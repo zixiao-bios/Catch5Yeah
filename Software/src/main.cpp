@@ -9,7 +9,7 @@
 #include <Tool.h>
 #include "SPIFFS.h"
 
-RGB_Strip *rgb1, *rgb3;
+RGB_Strip *rgb1, *rgb2, *rgb3, *rgb4;
 
 [[noreturn]] void displayTask(void *pv) {
     lvgl_mutex = xSemaphoreCreateMutex();
@@ -38,7 +38,11 @@ __attribute__((unused)) void setup() {
     pinMode(BTN, INPUT);
 
     // init WiFi
-    wifi_on();
+//    wifi_on();
+
+    // init RGB
+    rgb4 = new RGB_Strip(4);
+    rgb4->setEffect(RGB_THEATER_RAINBOW);
 
     // start SPIFFS
     if (!SPIFFS.begin(true)) {
@@ -48,29 +52,4 @@ __attribute__((unused)) void setup() {
     xTaskCreatePinnedToCore(displayTask, "DisplayTask", 10000, nullptr, 1, nullptr, 1);
 }
 
-__attribute__((unused)) void loop() {
-
-//    while (true) {
-//        if (WiFiClass::status() != WL_CONNECTED) {
-//            WiFiConnect();
-//        }
-//
-//        httpGet("https://www.runoob.com/http/http-tutorial.html");
-//        delay(5000);
-//    }
-
-    /// RGB demo
-//    rgb1 = new RGB_Strip(1);
-//    rgb3 = new RGB_Strip(3);
-//    rgb1->inverse = true;
-//    rgb1->setEffect(RGB_THEATER_RAINBOW);
-//    rgb3->setEffect(RGB_THEATER_RAINBOW);
-//    while (true) {
-//        delay(3000);
-//        rgb1->setEffect(RGB_OFF);
-//        rgb3->setEffect(RGB_OFF);
-//        delay(3000);
-//        rgb1->setEffect(RGB_THEATER_RAINBOW);
-//        rgb3->setEffect(RGB_THEATER_RAINBOW);
-//    }
-}
+__attribute__((unused)) void loop() {}
