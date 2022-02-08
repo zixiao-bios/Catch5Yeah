@@ -80,12 +80,4 @@
 # define RGB_THEATER_RAINBOW 2
 
 
-/**======================
- * 4. Claw movement
- **======================*/
-#define CLAW_RIGHT 0
-#define CLAW_LEFT 1
-#define CLAW_UP 2
-#define CLAW_DOWN 3
-
 #endif //SOFTWARE_CONFIG_H

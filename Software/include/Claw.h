@@ -4,16 +4,20 @@
 #include <ShiftRegister74HC595.h>
 #include "../Config.h"
 
+#define RIGHT 0
+#define LEFT 1
+#define UP 2
+#define DOWN 3
+#define ALL 4
+
 void claw_init();
 
-void claw_set_controllable(bool flag);
+void claw_reset_async();
 
-bool claw_at_end(int dir);
+void claw_stop_control();
 
-void move_to_end(int dir);
+void claw_start_control();
 
-void stop_x();
-
-void stop_y();
+void claw_stay_top();
 
 #endif //SOFTWARE_CLAW_H

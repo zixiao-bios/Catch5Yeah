@@ -29,15 +29,6 @@ __attribute__((unused)) void setup() {
     Serial.begin(115200);
     Serial.println("\n===============start===============");
 
-
-    // set pin
-    pinMode(PIN_KEY_DOWN, INPUT);
-    pinMode(PIN_KEY_UP, INPUT);
-    pinMode(PIN_KEY_RIGHT, INPUT);
-    pinMode(PIN_KEY_LEFT, INPUT);
-    pinMode(PIN_BTN, INPUT);
-
-
     // init WiFi
 //    wifi_on();
 
@@ -65,7 +56,8 @@ __attribute__((unused)) void setup() {
     xTaskCreatePinnedToCore(displayTask, "DisplayTask", 10000, nullptr, 1, nullptr, 1);
 
     claw_init();
-    claw_set_controllable(true);
+//    claw_start_control();
+    claw_stay_top();
 }
 
 __attribute__((unused)) void loop() {}
