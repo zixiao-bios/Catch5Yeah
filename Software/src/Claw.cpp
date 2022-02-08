@@ -64,7 +64,6 @@ bool move(int dir) {
             sr->setNoUpdate(SR_PIN_M1A, HIGH);
             sr->setNoUpdate(SR_PIN_M1B, LOW);
             break;
-        // todo: delete move in y direction
         case UP:
             sr->setNoUpdate(SR_PIN_M2A, HIGH);
             sr->setNoUpdate(SR_PIN_M2B, LOW);
