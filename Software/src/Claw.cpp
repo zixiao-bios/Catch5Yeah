@@ -1,13 +1,25 @@
 #include "Claw.h"
 
 ShiftRegister74HC595<1> *sr;
-bool controllable = false;
 bool at_top = false;
 
 // stay_top_task is running
 bool stay_top_task = false;
 
+bool grab_finish = false;
+
+bool grab_time_out = false;
+
 SemaphoreHandle_t claw_x_mutex, claw_y_mutex, sr_mutex;
+
+void mag_set(bool mag) {
+    xSemaphoreTake(sr_mutex, portMAX_DELAY);
+
+    sr->setNoUpdate(SR_PIN_MAG, mag);
+    sr->updateRegisters();
+
+    xSemaphoreGive(sr_mutex);
+}
 
 bool claw_at_end(int dir) {
     if (dir == UP) {
@@ -121,15 +133,17 @@ void claw_stay_top_cancel() {
     stay_top_task = false;
 }
 
-[[noreturn]] void claw_control_task(void *pv) {
-    controllable = true;
-
+[[noreturn]] void claw_grab_task(void *pv) {
     xSemaphoreTake(claw_x_mutex, portMAX_DELAY);
+    turntable_set_rotate(true);
+    grab_finish = false;
+    grab_time_out = false;
+
     claw_stay_top_async();
     move_to_end(LEFT);
 
     TickType_t lastWakeTime;
-    while (controllable) {
+    while (digitalRead(PIN_BTN) and !grab_time_out) {
         if (!digitalRead(PIN_KEY_RIGHT)) {
             move(RIGHT);
         } else if (!digitalRead(PIN_KEY_LEFT)) {
@@ -141,7 +155,23 @@ void claw_stay_top_cancel() {
         vTaskDelayUntil(&lastWakeTime, 10 / portTICK_PERIOD_MS);
     }
 
-    stop(LEFT);
+    // push button
+    turntable_set_rotate(false);
+    claw_stay_top_cancel();
+    // todo: move down to turntable (block)
+    delay(1000);
+    mag_set(true);
+    delay(1000);
+    claw_stay_top_async();
+    move_to_end(LEFT);
+    delay(2000);
+    claw_stay_top_cancel();
+    // todo: move down to output table (block)
+    mag_set(false);
+    claw_stay_top_async();
+    while (!grab_finish) {
+        delay(100);
+    }
     claw_stay_top_cancel();
 
     xSemaphoreGive(claw_x_mutex);
@@ -149,7 +179,6 @@ void claw_stay_top_cancel() {
 }
 
 [[noreturn]] void claw_reset_task(void *pv) {
-    claw_stop_control();
     xSemaphoreTake(claw_x_mutex, portMAX_DELAY);
 
     claw_stay_top_async();
@@ -187,10 +216,23 @@ void claw_reset_async() {
     xTaskCreatePinnedToCore(claw_reset_task, "ClawReset", 2048, nullptr, 2, nullptr, 0);
 }
 
-void claw_stop_control() {
-    controllable = false;
+void claw_grab_start() {
+    xTaskCreatePinnedToCore(claw_grab_task, "ClawControl", 2048, nullptr, 2, nullptr, 0);
 }
 
-void claw_start_control() {
-    xTaskCreatePinnedToCore(claw_control_task, "ClawControl", 2048, nullptr, 2, nullptr, 0);
+void claw_grab_finish() {
+    grab_finish = true;
+}
+
+void claw_grab_timeout() {
+    grab_time_out = true;
+}
+
+void turntable_set_rotate(bool rotate) {
+    xSemaphoreTake(sr_mutex, portMAX_DELAY);
+
+    sr->setNoUpdate(SR_PIN_M3, rotate);
+    sr->updateRegisters();
+
+    xSemaphoreGive(sr_mutex);
 }

@@ -14,8 +14,12 @@ void claw_init();
 
 void claw_reset_async();
 
-void claw_stop_control();
+void claw_grab_start();
 
-void claw_start_control();
+void claw_grab_finish();
+
+void claw_grab_timeout();
+
+void turntable_set_rotate(bool rotate);
 
 #endif //SOFTWARE_CLAW_H

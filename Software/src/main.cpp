@@ -56,7 +56,8 @@ __attribute__((unused)) void setup() {
     xTaskCreatePinnedToCore(displayTask, "DisplayTask", 10000, nullptr, 1, nullptr, 1);
 
     claw_init();
-    claw_start_control();
+//    claw_reset_async();
+    claw_grab_start();
 }
 
 __attribute__((unused)) void loop() {}
