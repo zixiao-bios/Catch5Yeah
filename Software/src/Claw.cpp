@@ -2,12 +2,14 @@
 
 ShiftRegister74HC595<1> *sr;
 bool controllable = false;
+bool at_top = false;
+bool stay_top = false;
 
-SemaphoreHandle_t claw_mutex;
+SemaphoreHandle_t claw_x_mutex, claw_y_mutex, sr_mutex;
 
 bool claw_at_end(int dir) {
     if (dir == UP) {
-        return !digitalRead(PIN_S_UP);
+        return at_top;
     } else if (dir == RIGHT) {
         return !digitalRead(PIN_S_RIGHT);
     } else if (dir == LEFT) {
@@ -24,6 +26,7 @@ bool dir_y(int dir) {
 }
 
 void stop(int dir) {
+    xSemaphoreTake(sr_mutex, portMAX_DELAY);
     if (dir_x(dir)) {
         sr->setNoUpdate(SR_PIN_M1A, LOW);
         sr->setNoUpdate(SR_PIN_M1B, LOW);
@@ -33,6 +36,7 @@ void stop(int dir) {
         sr->setNoUpdate(SR_PIN_M2B, LOW);
     }
     sr->updateRegisters();
+    xSemaphoreGive(sr_mutex);
 }
 
 bool move(int dir) {
@@ -53,6 +57,7 @@ bool move(int dir) {
         return false;
     }
 
+    xSemaphoreTake(sr_mutex, portMAX_DELAY);
     switch (dir) {
         case LEFT:
             sr->setNoUpdate(SR_PIN_M1A, LOW);
@@ -74,6 +79,7 @@ bool move(int dir) {
             break;
     }
     sr->updateRegisters();
+    xSemaphoreGive(sr_mutex);
     return true;
 }
 
@@ -91,13 +97,30 @@ bool move_to_end(int dir) {
     return claw_at_end(dir);
 }
 
+[[noreturn]] void claw_stay_top_task(void *pv) {
+    xSemaphoreTake(claw_y_mutex, portMAX_DELAY);
+
+    TickType_t lastWakeTime;
+    while (stay_top) {
+        move(UP);
+        vTaskDelayUntil(&lastWakeTime, 10 / portTICK_PERIOD_MS);
+    }
+
+    xSemaphoreGive(claw_y_mutex);
+    vTaskDelete(nullptr);
+}
+
+void claw_stay_top() {
+    xTaskCreatePinnedToCore(claw_stay_top_task, "StayTop", 2048, nullptr, 2, nullptr, 0);
+}
+
 [[noreturn]] void claw_control_task(void *pv) {
     controllable = true;
 
-    xSemaphoreTake(claw_mutex, portMAX_DELAY);
+    xSemaphoreTake(claw_x_mutex, portMAX_DELAY);
 
     if(!move_to_end(UP) or !move_to_end(LEFT)) {
-        xSemaphoreGive(claw_mutex);
+        xSemaphoreGive(claw_x_mutex);
         vTaskDelete(nullptr);
     }
 
@@ -116,38 +139,26 @@ bool move_to_end(int dir) {
 
     stop(ALL);
 
-    xSemaphoreGive(claw_mutex);
+    xSemaphoreGive(claw_x_mutex);
     vTaskDelete(nullptr);
 }
 
 [[noreturn]] void claw_reset_task(void *pv) {
     claw_stop_control();
-    xSemaphoreTake(claw_mutex, portMAX_DELAY);
+    xSemaphoreTake(claw_x_mutex, portMAX_DELAY);
 
     move_to_end(UP);
     move_to_end(LEFT);
 
-    xSemaphoreGive(claw_mutex);
+    xSemaphoreGive(claw_x_mutex);
 
     vTaskDelete(nullptr);
 }
-
-[[noreturn]] void claw_stay_top_task(void *pv) {
-    xSemaphoreTake(claw_mutex, portMAX_DELAY);
-
-    TickType_t lastWakeTime;
-    while (true) {
-        move(UP);
-        vTaskDelayUntil(&lastWakeTime, 10 / portTICK_PERIOD_MS);
-    }
-
-    xSemaphoreGive(claw_mutex);
-    vTaskDelete(nullptr);
-}
-
 
 void claw_init() {
-    claw_mutex = xSemaphoreCreateMutex();
+    claw_x_mutex = xSemaphoreCreateMutex();
+    claw_y_mutex = xSemaphoreCreateMutex();
+    sr_mutex = xSemaphoreCreateMutex();
 
     pinMode(PIN_KEY_DOWN, INPUT);
     pinMode(PIN_KEY_UP, INPUT);
@@ -158,10 +169,12 @@ void claw_init() {
     pinMode(PIN_S_LEFT, INPUT);
     pinMode(PIN_S_UP, INPUT);
 
+    xSemaphoreTake(sr_mutex, portMAX_DELAY);
     sr = new ShiftRegister74HC595<1>(PIN_SR_SI, PIN_SR_SCK, PIN_SR_RCK);
     sr->setAllLow();
     sr->setNoUpdate(SR_PIN_SCREEN, HIGH);
     sr->updateRegisters();
+    xSemaphoreGive(sr_mutex);
 }
 
 void claw_reset_async() {
@@ -174,8 +187,4 @@ void claw_stop_control() {
 
 void claw_start_control() {
     xTaskCreatePinnedToCore(claw_control_task, "ClawControl", 2048, nullptr, 2, nullptr, 0);
-}
-
-void claw_stay_top() {
-    xTaskCreatePinnedToCore(claw_stay_top_task, "StayTop", 2048, nullptr, 2, nullptr, 0);
 }

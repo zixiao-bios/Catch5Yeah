@@ -18,6 +18,4 @@ void claw_stop_control();
 
 void claw_start_control();
 
-void claw_stay_top();
-
 #endif //SOFTWARE_CLAW_H
