@@ -116,6 +116,7 @@ void move_to_end(int dir) {
         move(UP);
         vTaskDelayUntil(&lastWakeTime, 10 / portTICK_PERIOD_MS);
     }
+    stop(UP);
     at_top = false;
 
     xSemaphoreGive(claw_y_mutex);
