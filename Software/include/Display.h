@@ -32,6 +32,8 @@ void click_grab_button(lv_event_t *e);
 
 void click_menu(lv_event_t *e);
 
+void click_back(lv_event_t *e);
+
 void change_wifi_switch(lv_event_t *e);
 
 void click_wifi_refresh(lv_event_t *e);

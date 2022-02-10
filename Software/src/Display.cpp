@@ -27,8 +27,13 @@ LV_IMG_DECLARE(img_GrabPage)
 lv_obj_t *main_screen, *setting_screen, *grab_screen;
 
 // widgets
+// setting screen
+// wifi page
 lv_obj_t *wifi_page, *wifi_switch, *wifi_state_section, *wifi_connect_state_label, *wifi_disconnect_button, *wifi_list_label, *wifi_list_section, *wifi_refresh_button, *wifi_connect_win_bg;
 String *wifi_name_clicked = nullptr;
+
+// grab screen
+lv_obj_t *grab_label, *grab_back_button, *grab_start_button;
 
 SemaphoreHandle_t lvgl_mutex;
 
@@ -251,6 +256,10 @@ void click_menu(lv_event_t *e) {
     if (lv_menu_back_btn_is_root(menu, obj)) {
         show_screen("main");
     }
+}
+
+void click_back(lv_event_t *e) {
+    show_screen("main");
 }
 
 void change_wifi_switch(lv_event_t *e) {
@@ -817,28 +826,29 @@ void grabScreenInit() {
     lv_coord_t pos_y = 27;
 
 
-    lv_obj_t *l = lv_label_create(grab_screen);
-    lv_label_set_text(l, "今日剩余次数：5");
-    lv_obj_set_align(l, LV_ALIGN_TOP_LEFT);
-    lv_obj_set_style_text_font(l, &font_middle, 0);
-    lv_obj_set_pos(l, pos_x, pos_y);
+    grab_label = lv_label_create(grab_screen);
+    lv_label_set_text(grab_label, "今日剩余次数：5");
+    lv_obj_set_align(grab_label, LV_ALIGN_TOP_LEFT);
+    lv_obj_set_style_text_font(grab_label, &font_middle, 0);
+    lv_obj_set_pos(grab_label, pos_x, pos_y);
 
 
-    lv_obj_t *btn1 = lv_btn_create(grab_screen);
-    lv_obj_set_style_bg_color(btn1, lv_color_hex(COLOR_NORMAL), 0);
-    lv_obj_set_align(btn1, LV_ALIGN_TOP_RIGHT);
-    lv_obj_set_pos(btn1, -130, pos_y - 5);
+    grab_back_button = lv_btn_create(grab_screen);
+    lv_obj_set_style_bg_color(grab_back_button, lv_color_hex(COLOR_NORMAL), 0);
+    lv_obj_set_align(grab_back_button, LV_ALIGN_TOP_RIGHT);
+    lv_obj_set_pos(grab_back_button, -130, pos_y - 5);
+    lv_obj_add_event_cb(grab_back_button, click_back, LV_EVENT_CLICKED, nullptr);
 
-    lv_obj_t *label = lv_label_create(btn1);
+    lv_obj_t *label = lv_label_create(grab_back_button);
     lv_label_set_text(label, "返回");
 
 
-    lv_obj_t *btn2 = lv_btn_create(grab_screen);
-    lv_obj_set_style_bg_color(btn2, lv_color_hex(COLOR_GOOD), 0);
-    lv_obj_set_align(btn2, LV_ALIGN_TOP_RIGHT);
-    lv_obj_set_pos(btn2, -pos_x, pos_y - 5);
+    grab_start_button = lv_btn_create(grab_screen);
+    lv_obj_set_style_bg_color(grab_start_button, lv_color_hex(COLOR_GOOD), 0);
+    lv_obj_set_align(grab_start_button, LV_ALIGN_TOP_RIGHT);
+    lv_obj_set_pos(grab_start_button, -pos_x, pos_y - 5);
 
 
-    label = lv_label_create(btn2);
+    label = lv_label_create(grab_start_button);
     lv_label_set_text(label, "开始！");
 }
