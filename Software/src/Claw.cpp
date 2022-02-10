@@ -5,9 +5,21 @@ bool at_top = false;
 
 // stay_top_task is running
 bool stay_top_task = false;
+
+// user has taken the gift, so the claw can move down to the table and exit grab task
 bool grab_exit = false;
+
+// grab time out, so user can not move claw in x_dir, and the claw should move down to take gift
 bool grab_time_out = false;
+
+// user has pushed button once, so user can not move claw in x_dir, and the claw should move down to take gift
+bool move_done = false;
+
+// user has pushed button twice, so all of user's control should be take back
 bool grab_done = false;
+
+// gift has been put on the table, grab can exit
+bool gift_done = false;
 
 SemaphoreHandle_t claw_x_mutex, claw_y_mutex, sr_mutex;
 
@@ -142,7 +154,9 @@ void claw_stay_top_cancel() {
     turntable_set_rotate(true);
     grab_exit = false;
     grab_time_out = false;
+    move_done = false;
     grab_done =false;
+    gift_done = false;
 
     claw_stay_top_async();
     move_to_end(LEFT);
@@ -160,7 +174,8 @@ void claw_stay_top_cancel() {
         vTaskDelayUntil(&lastWakeTime, 10 / portTICK_PERIOD_MS);
     }
 
-    // push button or timeout
+    // push button or timeout, so user can not move claw in x_dir, and the claw should move down to take gift
+    move_done = true;
     stop(LEFT);
     turntable_set_rotate(false);
     claw_stay_top_cancel();
@@ -196,6 +211,8 @@ void claw_stay_top_cancel() {
     delay(1000);
     xSemaphoreGive(claw_y_mutex);
 
+    // gift has been put on the table
+    gift_done = true;
     mag_set(false);
     claw_stay_top_async();
     while (!grab_exit) {
@@ -258,8 +275,16 @@ void claw_grab_timeout() {
     grab_time_out = true;
 }
 
-bool claw_grab_is_done() {
+bool claw_get_move_done() {
+    return move_done;
+}
+
+bool claw_get_grab_done() {
     return grab_done;
+}
+
+bool claw_get_gift_done() {
+    return gift_done;
 }
 
 void turntable_set_rotate(bool rotate) {

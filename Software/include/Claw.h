@@ -21,7 +21,11 @@ void claw_grab_exit();
 
 void claw_grab_timeout();
 
-bool claw_grab_is_done();
+bool claw_get_move_done();
+
+bool claw_get_grab_done();
+
+bool claw_get_gift_done();
 
 void turntable_set_rotate(bool rotate);
 
