@@ -28,6 +28,8 @@ bool claw_at_end(int dir) {
         return !digitalRead(PIN_S_RIGHT);
     } else if (dir == LEFT) {
         return !digitalRead(PIN_S_LEFT);
+    } else if (dir == DOWN) {
+        return false;
     }
 }
 
@@ -159,10 +161,15 @@ void claw_stay_top_cancel() {
     }
 
     // push button
+    stop(LEFT);
     turntable_set_rotate(false);
     claw_stay_top_cancel();
 
-    // todo: move down to turntable (block)
+    xSemaphoreTake(claw_y_mutex, portMAX_DELAY);
+    move(DOWN);
+    delay(4000);
+    stop(DOWN);
+    xSemaphoreGive(claw_y_mutex);
 
     delay(1000);
     mag_set(true);
@@ -172,8 +179,11 @@ void claw_stay_top_cancel() {
     delay(2000);
     claw_stay_top_cancel();
 
-    // todo: move down to output table (block)
+    xSemaphoreTake(claw_y_mutex, portMAX_DELAY);
+    move(DOWN);
     delay(1000);
+    stop(DOWN);
+    xSemaphoreGive(claw_y_mutex);
 
     mag_set(false);
     claw_stay_top_async();
