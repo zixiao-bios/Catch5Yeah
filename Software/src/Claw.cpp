@@ -165,9 +165,11 @@ void claw_stay_top_cancel() {
     turntable_set_rotate(false);
     claw_stay_top_cancel();
 
+    // move down
     xSemaphoreTake(claw_y_mutex, portMAX_DELAY);
+    delay(5000);
     move(DOWN);
-    delay(4000);
+    delay(1000);
     stop(DOWN);
     xSemaphoreGive(claw_y_mutex);
 
@@ -179,10 +181,9 @@ void claw_stay_top_cancel() {
     delay(2000);
     claw_stay_top_cancel();
 
+    // move down
     xSemaphoreTake(claw_y_mutex, portMAX_DELAY);
-    move(DOWN);
     delay(1000);
-    stop(DOWN);
     xSemaphoreGive(claw_y_mutex);
 
     mag_set(false);
