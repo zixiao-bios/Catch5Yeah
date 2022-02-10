@@ -365,6 +365,8 @@ void click_grab_start(lv_event_t *e) {
 }
 
 void click_grab_finish(lv_event_t *e) {
+    claw_grab_finish();
+
     show_screen("main");
 
     lv_obj_clear_flag(grab_back_button, LV_OBJ_FLAG_HIDDEN);
