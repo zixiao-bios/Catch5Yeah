@@ -14,7 +14,7 @@ RGB_Strip *rgb1, *rgb2, *rgb3, *rgb4;
     lvgl_mutex = xSemaphoreCreateMutex();
     xSemaphoreTake(lvgl_mutex, portMAX_DELAY);
     displayInit();
-//    show_screen("setting");
+    show_screen("grab");
     xSemaphoreGive(lvgl_mutex);
 
     while (true) {
@@ -28,6 +28,9 @@ RGB_Strip *rgb1, *rgb2, *rgb3, *rgb4;
 __attribute__((unused)) void setup() {
     Serial.begin(115200);
     Serial.println("\n===============start===============");
+
+    claw_init();
+    claw_reset_async();
 
     // init WiFi
 //    wifi_on();
@@ -54,10 +57,6 @@ __attribute__((unused)) void setup() {
 
 
     xTaskCreatePinnedToCore(displayTask, "DisplayTask", 10000, nullptr, 1, nullptr, 1);
-
-    claw_init();
-    claw_reset_async();
-//    claw_grab_start();
 }
 
 __attribute__((unused)) void loop() {}

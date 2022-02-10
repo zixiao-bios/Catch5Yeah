@@ -28,6 +28,8 @@ void show_screen(const String& screen_name);
 // lvgl callback function
 void click_setting_button(lv_event_t *e);
 
+void click_grab_button(lv_event_t *e);
+
 void click_menu(lv_event_t *e);
 
 void change_wifi_switch(lv_event_t *e);
@@ -57,6 +59,8 @@ void UI_turn_on_wifi(void *pv);
 void mainScreenInit();
 
 void settingScreenInit();
+
+void grabScreenInit();
 
 
 // lvgl fs callback

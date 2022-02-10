@@ -21,9 +21,10 @@ LV_IMG_DECLARE(icn_WiFi)
 LV_IMG_DECLARE(icn_Sound)
 LV_IMG_DECLARE(icn_RGB)
 LV_IMG_DECLARE(img_DST)
+LV_IMG_DECLARE(img_GrabPage)
 
 // screens
-lv_obj_t *main_screen, *setting_screen;
+lv_obj_t *main_screen, *setting_screen, *grab_screen;
 
 // widgets
 lv_obj_t *wifi_page, *wifi_switch, *wifi_state_section, *wifi_connect_state_label, *wifi_disconnect_button, *wifi_list_label, *wifi_list_section, *wifi_refresh_button, *wifi_connect_win_bg;
@@ -161,6 +162,7 @@ void displayInit() {
 
     mainScreenInit();
     settingScreenInit();
+    grabScreenInit();
 }
 
 void touch_calibrate(bool repeat) {
@@ -229,11 +231,17 @@ void show_screen(const String &screen_name) {
         lv_scr_load(main_screen);
     } else if (screen_name == "setting") {
         lv_scr_load(setting_screen);
+    } else if (screen_name == "grab") {
+        lv_scr_load(grab_screen);
     }
 }
 
 void click_setting_button(lv_event_t *e) {
     show_screen("setting");
+}
+
+void click_grab_button(lv_event_t *e) {
+    show_screen("grab");
 }
 
 void click_menu(lv_event_t *e) {
@@ -564,6 +572,7 @@ void mainScreenInit() {
     lv_obj_set_style_bg_color(btn2, lv_color_hex(0x46B147), 0);
     lv_obj_set_size(btn2, button_width, button_height);
     lv_obj_set_pos(btn2, 0, button_y);
+    lv_obj_add_event_cb(btn2, click_grab_button, LV_EVENT_CLICKED, nullptr);
 
     lv_obj_t *label2 = lv_label_create(btn2);
     lv_obj_set_align(label2, LV_ALIGN_BOTTOM_LEFT);
@@ -791,4 +800,45 @@ void settingScreenInit() {
                   nullptr);
 
     UI_update_wifi_state();
+}
+
+void grabScreenInit() {
+    grab_screen = lv_obj_create(nullptr);
+    lv_obj_set_style_text_color(grab_screen, lv_color_white(), 0);
+    lv_obj_set_style_text_font(grab_screen, &font_small, 0);
+
+
+    lv_obj_t *img = lv_img_create(grab_screen);
+    lv_img_set_src(img, &img_GrabPage);
+    lv_obj_center(img);
+
+
+    lv_coord_t pos_x = 27;
+    lv_coord_t pos_y = 27;
+
+
+    lv_obj_t *l = lv_label_create(grab_screen);
+    lv_label_set_text(l, "今日剩余次数：5");
+    lv_obj_set_align(l, LV_ALIGN_TOP_LEFT);
+    lv_obj_set_style_text_font(l, &font_middle, 0);
+    lv_obj_set_pos(l, pos_x, pos_y);
+
+
+    lv_obj_t *btn1 = lv_btn_create(grab_screen);
+    lv_obj_set_style_bg_color(btn1, lv_color_hex(COLOR_NORMAL), 0);
+    lv_obj_set_align(btn1, LV_ALIGN_TOP_RIGHT);
+    lv_obj_set_pos(btn1, -130, pos_y - 5);
+
+    lv_obj_t *label = lv_label_create(btn1);
+    lv_label_set_text(label, "返回");
+
+
+    lv_obj_t *btn2 = lv_btn_create(grab_screen);
+    lv_obj_set_style_bg_color(btn2, lv_color_hex(COLOR_GOOD), 0);
+    lv_obj_set_align(btn2, LV_ALIGN_TOP_RIGHT);
+    lv_obj_set_pos(btn2, -pos_x, pos_y - 5);
+
+
+    label = lv_label_create(btn2);
+    lv_label_set_text(label, "开始！");
 }
