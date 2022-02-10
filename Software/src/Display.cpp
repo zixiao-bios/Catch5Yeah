@@ -33,7 +33,7 @@ lv_obj_t *wifi_page, *wifi_switch, *wifi_state_section, *wifi_connect_state_labe
 String *wifi_name_clicked = nullptr;
 
 // grab screen
-lv_obj_t *grab_label, *grab_back_button, *grab_start_button;
+lv_obj_t *grab_label, *grab_back_button, *grab_start_button, *grab_finish_button;
 
 SemaphoreHandle_t lvgl_mutex;
 
@@ -355,6 +355,25 @@ void click_wifi_disconnect(lv_event_t *e) {
     UI_update_wifi_state();
 }
 
+void click_grab_start(lv_event_t *e) {
+    lv_obj_add_flag(grab_back_button, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(grab_start_button, LV_OBJ_FLAG_HIDDEN);
+
+    claw_grab_start();
+
+    xTaskCreatePinnedToCore(UI_update_grab_time, "GrabTimeUpdate", 2048, nullptr, 1, nullptr, 1);
+}
+
+void click_grab_finish(lv_event_t *e) {
+    show_screen("main");
+
+    lv_obj_clear_flag(grab_back_button, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(grab_start_button, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(grab_finish_button, LV_OBJ_FLAG_HIDDEN);
+    // todo: update claw num
+    lv_label_set_text(grab_label, "今日剩余次数：5");
+}
+
 void UI_update_wifi_state() {
     if (wifi_on_state()) {
         lv_obj_add_state(wifi_switch, LV_STATE_CHECKED);
@@ -502,6 +521,21 @@ void UI_turn_on_wifi(void *pv) {
     lv_obj_clear_state(wifi_switch, LV_STATE_DISABLED);
     UI_update_wifi_state();
     xSemaphoreGive(lvgl_mutex);
+
+    vTaskDelete(nullptr);
+}
+
+void UI_update_grab_time(void *pv) {
+    TickType_t lastWakeTime = xTaskGetTickCount();
+    for (int time = 5; time > 0; time--) {
+        xSemaphoreTake(lvgl_mutex, portMAX_DELAY);
+        lv_label_set_text(grab_label, String("剩余时间：" + String(time) + "秒").c_str());
+        xSemaphoreGive(lvgl_mutex);
+        vTaskDelayUntil(&lastWakeTime, 1000 / portTICK_PERIOD_MS);
+    }
+
+    lv_label_set_text(grab_label, "请拿取礼物");
+    lv_obj_clear_flag(grab_finish_button, LV_OBJ_FLAG_HIDDEN);
 
     vTaskDelete(nullptr);
 }
@@ -827,6 +861,7 @@ void grabScreenInit() {
 
 
     grab_label = lv_label_create(grab_screen);
+    // todo update claw num
     lv_label_set_text(grab_label, "今日剩余次数：5");
     lv_obj_set_align(grab_label, LV_ALIGN_TOP_LEFT);
     lv_obj_set_style_text_font(grab_label, &font_middle, 0);
@@ -847,8 +882,20 @@ void grabScreenInit() {
     lv_obj_set_style_bg_color(grab_start_button, lv_color_hex(COLOR_GOOD), 0);
     lv_obj_set_align(grab_start_button, LV_ALIGN_TOP_RIGHT);
     lv_obj_set_pos(grab_start_button, -pos_x, pos_y - 5);
+    lv_obj_add_event_cb(grab_start_button, click_grab_start, LV_EVENT_CLICKED, nullptr);
 
 
     label = lv_label_create(grab_start_button);
     lv_label_set_text(label, "开始！");
+
+
+    grab_finish_button = lv_btn_create(grab_screen);
+    lv_obj_set_style_bg_color(grab_finish_button, lv_color_hex(COLOR_GOOD), 0);
+    lv_obj_set_align(grab_finish_button, LV_ALIGN_TOP_RIGHT);
+    lv_obj_set_pos(grab_finish_button, -pos_x, pos_y - 5);
+    lv_obj_add_event_cb(grab_finish_button, click_grab_finish, LV_EVENT_CLICKED, nullptr);
+    lv_obj_add_flag(grab_finish_button, LV_OBJ_FLAG_HIDDEN);
+
+    label = lv_label_create(grab_finish_button);
+    lv_label_set_text(label, "完成");
 }

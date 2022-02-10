@@ -8,6 +8,7 @@
 #include <Arduino.h>
 #include "../Config.h"
 #include "Network.h"
+#include "Claw.h"
 
 extern SemaphoreHandle_t lvgl_mutex;
 
@@ -46,6 +47,10 @@ void click_wifi_connect(lv_event_t *e);
 
 void click_wifi_disconnect(lv_event_t *e);
 
+void click_grab_start(lv_event_t *e);
+
+void click_grab_finish(lv_event_t *e);
+
 
 // UI update function
 void UI_update_wifi_state();
@@ -55,6 +60,8 @@ void UI_refresh_wifi_list(void *pv);
 void UI_connect_wifi(void *pv);
 
 void UI_turn_on_wifi(void *pv);
+
+void UI_update_grab_time(void *pv);
 
 
 // screen load function
