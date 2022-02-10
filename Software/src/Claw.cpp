@@ -166,19 +166,27 @@ void claw_stay_top_cancel() {
     claw_stay_top_cancel();
 
     // move down
+    bool btn_release = false;
     xSemaphoreTake(claw_y_mutex, portMAX_DELAY);
-    delay(5000);
-    move(DOWN);
-    delay(1000);
+    for (int i = 0; i < 300; ++i) {
+        if (digitalRead(PIN_BTN)) {
+            btn_release = true;
+        }
+        if (!digitalRead(PIN_BTN) && btn_release) {
+            break;
+        }
+        if (i > 250) {
+            move(DOWN);
+        }
+        vTaskDelayUntil(&lastWakeTime, 20 / portTICK_PERIOD_MS);
+    }
     stop(DOWN);
     xSemaphoreGive(claw_y_mutex);
 
-    delay(1000);
     mag_set(true);
-    delay(1000);
     claw_stay_top_async();
     move_to_end(LEFT);
-    delay(2000);
+    delay(1000);
     claw_stay_top_cancel();
 
     // move down
