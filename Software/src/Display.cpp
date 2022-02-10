@@ -365,7 +365,7 @@ void click_grab_start(lv_event_t *e) {
 }
 
 void click_grab_finish(lv_event_t *e) {
-    claw_grab_finish();
+    claw_grab_exit();
 
     show_screen("main");
 
@@ -529,15 +529,37 @@ void UI_turn_on_wifi(void *pv) {
 
 void UI_update_grab_time(void *pv) {
     TickType_t lastWakeTime = xTaskGetTickCount();
-    for (int time = 5; time > 0; time--) {
+    for (int time = 60; time > 0; time--) {
         xSemaphoreTake(lvgl_mutex, portMAX_DELAY);
         lv_label_set_text(grab_label, String("剩余时间：" + String(time) + "秒").c_str());
         xSemaphoreGive(lvgl_mutex);
+
+        if (claw_grab_is_done()) {
+            // grab is done (push button twice)
+            break;
+        }
+
         vTaskDelayUntil(&lastWakeTime, 1000 / portTICK_PERIOD_MS);
     }
 
+    // check if grab is done
+    if (!claw_grab_is_done()) {
+        // timeout
+        claw_grab_timeout();
+        xSemaphoreTake(lvgl_mutex, portMAX_DELAY);
+        lv_label_set_text(grab_label, String("时间到").c_str());
+        xSemaphoreGive(lvgl_mutex);
+        while (!claw_grab_is_done()) {
+            // wait player push button second time
+            delay(100);
+        }
+    }
+
+    // grab is done
+    xSemaphoreTake(lvgl_mutex, portMAX_DELAY);
     lv_label_set_text(grab_label, "请拿取礼物");
     lv_obj_clear_flag(grab_finish_button, LV_OBJ_FLAG_HIDDEN);
+    xSemaphoreGive(lvgl_mutex);
 
     vTaskDelete(nullptr);
 }

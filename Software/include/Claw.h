@@ -17,9 +17,11 @@ void claw_reset_async();
 
 void claw_grab_start();
 
-void claw_grab_finish();
+void claw_grab_exit();
 
 void claw_grab_timeout();
+
+bool claw_grab_is_done();
 
 void turntable_set_rotate(bool rotate);
 

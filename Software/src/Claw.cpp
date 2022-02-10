@@ -5,10 +5,9 @@ bool at_top = false;
 
 // stay_top_task is running
 bool stay_top_task = false;
-
-bool grab_finish = false;
-
+bool grab_exit = false;
 bool grab_time_out = false;
+bool grab_done = false;
 
 SemaphoreHandle_t claw_x_mutex, claw_y_mutex, sr_mutex;
 
@@ -141,8 +140,9 @@ void claw_stay_top_cancel() {
 
     xSemaphoreTake(claw_x_mutex, portMAX_DELAY);
     turntable_set_rotate(true);
-    grab_finish = false;
+    grab_exit = false;
     grab_time_out = false;
+    grab_done =false;
 
     claw_stay_top_async();
     move_to_end(LEFT);
@@ -160,7 +160,7 @@ void claw_stay_top_cancel() {
         vTaskDelayUntil(&lastWakeTime, 10 / portTICK_PERIOD_MS);
     }
 
-    // push button
+    // push button or timeout
     stop(LEFT);
     turntable_set_rotate(false);
     claw_stay_top_cancel();
@@ -183,6 +183,8 @@ void claw_stay_top_cancel() {
     stop(DOWN);
     xSemaphoreGive(claw_y_mutex);
 
+    // push button twice, grab done
+    grab_done = true;
     mag_set(true);
     claw_stay_top_async();
     move_to_end(LEFT);
@@ -196,7 +198,7 @@ void claw_stay_top_cancel() {
 
     mag_set(false);
     claw_stay_top_async();
-    while (!grab_finish) {
+    while (!grab_exit) {
         delay(100);
     }
     claw_stay_top_cancel();
@@ -248,12 +250,16 @@ void claw_grab_start() {
     xTaskCreatePinnedToCore(claw_grab_task, "ClawGrab", 2048, nullptr, 2, nullptr, 0);
 }
 
-void claw_grab_finish() {
-    grab_finish = true;
+void claw_grab_exit() {
+    grab_exit = true;
 }
 
 void claw_grab_timeout() {
     grab_time_out = true;
+}
+
+bool claw_grab_is_done() {
+    return grab_done;
 }
 
 void turntable_set_rotate(bool rotate) {

@@ -2,7 +2,7 @@
 
 /*******************************************************************************
  * Tool: MCU_Font V2.0
- * Time: 2022-02-11 01:44:39
+ * Time: 2022-02-11 02:28:01
  * Bpp: 4
  * LineHeight: 32 px
  * BaseLine: 6
@@ -1092,6 +1092,37 @@ static LV_ATTRIBUTE_LARGE_CONST const uint8_t gylph_bitmap[] = {
     0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 
     0x6f, 0xf5, 0x0, 0x0, 0x0, 0x0, 
 
+    /* U+5230 "到" */
+    0x4a, 0xa7, 0x55, 0x53, 0x22, 0x0, 0x0, 0x0, 
+    0x0, 0x0, 0x0, 0x7, 0xcf, 0xff, 0xff, 0xff, 
+    0xff, 0xfc, 0x30, 0x0, 0x0, 0x0, 0x0, 0x0, 
+    0x5, 0xde, 0xdf, 0xff, 0xff, 0x70, 0x0, 0x0, 
+    0x0, 0x0, 0x0, 0x7, 0xe1, 0x0, 0x2, 0x34, 
+    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x5f, 0x50, 
+    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 
+    0x1, 0xec, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 
+    0x0, 0xa1, 0x0, 0xa, 0xf3, 0x0, 0x0, 0x0, 
+    0x0, 0x0, 0x0, 0x1, 0xd3, 0x0, 0x5f, 0x70, 
+    0x0, 0x0, 0x1c, 0x10, 0x0, 0x72, 0x3, 0xe3, 
+    0x0, 0xce, 0x10, 0x0, 0x0, 0xc, 0xa0, 0x0, 
+    0xc5, 0x3, 0xe3, 0x5, 0xfa, 0x0, 0x0, 0x17, 
+    0xef, 0xf5, 0x1, 0xe5, 0x5, 0xf5, 0x7, 0xfa, 
+    0x57, 0xbf, 0xff, 0xff, 0xfe, 0x13, 0xf5, 0x5, 
+    0xf5, 0x3, 0xff, 0xff, 0xff, 0xff, 0xa3, 0xcf, 
+    0x73, 0xf7, 0x5, 0xf5, 0x0, 0x6d, 0xdb, 0x84, 
+    0x0, 0x0, 0x3d, 0x33, 0xf7, 0x5, 0xf5, 0x0, 
+    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x3, 0xf7, 
+    0x5, 0xf5, 0x0, 0x0, 0x0, 0x3e, 0x30, 0x0, 
+    0x0, 0x1, 0xc4, 0x5, 0xf7, 0x0, 0x0, 0x0, 
+    0x3e, 0x31, 0x0, 0x0, 0x0, 0x0, 0x5, 0xf7, 
+    0x0, 0x2, 0xac, 0xef, 0xff, 0xf3, 0x0, 0x0, 
+    0x7, 0xfe, 0xf7, 0x0, 0x2, 0xaa, 0xbf, 0xfd, 
+    0xb1, 0x0, 0x0, 0x7, 0xff, 0xf5, 0x0, 0x0, 
+    0x0, 0x3f, 0xa0, 0x0, 0x0, 0x0, 0x0, 0x7f, 
+    0xc1, 0x0, 0x0, 0x1, 0x6f, 0xfd, 0xd9, 0x0, 
+    0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x8f, 0xff, 
+    0xff, 0xf9, 0x0, 0x0, 0x0, 0x0, 0x0, 
+
     /* U+5269 "剩" */
     0x0, 0x2c, 0xdd, 0xdc, 0xaa, 0xa9, 0x50, 0x0, 
     0x0, 0x0, 0x0, 0x0, 0x0, 0x48, 0xcf, 0xff, 
@@ -1787,26 +1818,27 @@ static const lv_font_fmt_txt_glyph_dsc_t glyph_dsc[] = {
 /* U+300a "《" */  {.bitmap_index = 6443, .adv_w = 408, .box_w = 11, .box_h = 17, .ofs_x = 11, .ofs_y = 0},
 /* U+4eca "今" */  {.bitmap_index = 6537, .adv_w = 408, .box_w = 23, .box_h = 23, .ofs_x = 2, .ofs_y = -2},
 /* U+4f59 "余" */  {.bitmap_index = 6802, .adv_w = 408, .box_w = 20, .box_h = 23, .ofs_x = 3, .ofs_y = -2},
-/* U+5269 "剩" */  {.bitmap_index = 7032, .adv_w = 408, .box_w = 22, .box_h = 22, .ofs_x = 2, .ofs_y = -3},
-/* U+53d6 "取" */  {.bitmap_index = 7274, .adv_w = 408, .box_w = 23, .box_h = 21, .ofs_x = 1, .ofs_y = -3},
-/* U+5e74 "年" */  {.bitmap_index = 7516, .adv_w = 408, .box_w = 19, .box_h = 22, .ofs_x = 3, .ofs_y = -2},
-/* U+6293 "抓" */  {.bitmap_index = 7725, .adv_w = 408, .box_w = 24, .box_h = 20, .ofs_x = 1, .ofs_y = -2},
-/* U+62ff "拿" */  {.bitmap_index = 7965, .adv_w = 408, .box_w = 24, .box_h = 24, .ofs_x = 1, .ofs_y = -3},
-/* U+6570 "数" */  {.bitmap_index = 8253, .adv_w = 408, .box_w = 24, .box_h = 24, .ofs_x = 1, .ofs_y = -3},
-/* U+65e5 "日" */  {.bitmap_index = 8541, .adv_w = 408, .box_w = 14, .box_h = 18, .ofs_x = 6, .ofs_y = -1},
-/* U+65f6 "时" */  {.bitmap_index = 8667, .adv_w = 408, .box_w = 23, .box_h = 22, .ofs_x = 2, .ofs_y = -2},
-/* U+6708 "月" */  {.bitmap_index = 8920, .adv_w = 408, .box_w = 14, .box_h = 20, .ofs_x = 6, .ofs_y = -2},
-/* U+6b21 "次" */  {.bitmap_index = 9060, .adv_w = 408, .box_w = 22, .box_h = 22, .ofs_x = 2, .ofs_y = -2},
-/* U+7269 "物" */  {.bitmap_index = 9302, .adv_w = 408, .box_w = 23, .box_h = 24, .ofs_x = 1, .ofs_y = -3},
-/* U+793c "礼" */  {.bitmap_index = 9578, .adv_w = 408, .box_w = 19, .box_h = 24, .ofs_x = 4, .ofs_y = -3},
-/* U+79d2 "秒" */  {.bitmap_index = 9806, .adv_w = 408, .box_w = 22, .box_h = 24, .ofs_x = 2, .ofs_y = -3},
-/* U+7f6e "置" */  {.bitmap_index = 10070, .adv_w = 408, .box_w = 19, .box_h = 23, .ofs_x = 4, .ofs_y = -2},
-/* U+8981 "要" */  {.bitmap_index = 10289, .adv_w = 408, .box_w = 20, .box_h = 22, .ofs_x = 3, .ofs_y = -3},
-/* U+8bbe "设" */  {.bitmap_index = 10509, .adv_w = 408, .box_w = 23, .box_h = 22, .ofs_x = 2, .ofs_y = -2},
-/* U+8bf7 "请" */  {.bitmap_index = 10762, .adv_w = 408, .box_w = 22, .box_h = 23, .ofs_x = 2, .ofs_y = -3},
-/* U+95f4 "间" */  {.bitmap_index = 11015, .adv_w = 408, .box_w = 22, .box_h = 23, .ofs_x = 2, .ofs_y = -3},
-/* U+95fb "闻" */  {.bitmap_index = 11268, .adv_w = 408, .box_w = 21, .box_h = 21, .ofs_x = 3, .ofs_y = -2},
-/* U+ff1a "：" */  {.bitmap_index = 11489, .adv_w = 408, .box_w = 3, .box_h = 10, .ofs_x = 5, .ofs_y = 1},
+/* U+5230 "到" */  {.bitmap_index = 7032, .adv_w = 408, .box_w = 22, .box_h = 21, .ofs_x = 1, .ofs_y = -2},
+/* U+5269 "剩" */  {.bitmap_index = 7263, .adv_w = 408, .box_w = 22, .box_h = 22, .ofs_x = 2, .ofs_y = -3},
+/* U+53d6 "取" */  {.bitmap_index = 7505, .adv_w = 408, .box_w = 23, .box_h = 21, .ofs_x = 1, .ofs_y = -3},
+/* U+5e74 "年" */  {.bitmap_index = 7747, .adv_w = 408, .box_w = 19, .box_h = 22, .ofs_x = 3, .ofs_y = -2},
+/* U+6293 "抓" */  {.bitmap_index = 7956, .adv_w = 408, .box_w = 24, .box_h = 20, .ofs_x = 1, .ofs_y = -2},
+/* U+62ff "拿" */  {.bitmap_index = 8196, .adv_w = 408, .box_w = 24, .box_h = 24, .ofs_x = 1, .ofs_y = -3},
+/* U+6570 "数" */  {.bitmap_index = 8484, .adv_w = 408, .box_w = 24, .box_h = 24, .ofs_x = 1, .ofs_y = -3},
+/* U+65e5 "日" */  {.bitmap_index = 8772, .adv_w = 408, .box_w = 14, .box_h = 18, .ofs_x = 6, .ofs_y = -1},
+/* U+65f6 "时" */  {.bitmap_index = 8898, .adv_w = 408, .box_w = 23, .box_h = 22, .ofs_x = 2, .ofs_y = -2},
+/* U+6708 "月" */  {.bitmap_index = 9151, .adv_w = 408, .box_w = 14, .box_h = 20, .ofs_x = 6, .ofs_y = -2},
+/* U+6b21 "次" */  {.bitmap_index = 9291, .adv_w = 408, .box_w = 22, .box_h = 22, .ofs_x = 2, .ofs_y = -2},
+/* U+7269 "物" */  {.bitmap_index = 9533, .adv_w = 408, .box_w = 23, .box_h = 24, .ofs_x = 1, .ofs_y = -3},
+/* U+793c "礼" */  {.bitmap_index = 9809, .adv_w = 408, .box_w = 19, .box_h = 24, .ofs_x = 4, .ofs_y = -3},
+/* U+79d2 "秒" */  {.bitmap_index = 10037, .adv_w = 408, .box_w = 22, .box_h = 24, .ofs_x = 2, .ofs_y = -3},
+/* U+7f6e "置" */  {.bitmap_index = 10301, .adv_w = 408, .box_w = 19, .box_h = 23, .ofs_x = 4, .ofs_y = -2},
+/* U+8981 "要" */  {.bitmap_index = 10520, .adv_w = 408, .box_w = 20, .box_h = 22, .ofs_x = 3, .ofs_y = -3},
+/* U+8bbe "设" */  {.bitmap_index = 10740, .adv_w = 408, .box_w = 23, .box_h = 22, .ofs_x = 2, .ofs_y = -2},
+/* U+8bf7 "请" */  {.bitmap_index = 10993, .adv_w = 408, .box_w = 22, .box_h = 23, .ofs_x = 2, .ofs_y = -3},
+/* U+95f4 "间" */  {.bitmap_index = 11246, .adv_w = 408, .box_w = 22, .box_h = 23, .ofs_x = 2, .ofs_y = -3},
+/* U+95fb "闻" */  {.bitmap_index = 11499, .adv_w = 408, .box_w = 21, .box_h = 21, .ofs_x = 3, .ofs_y = -2},
+/* U+ff1a "：" */  {.bitmap_index = 11720, .adv_w = 408, .box_w = 3, .box_h = 10, .ofs_x = 5, .ofs_y = 1},
 };
 
 /*---------------------
@@ -1825,9 +1857,9 @@ static const uint16_t unicode_list_1[] = {
     0x65, 0x66, 0x67, 0x68, 0x69, 0x6a, 0x6b, 0x6c, 
     0x6d, 0x6e, 0x6f, 0x70, 0x71, 0x72, 0x73, 0x74, 
     0x75, 0x76, 0x77, 0x78, 0x79, 0x7a, 0x300a, 0x4eca, 
-    0x4f59, 0x5269, 0x53d6, 0x5e74, 0x6293, 0x62ff, 0x6570, 0x65e5, 
-    0x65f6, 0x6708, 0x6b21, 0x7269, 0x793c, 0x79d2, 0x7f6e, 0x8981, 
-    0x8bbe, 0x8bf7, 0x95f4, 0x95fb, 0xff1a, 
+    0x4f59, 0x5230, 0x5269, 0x53d6, 0x5e74, 0x6293, 0x62ff, 0x6570, 
+    0x65e5, 0x65f6, 0x6708, 0x6b21, 0x7269, 0x793c, 0x79d2, 0x7f6e, 
+    0x8981, 0x8bbe, 0x8bf7, 0x95f4, 0x95fb, 0xff1a, 
 };
 
 /*Collect the unicode lists and glyph_id offsets*/
@@ -1835,7 +1867,7 @@ static const lv_font_fmt_txt_cmap_t cmaps[] =
 {
     {
         .range_start = 0, .range_length = 65306, .glyph_id_start = 1,
-        .unicode_list = unicode_list_1, .glyph_id_ofs_list = NULL, .list_length = 101, .type = LV_FONT_FMT_TXT_CMAP_SPARSE_TINY
+        .unicode_list = unicode_list_1, .glyph_id_ofs_list = NULL, .list_length = 102, .type = LV_FONT_FMT_TXT_CMAP_SPARSE_TINY
     }
 };
 
