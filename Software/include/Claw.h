@@ -2,6 +2,7 @@
 #define SOFTWARE_CLAW_H
 
 #include <ShiftRegister74HC595.h>
+#include <esp_task_wdt.h>
 #include "../Config.h"
 
 #define RIGHT 0

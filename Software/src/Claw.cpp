@@ -135,6 +135,8 @@ void claw_stay_top_cancel() {
 }
 
 [[noreturn]] void claw_grab_task(void *pv) {
+    esp_task_wdt_init(120, true);
+
     xSemaphoreTake(claw_x_mutex, portMAX_DELAY);
     turntable_set_rotate(true);
     grab_finish = false;
@@ -159,7 +161,9 @@ void claw_stay_top_cancel() {
     // push button
     turntable_set_rotate(false);
     claw_stay_top_cancel();
+
     // todo: move down to turntable (block)
+
     delay(1000);
     mag_set(true);
     delay(1000);
@@ -167,7 +171,10 @@ void claw_stay_top_cancel() {
     move_to_end(LEFT);
     delay(2000);
     claw_stay_top_cancel();
+
     // todo: move down to output table (block)
+    delay(1000);
+
     mag_set(false);
     claw_stay_top_async();
     while (!grab_finish) {
@@ -176,6 +183,7 @@ void claw_stay_top_cancel() {
     claw_stay_top_cancel();
 
     xSemaphoreGive(claw_x_mutex);
+    esp_task_wdt_init(4, true);
     vTaskDelete(nullptr);
 }
 
@@ -218,7 +226,7 @@ void claw_reset_async() {
 }
 
 void claw_grab_start() {
-    xTaskCreatePinnedToCore(claw_grab_task, "ClawControl", 2048, nullptr, 2, nullptr, 0);
+    xTaskCreatePinnedToCore(claw_grab_task, "ClawGrab", 2048, nullptr, 2, nullptr, 0);
 }
 
 void claw_grab_finish() {
