@@ -1,0 +1,11 @@
+{
+  "wifi": {
+    "enable": true,
+    "name": "name",
+    "password": "password"
+  },
+  "grab": {
+    "date": "",
+    "num": 3
+  }
+}
