@@ -12,6 +12,10 @@
 #define PIN_I2S_BLCK 12
 #define PIN_I2S_DIN 14
 
+// RTC pin
+#define PIN_RTC_SDA 19
+#define PIN_RTC_SCL 16
+
 // RGB pin
 #define PIN_RGB1 23
 #define PIN_RGB2 1
@@ -79,5 +83,14 @@
 # define RGB_RAINBOW 1
 # define RGB_THEATER_RAINBOW 2
 
+
+/**======================
+ * 4. Datetime
+ **======================*/
+#define DATETIME_BEGIN_YEAR 2016
+#define DATETIME_BEGIN_MONTH 12
+#define DATETIME_BEGIN_DAY 25
+#define DATETIME_BEGIN_HOUR 21
+#define DATETIME_BEGIN_MIN 50
 
 #endif //SOFTWARE_CONFIG_H
