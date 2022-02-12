@@ -59,7 +59,7 @@ void UI_refresh_wifi_list(void *pv);
 
 void UI_connect_wifi(void *pv);
 
-void UI_turn_on_wifi(void *pv);
+void UI_turn_on_wifi_task(void *pv);
 
 void UI_update_grab_time(void *pv);
 

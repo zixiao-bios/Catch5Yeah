@@ -7,16 +7,11 @@
 #include "RGB_Strip.h"
 #include "Network.h"
 #include "Claw.h"
+#include "Setup.h"
 
 RGB_Strip *rgb1, *rgb2, *rgb3, *rgb4;
 
 [[noreturn]] void displayTask(void *pv) {
-    lvgl_mutex = xSemaphoreCreateMutex();
-    xSemaphoreTake(lvgl_mutex, portMAX_DELAY);
-    displayInit();
-    show_screen("grab");
-    xSemaphoreGive(lvgl_mutex);
-
     while (true) {
         delay(5);
         xSemaphoreTake(lvgl_mutex, portMAX_DELAY);
@@ -29,12 +24,27 @@ __attribute__((unused)) void setup() {
     Serial.begin(115200);
     Serial.println("\n===============start===============");
 
+    // start SPIFFS
+    if (!SPIFFS.begin(true)) {
+        Serial.println("SPIFFS Mount Failed!");
+    }
+
+    // read setup file
+    init_setup();
+
+    // init claw
     claw_init();
     claw_reset_async();
 
-    // init WiFi
-//    wifi_on();
+    // init display
+    displayInit();
+    show_screen("setting");
+    xTaskCreatePinnedToCore(displayTask, "DisplayTask", 10000, nullptr, 1, nullptr, 1);
 
+    // init WiFi
+    if (setup_doc["wifi"]["enable"]) {
+        xTaskCreatePinnedToCore(UI_turn_on_wifi_task, "TurnOnWifi", 2048, nullptr, 1, nullptr, 0);
+    }
 
     // init RGB
     rgb1 = new RGB_Strip(1);
@@ -48,15 +58,6 @@ __attribute__((unused)) void setup() {
 
     rgb4 = new RGB_Strip(4);
     rgb4->setEffect(RGB_OFF);
-
-
-    // start SPIFFS
-    if (!SPIFFS.begin(true)) {
-        Serial.println("SPIFFS Mount Failed!");
-    }
-
-
-    xTaskCreatePinnedToCore(displayTask, "DisplayTask", 10000, nullptr, 1, nullptr, 1);
 }
 
 __attribute__((unused)) void loop() {}

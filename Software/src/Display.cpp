@@ -125,6 +125,7 @@ void touchpadRead(lv_indev_drv_t *indev_driver, lv_indev_data_t *data) {
 }
 
 void displayInit() {
+    lvgl_mutex = xSemaphoreCreateMutex();
     lv_init();
 
     tft.begin();
@@ -263,11 +264,9 @@ void click_back(lv_event_t *e) {
 }
 
 void change_wifi_switch(lv_event_t *e) {
-    lv_obj_t *sw = lv_event_get_target(e);
-    if (lv_obj_has_state(sw, LV_STATE_CHECKED)) {
+    if (lv_obj_has_state(wifi_switch, LV_STATE_CHECKED)) {
         // turn on wifi
-        lv_obj_add_state(wifi_switch, LV_STATE_DISABLED);
-        xTaskCreatePinnedToCore(UI_turn_on_wifi, "TurnOnWifi", 2048, nullptr, 1, nullptr, 0);
+        xTaskCreatePinnedToCore(UI_turn_on_wifi_task, "TurnOnWifi", 2048, nullptr, 1, nullptr, 0);
     } else {
         // turn off wifi
         wifi_off();
@@ -516,7 +515,12 @@ void UI_connect_wifi(void *pv) {
     vTaskDelete(nullptr);
 }
 
-void UI_turn_on_wifi(void *pv) {
+void UI_turn_on_wifi_task(void *pv) {
+    xSemaphoreTake(lvgl_mutex, portMAX_DELAY);
+    lv_obj_add_state(wifi_switch, LV_STATE_CHECKED);
+    lv_obj_add_state(wifi_switch, LV_STATE_DISABLED);
+    xSemaphoreGive(lvgl_mutex);
+
     wifi_on();
 
     xSemaphoreTake(lvgl_mutex, portMAX_DELAY);
