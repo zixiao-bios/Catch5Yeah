@@ -10,6 +10,7 @@
 #include "Network.h"
 #include "Claw.h"
 #include "Setup.h"
+#include "RTC.h"
 
 extern SemaphoreHandle_t lvgl_mutex;
 
@@ -63,6 +64,8 @@ void UI_connect_wifi(void *pv);
 void UI_turn_on_wifi_task(void *pv);
 
 void UI_update_grab_time(void *pv);
+
+[[noreturn]] void UI_update_datetime(void *pv);
 
 
 // screen load function

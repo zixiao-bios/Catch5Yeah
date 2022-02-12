@@ -8,6 +8,7 @@
 #include "Network.h"
 #include "Claw.h"
 #include "Setup.h"
+#include "RTC.h"
 
 RGB_Strip *rgb1, *rgb2, *rgb3, *rgb4;
 
@@ -28,6 +29,8 @@ __attribute__((unused)) void setup() {
     if (!SPIFFS.begin(true)) {
         Serial.println("SPIFFS Mount Failed!");
     }
+
+    rtc_init();
 
     // read setup file
     init_setup();

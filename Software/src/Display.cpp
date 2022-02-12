@@ -29,7 +29,7 @@ lv_obj_t *main_screen, *setting_screen, *grab_screen;
 
 // widgets
 // main screen
-lv_obj_t *main_network_img;
+lv_obj_t *main_network_img, *main_datetime_label;
 
 // setting screen
 // wifi page
@@ -173,6 +173,7 @@ void displayInit() {
     mainScreenInit();
     settingScreenInit();
     grabScreenInit();
+    xTaskCreatePinnedToCore(UI_update_datetime, "Datetime", 2048, nullptr, 2, nullptr, 1);
 }
 
 void touch_calibrate(bool repeat) {
@@ -598,6 +599,32 @@ void UI_update_grab_time(void *pv) {
     vTaskDelete(nullptr);
 }
 
+[[noreturn]] void UI_update_datetime(void *pv) {
+    while (true) {
+        DateTime now = rtc_get_time();
+        String year = String(now.year());
+        String month = String(now.month());
+        String day = String(now.day());
+        String hour = String(now.hour());
+        String min = String(now.minute());
+        String second = String(now.second());
+        if (hour.length() == 1) {
+            hour = "0" + hour;
+        }
+        if (min.length() == 1) {
+            min = "0" + min;
+        }
+        if (second.length() == 1) {
+            second = "0" + second;
+        }
+        xSemaphoreTake(lvgl_mutex, portMAX_DELAY);
+        lv_label_set_text(main_datetime_label,
+                          String(year + "年" + month + "月" + day + "日 " + hour + ":" + min + ":" + second).c_str());
+        xSemaphoreGive(lvgl_mutex);
+        delay(1000);
+    }
+}
+
 void mainScreenInit() {
     main_screen = lv_obj_create(nullptr);
 
@@ -626,12 +653,12 @@ void mainScreenInit() {
     lv_obj_set_pos(main_network_img, 30, status_pos_y);
 
     // status bar datetime
-    lv_obj_t *datetime_label = lv_label_create(main_screen);
-    lv_label_set_text(datetime_label, "2022年2月1日 23:47");
-    lv_obj_set_align(datetime_label, LV_ALIGN_TOP_RIGHT);
-    lv_obj_set_pos(datetime_label, -30, status_pos_y);
-    lv_obj_set_style_text_color(datetime_label, lv_color_white(), 0);
-    lv_obj_set_style_text_font(datetime_label, &font_middle, 0);
+    main_datetime_label = lv_label_create(main_screen);
+    lv_label_set_text(main_datetime_label, "");
+    lv_obj_set_align(main_datetime_label, LV_ALIGN_TOP_RIGHT);
+    lv_obj_set_pos(main_datetime_label, -30, status_pos_y);
+    lv_obj_set_style_text_color(main_datetime_label, lv_color_white(), 0);
+    lv_obj_set_style_text_font(main_datetime_label, &font_middle, 0);
 
     // buttons style
     static lv_style_t btn_style;
