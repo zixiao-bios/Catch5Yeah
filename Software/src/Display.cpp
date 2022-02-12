@@ -16,6 +16,7 @@ LV_FONT_DECLARE(font_small)
 LV_IMG_DECLARE(icn_Claw)
 LV_IMG_DECLARE(icn_News)
 LV_IMG_DECLARE(icn_Settings)
+LV_IMG_DECLARE(icn_Network)
 LV_IMG_DECLARE(icn_NoNetwork)
 LV_IMG_DECLARE(icn_WiFi)
 LV_IMG_DECLARE(icn_Sound)
@@ -27,6 +28,9 @@ LV_IMG_DECLARE(img_GrabPage)
 lv_obj_t *main_screen, *setting_screen, *grab_screen;
 
 // widgets
+// main screen
+lv_obj_t *main_network_img;
+
 // setting screen
 // wifi page
 lv_obj_t *wifi_page, *wifi_switch, *wifi_state_section, *wifi_connect_state_label, *wifi_disconnect_button, *wifi_list_label, *wifi_list_section, *wifi_refresh_button, *wifi_connect_win_bg;
@@ -395,9 +399,11 @@ void UI_update_wifi_state() {
     if (wifi_connect_state()) {
         lv_label_set_text(wifi_connect_state_label, wifi_name_state().c_str());
         lv_obj_clear_flag(wifi_disconnect_button, LV_OBJ_FLAG_HIDDEN);
+        lv_img_set_src(main_network_img, &icn_Network);
     } else {
         lv_label_set_text(wifi_connect_state_label, "无");
         lv_obj_add_flag(wifi_disconnect_button, LV_OBJ_FLAG_HIDDEN);
+        lv_img_set_src(main_network_img, &icn_NoNetwork);
     }
 
     if (wifi_on_state() && !wifi_connect_state()) {
@@ -615,9 +621,9 @@ void mainScreenInit() {
     lv_coord_t status_pos_y = 20;
 
     // status bar icon
-    lv_obj_t *network_img = lv_img_create(main_screen);
-    lv_img_set_src(network_img, &icn_NoNetwork);
-    lv_obj_set_pos(network_img, 30, status_pos_y);
+    main_network_img = lv_img_create(main_screen);
+    lv_img_set_src(main_network_img, &icn_NoNetwork);
+    lv_obj_set_pos(main_network_img, 30, status_pos_y);
 
     // status bar datetime
     lv_obj_t *datetime_label = lv_label_create(main_screen);
