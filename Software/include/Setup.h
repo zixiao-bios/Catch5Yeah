@@ -9,4 +9,6 @@ extern DynamicJsonDocument setup_doc;
 
 void init_setup();
 
+void write_setup();
+
 #endif //SOFTWARE_SETUP_H
