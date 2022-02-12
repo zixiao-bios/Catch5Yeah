@@ -5,6 +5,7 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
 #include <../ConfigPrivate.h>
+#include "Setup.h"
 
 
 // network state

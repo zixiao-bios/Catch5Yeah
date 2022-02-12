@@ -267,6 +267,10 @@ void change_wifi_switch(lv_event_t *e) {
     if (lv_obj_has_state(wifi_switch, LV_STATE_CHECKED)) {
         // turn on wifi
         xTaskCreatePinnedToCore(UI_turn_on_wifi_task, "TurnOnWifi", 2048, nullptr, 1, nullptr, 0);
+
+        // update setup
+        setup_doc["wifi"]["enable"] = true;
+        write_setup();
     } else {
         // turn off wifi
         wifi_off();
@@ -275,6 +279,10 @@ void change_wifi_switch(lv_event_t *e) {
             wifi_list_section = nullptr;
         }
         UI_update_wifi_state();
+
+        // update setup
+        setup_doc["wifi"]["enable"] = false;
+        write_setup();
     }
 }
 
@@ -469,8 +477,6 @@ void UI_connect_wifi(void *pv) {
     auto *cancel_btn = lv_obj_get_child(mbox, -2);
     auto *label = lv_obj_get_child(mbox, -1);
     String password = lv_textarea_get_text(pwd_ta);
-    Serial.println(*wifi_name_clicked);
-    Serial.println(password);
 
     // show "connecting..." and hidden buttons
     lv_label_set_text(label, "正在连接...");
@@ -487,6 +493,11 @@ void UI_connect_wifi(void *pv) {
         lv_label_set_text(label, "连接成功！");
         lv_obj_set_style_text_color(label, lv_color_hex(COLOR_GOOD), 0);
         xSemaphoreGive(lvgl_mutex);
+
+        // update setup
+        setup_doc["wifi"]["name"] = *wifi_name_clicked;
+        setup_doc["wifi"]["password"] = password;
+        write_setup();
 
         delay(2000);
 

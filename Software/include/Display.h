@@ -9,6 +9,7 @@
 #include "../Config.h"
 #include "Network.h"
 #include "Claw.h"
+#include "Setup.h"
 
 extern SemaphoreHandle_t lvgl_mutex;
 

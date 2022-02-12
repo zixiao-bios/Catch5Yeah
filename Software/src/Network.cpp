@@ -17,8 +17,8 @@ bool wifi_on() {
 
     int n = scanWiFiList();
     for (int i = 0; i < n; ++i) {
-        if (WiFi.SSID(i) == WIFI_SSID) {
-            return wifi_connect(WIFI_SSID, WIFI_PASSWORD);
+        if (WiFi.SSID(i) == setup_doc["wifi"]["name"]) {
+            return wifi_connect(setup_doc["wifi"]["name"], setup_doc["wifi"]["password"]);
         }
     }
     return false;
