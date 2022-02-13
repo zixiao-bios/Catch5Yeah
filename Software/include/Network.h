@@ -30,7 +30,7 @@ void wifi_disconnect();
 // network request
 bool network_update_time();
 
-bool network_update_grab();
+int network_get_grab();
 
 String server_get(const String& opt);
 

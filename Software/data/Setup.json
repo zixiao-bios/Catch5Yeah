@@ -5,9 +5,7 @@
     "password": "password"
   },
   "grab": {
-    "grab_time": -1,
-    "grab_num": 3,
-    "available_time": -1,
-    "available_num": 10
+    "num": 2,
+    "time": -1
   }
 }

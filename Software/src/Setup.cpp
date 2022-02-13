@@ -18,40 +18,23 @@ void write_setup() {
     f.close();
 }
 
-void set_grab_available(int num) {
-    setup_doc["grab"]["available_time"] = get_timestamp();
-    setup_doc["grab"]["available_num"] = num;
-    write_setup();
-}
-
-int get_grab_remain() {
-    uint32_t available_time = setup_doc["grab"]["available_time"];
-    uint32_t grab_time = setup_doc["grab"]["grab_time"];
-    int available_num = setup_doc["grab"]["available_num"];
-    int grab_num = setup_doc["grab"]["grab_num"];
-
-    if (available_time < 0 or !is_same_day(available_time, get_timestamp())) {
-        // hasn't updated today's grab time
-        return -1;
-    }
-    if (grab_time < 0 or !is_same_day(get_timestamp(), grab_time)) {
+int get_grab_num() {
+    if (setup_doc["grab"]["time"] < 0 or !is_same_day(get_timestamp(), setup_doc["grab"]["time"])) {
         // today hasn't grab yet
-        return available_num;
+        return 0;
     } else {
-        return available_num - grab_num;
+        return setup_doc["grab"]["num"];
     }
 }
 
 void record_grab_once() {
-    if (setup_doc["grab"]["grab_time"] < 0 or !is_same_day(setup_doc["grab"]["grab_time"], get_timestamp())) {
+    if (setup_doc["grab"]["time"] < 0 or !is_same_day(setup_doc["grab"]["time"], get_timestamp())) {
         // today first grab
-        setup_doc["grab"]["grab_time"] = get_timestamp();
-        setup_doc["grab"]["grab_num"] = 1;
+        setup_doc["grab"]["time"] = get_timestamp();
+        setup_doc["grab"]["num"] = 1;
     } else {
-        setup_doc["grab"]["grab_time"] = get_timestamp();
-        setup_doc["grab"]["grab_num"] = (int)setup_doc["grab"]["grab_num"] + 1;
+        setup_doc["grab"]["time"] = get_timestamp();
+        setup_doc["grab"]["num"] = (int)setup_doc["grab"]["num"] + 1;
     }
     write_setup();
-    Serial.println("record grab");
-    printjson();
 }

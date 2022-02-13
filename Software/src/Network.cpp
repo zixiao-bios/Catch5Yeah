@@ -36,7 +36,6 @@ bool wifi_connect(const String &wifi_name, const String &password) {
         if (wifi_connect_state()) {
             // get data from server
             network_update_time();
-            network_update_grab();
             return true;
         }
     }
@@ -58,15 +57,12 @@ bool network_update_time() {
     return true;
 }
 
-bool network_update_grab() {
+int network_get_grab() {
     String s = server_get("num");
     if (s.length() == 0) {
-        return false;
+        return -1;
     }
-
-    int num = s.toInt();
-    set_grab_available(num);
-    return true;
+    return s.toInt();
 }
 
 void printWifiList() {

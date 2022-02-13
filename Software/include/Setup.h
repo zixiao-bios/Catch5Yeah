@@ -12,10 +12,7 @@ void init_setup();
 
 void write_setup();
 
-void set_grab_available(int num);
-
-// get remaining grab num today
-int get_grab_remain();
+int get_grab_num();
 
 void record_grab_once();
 
