@@ -9,8 +9,10 @@
 #include "Claw.h"
 #include "Setup.h"
 #include "RTC.h"
+#include "Audio.h"
 
 RGB_Strip *rgb1, *rgb2, *rgb3, *rgb4;
+Audio *audio;
 
 [[noreturn]] void displayTask(void *pv) {
     while (true) {
@@ -61,6 +63,9 @@ __attribute__((unused)) void setup() {
 
     rgb4 = new RGB_Strip(4);
     rgb4->setEffect(RGB_OFF);
+
+    audio = new Audio();
+    audio->play("/Mario.mp3");
 }
 
 __attribute__((unused)) void loop() {}

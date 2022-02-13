@@ -8,9 +8,9 @@
 // Display pin defined in ./platformio.ini
 
 // I2S pin
-#define PIN_I2S_LRC 13
+#define PIN_I2S_LRC 14
 #define PIN_I2S_BLCK 12
-#define PIN_I2S_DIN 14
+#define PIN_I2S_DIN 13
 
 // RTC pin
 #define PIN_RTC_SDA 19
