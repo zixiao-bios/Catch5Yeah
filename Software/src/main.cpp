@@ -46,7 +46,7 @@ __attribute__((unused)) void setup() {
 
     // init WiFi
     if (setup_doc["wifi"]["enable"]) {
-        xTaskCreatePinnedToCore(UI_turn_on_wifi_task, "TurnOnWifi", 2048, nullptr, 1, nullptr, 0);
+        xTaskCreatePinnedToCore(UI_turn_on_wifi_task, "TurnOnWifi", 10000, nullptr, 1, nullptr, 0);
     }
 
     // init RGB

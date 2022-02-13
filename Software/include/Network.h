@@ -6,6 +6,7 @@
 #include <HTTPClient.h>
 #include <../ConfigPrivate.h>
 #include "Setup.h"
+#include "RTC.h"
 
 
 // network state
@@ -26,8 +27,12 @@ bool wifi_connect(const String& wifi_name, const String& password);
 void wifi_disconnect();
 
 
+// network request
+bool network_update_time();
+
+String server_get(const String& opt);
+
 void printWifiList();
-void httpGet(const String& url);
 
 int scanWiFiList();
 

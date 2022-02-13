@@ -271,7 +271,7 @@ void click_back(lv_event_t *e) {
 void change_wifi_switch(lv_event_t *e) {
     if (lv_obj_has_state(wifi_switch, LV_STATE_CHECKED)) {
         // turn on wifi
-        xTaskCreatePinnedToCore(UI_turn_on_wifi_task, "TurnOnWifi", 2048, nullptr, 1, nullptr, 0);
+        xTaskCreatePinnedToCore(UI_turn_on_wifi_task, "TurnOnWifi", 10000, nullptr, 1, nullptr, 0);
 
         // update setup
         setup_doc["wifi"]["enable"] = true;
@@ -545,6 +545,8 @@ void UI_turn_on_wifi_task(void *pv) {
     lv_obj_clear_state(wifi_switch, LV_STATE_DISABLED);
     UI_update_wifi_state();
     xSemaphoreGive(lvgl_mutex);
+
+    network_update_time();
 
     vTaskDelete(nullptr);
 }

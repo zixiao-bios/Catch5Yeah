@@ -20,6 +20,7 @@ bool wifi_on() {
         if (WiFi.SSID(i) == setup_doc["wifi"]["name"]) {
             return wifi_connect(setup_doc["wifi"]["name"], setup_doc["wifi"]["password"]);
         }
+        delay(1);
     }
     return false;
 }
@@ -28,7 +29,7 @@ void wifi_off() {
     WiFi.disconnect(true);
 }
 
-bool wifi_connect(const String& wifi_name, const String& password) {
+bool wifi_connect(const String &wifi_name, const String &password) {
     WiFi.begin(wifi_name.c_str(), password.c_str());
     for (int i = 0; i < 20; ++i) {
         delay(500);
@@ -41,6 +42,17 @@ bool wifi_connect(const String& wifi_name, const String& password) {
 
 void wifi_disconnect() {
     WiFi.disconnect();
+}
+
+bool network_update_time() {
+    String s = server_get("timestamp");
+    if (s.length() == 0) {
+        return false;
+    }
+
+    uint32_t ts = s.toInt();
+    rtc_set_time(ts);
+    return true;
 }
 
 void printWifiList() {
@@ -72,15 +84,17 @@ int scanWiFiList() {
     return WiFi.scanNetworks();
 }
 
-void httpGet(const String &url) {
+String server_get(const String &opt) {
+    if (!wifi_connect_state()) {
+        return "";
+    }
+
+    String url =
+            String(SERVER_URL) + "?id=" + String(SERVER_ID) + "&password=" + String(SERVER_PASSWORD) + "&opt=" + opt;
+
     HTTPClient http;
-
-    Serial.println("[HTTP] begin...");
     http.begin(url);
-
-    Serial.println("[HTTP] GET...");
     int httpCode = http.GET();
-
     if (httpCode > 0) {
         // HTTP header has been send and Server response header has been handled
         Serial.printf("[HTTP] GET... code: %d\n", httpCode);
@@ -88,11 +102,12 @@ void httpGet(const String &url) {
         // file found at server
         if (httpCode == HTTP_CODE_OK) {
             String payload = http.getString();
-            Serial.println(payload);
+            http.end();
+            return payload;
         }
     } else {
-        Serial.printf("[HTTP] GET... failed, error: %s\n", http.errorToString(httpCode).c_str());
+        Serial.printf("[HTTP] GET... failed, error: %s\n", HTTPClient::errorToString(httpCode).c_str());
+        http.end();
+        return "";
     }
-
-    http.end();
 }
