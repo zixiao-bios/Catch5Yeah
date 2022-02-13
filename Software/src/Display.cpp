@@ -354,7 +354,7 @@ void click_close_wifi_connect_win(lv_event_t *e) {
 }
 
 void click_wifi_connect(lv_event_t *e) {
-    xTaskCreatePinnedToCore(UI_connect_wifi, "wifi_connect", 2048, e, 1, nullptr, 1);
+    xTaskCreatePinnedToCore(UI_connect_wifi, "wifi_connect", 4096, e, 1, nullptr, 1);
 }
 
 void click_wifi_disconnect(lv_event_t *e) {
