@@ -252,6 +252,13 @@ void click_setting_button(lv_event_t *e) {
 }
 
 void click_grab_button(lv_event_t *e) {
+    lv_obj_add_state(grab_start_button, LV_STATE_DISABLED);
+    if (wifi_connect_state()) {
+        lv_label_set_text(grab_label, "正在获取可用次数...");
+        xTaskCreatePinnedToCore(UI_update_grab_num, "UpdateGrabNum", 4096, nullptr, 1, nullptr, 0);
+    } else {
+        lv_label_set_text(grab_label, "请先连接网络");
+    }
     show_screen("grab");
 }
 
@@ -624,6 +631,24 @@ void UI_update_grab_time(void *pv) {
         xSemaphoreGive(lvgl_mutex);
         delay(1000);
     }
+}
+
+void UI_update_grab_num(void *pv) {
+    int available = network_get_grab();
+    int grab = get_grab_num();
+
+    xSemaphoreTake(lvgl_mutex, portMAX_DELAY);
+    if (available < 0) {
+        lv_label_set_text(grab_label, "服务器错误！");
+    } else if (grab >= available) {
+        lv_label_set_text(grab_label, "今日次数已用完");
+    } else {
+        lv_label_set_text(grab_label, String("今日剩余次数：" + String(available - grab)).c_str());
+        lv_obj_clear_state(grab_start_button, LV_STATE_DISABLED);
+    }
+    xSemaphoreGive(lvgl_mutex);
+
+    vTaskDelete(nullptr);
 }
 
 void mainScreenInit() {

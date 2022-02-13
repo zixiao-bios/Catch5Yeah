@@ -67,6 +67,8 @@ void UI_update_grab_time(void *pv);
 
 [[noreturn]] void UI_update_datetime(void *pv);
 
+void UI_update_grab_num(void *pv);
+
 
 // screen load function
 void mainScreenInit();
