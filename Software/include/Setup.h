@@ -1,7 +1,7 @@
 #ifndef SOFTWARE_SETUP_H
 #define SOFTWARE_SETUP_H
 
-#include <SPIFFS.h>
+#include <LITTLEFS.h>
 #include <FS.h>
 #include <ArduinoJson.h>
 #include "RTC.h"

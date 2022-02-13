@@ -1,6 +1,6 @@
 #include <Arduino.h>
-#include <SPIFFS.h>
 #include <freertos/FreeRTOS.h>
+#include <LITTLEFS.h>
 
 #include "Audio.h"
 #include "Display.h"
@@ -9,6 +9,7 @@
 #include "Claw.h"
 #include "Setup.h"
 #include "RTC.h"
+#include "Tool.h"
 
 RGB_Strip *rgb1, *rgb2, *rgb3, *rgb4;
 
@@ -25,10 +26,11 @@ __attribute__((unused)) void setup() {
     Serial.begin(115200);
     Serial.println("\n===============start===============");
 
-    // start SPIFFS
-    if (!SPIFFS.begin(true)) {
-        Serial.println("SPIFFS Mount Failed!");
+    // start LittleFS
+    if (!LITTLEFS.begin(true)) {
+        Serial.println("LittleFS Mount Failed!");
     }
+    listDir(LITTLEFS, "/", 3);
 
     rtc_init();
 

@@ -41,11 +41,11 @@ lv_obj_t *grab_label, *grab_back_button, *grab_start_button, *grab_finish_button
 
 SemaphoreHandle_t lvgl_mutex;
 
-static void *openSpiffsFile(lv_fs_drv_t *drv, const char *path, lv_fs_mode_t mode) {
+static void *openFile(lv_fs_drv_t *drv, const char *path, lv_fs_mode_t mode) {
     auto *file = new fs::File();
     char filename[32];
     snprintf_P(filename, sizeof(filename), PSTR("/%s"), path);
-    *file = SPIFFS.open(filename, mode == LV_FS_MODE_WR ? FILE_WRITE : FILE_READ);
+    *file = LITTLEFS.open(filename, mode == LV_FS_MODE_WR ? FILE_WRITE : FILE_READ);
 
     if (!*file || file->isDirectory()) {
         Serial.print("failed to open file: ");
@@ -56,7 +56,7 @@ static void *openSpiffsFile(lv_fs_drv_t *drv, const char *path, lv_fs_mode_t mod
     return file;
 }
 
-static lv_fs_res_t closeSpiffsFile(lv_fs_drv_t *drv, void *file_p) {
+static lv_fs_res_t closeFile(lv_fs_drv_t *drv, void *file_p) {
     fs::File file = *(fs::File *) file_p;
     if (!file) {
         return LV_FS_RES_NOT_EX;
@@ -70,7 +70,7 @@ static lv_fs_res_t closeSpiffsFile(lv_fs_drv_t *drv, void *file_p) {
     }
 }
 
-static lv_fs_res_t readSpiffsFile(lv_fs_drv_t *drv, void *file_p, void *buf, uint32_t btr, uint32_t *br) {
+static lv_fs_res_t readFile(lv_fs_drv_t *drv, void *file_p, void *buf, uint32_t btr, uint32_t *br) {
     auto *fp = (fs::File *) file_p;
     fs::File file = *fp;
 
@@ -82,7 +82,7 @@ static lv_fs_res_t readSpiffsFile(lv_fs_drv_t *drv, void *file_p, void *buf, uin
     }
 }
 
-static lv_fs_res_t seekSpiffsFile(lv_fs_drv_t *drv, void *file_p, uint32_t pos, lv_fs_whence_t whence) {
+static lv_fs_res_t seekFile(lv_fs_drv_t *drv, void *file_p, uint32_t pos, lv_fs_whence_t whence) {
     fs::File file = *(fs::File *) file_p;
 
     if (!file) {
@@ -93,7 +93,7 @@ static lv_fs_res_t seekSpiffsFile(lv_fs_drv_t *drv, void *file_p, uint32_t pos, 
     }
 }
 
-static lv_fs_res_t tellSpiffsFile(lv_fs_drv_t *drv, void *file_p, uint32_t *pos_p) {
+static lv_fs_res_t tellFile(lv_fs_drv_t *drv, void *file_p, uint32_t *pos_p) {
     fs::File file = *(fs::File *) file_p;
 
     if (!file) {
@@ -157,14 +157,14 @@ void displayInit() {
     // init file system
     lv_fs_drv_init(&flashDrv);
     flashDrv.letter = 'F';
-//    flashDrv.cache_size = 0;
+    flashDrv.cache_size = 0;
     flashDrv.ready_cb = nullptr;
-    flashDrv.open_cb = openSpiffsFile;
-    flashDrv.close_cb = closeSpiffsFile;
-    flashDrv.read_cb = readSpiffsFile;
+    flashDrv.open_cb = openFile;
+    flashDrv.close_cb = closeFile;
+    flashDrv.read_cb = readFile;
     flashDrv.write_cb = nullptr;
-    flashDrv.seek_cb = seekSpiffsFile;
-    flashDrv.tell_cb = tellSpiffsFile;
+    flashDrv.seek_cb = seekFile;
+    flashDrv.tell_cb = tellFile;
     flashDrv.dir_close_cb = nullptr;
     flashDrv.dir_open_cb = nullptr;
     flashDrv.dir_read_cb = nullptr;
@@ -180,20 +180,13 @@ void touch_calibrate(bool repeat) {
     uint16_t calData[5];
     uint8_t calDataOK = 0;
 
-    // check file system exists
-    if (!SPIFFS.begin()) {
-        Serial.println("Formating file system");
-        SPIFFS.format();
-        SPIFFS.begin();
-    }
-
     // check if calibration file exists and size is correct
-    if (SPIFFS.exists(CALIBRATION_FILE)) {
+    if (LITTLEFS.exists(CALIBRATION_FILE)) {
         if (repeat) {
             // Delete if we want to re-calibrate
-            SPIFFS.remove(CALIBRATION_FILE);
+            LITTLEFS.remove(CALIBRATION_FILE);
         } else {
-            fs::File f = SPIFFS.open(CALIBRATION_FILE, "r");
+            fs::File f = LITTLEFS.open(CALIBRATION_FILE, "r");
             if (f) {
                 if (f.readBytes((char *) calData, 14) == 14)
                     calDataOK = 1;
@@ -229,7 +222,7 @@ void touch_calibrate(bool repeat) {
         tft.println("Calibration complete!");
 
         // store data
-        fs::File f = SPIFFS.open(CALIBRATION_FILE, "w");
+        fs::File f = LITTLEFS.open(CALIBRATION_FILE, "w");
         if (f) {
             f.write((const unsigned char *) calData, 14);
             f.close();

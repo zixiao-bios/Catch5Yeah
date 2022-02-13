@@ -3,8 +3,7 @@
 
 #include <Arduino.h>
 #include <FS.h>
-#include <SPIFFS.h>
 
-void listSpiffsFile();
+void listDir(fs::FS &fs, const char * dirname, uint8_t levels);
 
 #endif //SOFTWARE_TOOL_H
