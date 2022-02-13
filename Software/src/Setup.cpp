@@ -2,6 +2,10 @@
 
 DynamicJsonDocument setup_doc(1024);
 
+void printjson() {
+    serializeJson(setup_doc, Serial);
+}
+
 void init_setup() {
     File f = SPIFFS.open("/Setup.json");
     deserializeJson(setup_doc, f);
@@ -30,10 +34,24 @@ int get_grab_remain() {
         // hasn't updated today's grab time
         return -1;
     }
-    if (grab_time < 0 or !is_same_day(available_time, grab_time)) {
+    if (grab_time < 0 or !is_same_day(get_timestamp(), grab_time)) {
         // today hasn't grab yet
         return available_num;
     } else {
         return available_num - grab_num;
     }
+}
+
+void record_grab_once() {
+    if (setup_doc["grab"]["grab_time"] < 0 or !is_same_day(setup_doc["grab"]["grab_time"], get_timestamp())) {
+        // today first grab
+        setup_doc["grab"]["grab_time"] = get_timestamp();
+        setup_doc["grab"]["grab_num"] = 1;
+    } else {
+        setup_doc["grab"]["grab_time"] = get_timestamp();
+        setup_doc["grab"]["grab_num"] = (int)setup_doc["grab"]["grab_num"] + 1;
+    }
+    write_setup();
+    Serial.println("record grab");
+    printjson();
 }

@@ -374,6 +374,9 @@ void click_grab_start(lv_event_t *e) {
     claw_grab_start();
 
     xTaskCreatePinnedToCore(UI_update_grab_time, "GrabTimeUpdate", 2048, nullptr, 1, nullptr, 1);
+
+    // update grab num
+    record_grab_once();
 }
 
 void click_grab_finish(lv_event_t *e) {
@@ -384,8 +387,14 @@ void click_grab_finish(lv_event_t *e) {
     lv_obj_clear_flag(grab_back_button, LV_OBJ_FLAG_HIDDEN);
     lv_obj_clear_flag(grab_start_button, LV_OBJ_FLAG_HIDDEN);
     lv_obj_add_flag(grab_finish_button, LV_OBJ_FLAG_HIDDEN);
-    // todo: update claw num
-    lv_label_set_text(grab_label, "今日剩余次数：5");
+
+    int num = get_grab_remain();
+    lv_label_set_text(grab_label, String("今日剩余次数：" + String(num)).c_str());
+    if (num <= 0) {
+        lv_obj_add_state(grab_start_button, LV_STATE_DISABLED);
+    } else {
+        lv_obj_clear_state(grab_start_button, LV_STATE_DISABLED);
+    }
 }
 
 void UI_update_wifi_state() {

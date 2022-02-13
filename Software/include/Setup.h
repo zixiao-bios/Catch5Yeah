@@ -17,4 +17,6 @@ void set_grab_available(int num);
 // get remaining grab num today
 int get_grab_remain();
 
+void record_grab_once();
+
 #endif //SOFTWARE_SETUP_H
