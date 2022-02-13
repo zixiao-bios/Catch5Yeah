@@ -34,6 +34,9 @@ bool wifi_connect(const String &wifi_name, const String &password) {
     for (int i = 0; i < 20; ++i) {
         delay(500);
         if (wifi_connect_state()) {
+            // get data from server
+            network_update_time();
+            network_update_grab();
             return true;
         }
     }
@@ -52,6 +55,17 @@ bool network_update_time() {
 
     uint32_t ts = s.toInt();
     rtc_set_time(ts);
+    return true;
+}
+
+bool network_update_grab() {
+    String s = server_get("num");
+    if (s.length() == 0) {
+        return false;
+    }
+
+    int num = s.toInt();
+    set_grab_available(num);
     return true;
 }
 
@@ -108,6 +122,6 @@ String server_get(const String &opt) {
     } else {
         Serial.printf("[HTTP] GET... failed, error: %s\n", HTTPClient::errorToString(httpCode).c_str());
         http.end();
-        return "";
     }
+    return "";
 }

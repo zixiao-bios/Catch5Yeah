@@ -13,3 +13,9 @@ void write_setup() {
     serializeJson(setup_doc, f);
     f.close();
 }
+
+void set_grab_available(int num) {
+    setup_doc["grab"]["available_time"] = get_timestamp();
+    setup_doc["grab"]["available_num"] = num;
+    write_setup();
+}

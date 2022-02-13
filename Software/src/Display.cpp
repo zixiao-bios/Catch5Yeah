@@ -545,9 +545,6 @@ void UI_turn_on_wifi_task(void *pv) {
     lv_obj_clear_state(wifi_switch, LV_STATE_DISABLED);
     UI_update_wifi_state();
     xSemaphoreGive(lvgl_mutex);
-
-    network_update_time();
-
     vTaskDelete(nullptr);
 }
 

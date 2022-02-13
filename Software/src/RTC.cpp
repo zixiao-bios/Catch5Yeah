@@ -18,6 +18,7 @@ DateTime rtc_get_time() {
 }
 
 void rtc_set_time(uint32_t timestamp) {
+    // convert unix timestamp to GMT+8
     RTC_DS3231::adjust(DateTime(timestamp + 28800));
 }
 
@@ -43,4 +44,8 @@ void rtc_set_time(uint32_t timestamp) {
 
 void run_get_time_task() {
     xTaskCreatePinnedToCore(get_time_task, "GetTime", 1024, nullptr, 2, nullptr, 1);
+}
+
+uint32_t get_timestamp() {
+    return RTC_DS3231::now().unixtime();
 }

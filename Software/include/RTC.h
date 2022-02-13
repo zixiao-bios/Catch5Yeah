@@ -13,4 +13,6 @@ void rtc_set_time(uint32_t timestamp);
 
 void run_get_time_task();
 
+uint32_t get_timestamp();
+
 #endif //SOFTWARE_RTC_H
