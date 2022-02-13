@@ -49,3 +49,9 @@ void run_get_time_task() {
 uint32_t get_timestamp() {
     return RTC_DS3231::now().unixtime();
 }
+
+bool is_same_day(uint32_t ts1, uint32_t ts2) {
+    DateTime dt1(ts1);
+    DateTime dt2(ts2);
+    return dt1.year() == dt2.year() and dt1.month() == dt2.month() and dt1.day() == dt2.day();
+}

@@ -19,3 +19,21 @@ void set_grab_available(int num) {
     setup_doc["grab"]["available_num"] = num;
     write_setup();
 }
+
+int get_grab_remain() {
+    uint32_t available_time = setup_doc["grab"]["available_time"];
+    uint32_t grab_time = setup_doc["grab"]["grab_time"];
+    int available_num = setup_doc["grab"]["available_num"];
+    int grab_num = setup_doc["grab"]["grab_num"];
+
+    if (available_time < 0 or !is_same_day(available_time, get_timestamp())) {
+        // hasn't updated today's grab time
+        return -1;
+    }
+    if (grab_time < 0 or !is_same_day(available_time, grab_time)) {
+        // today hasn't grab yet
+        return available_num;
+    } else {
+        return available_num - grab_num;
+    }
+}

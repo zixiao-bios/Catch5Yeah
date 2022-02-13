@@ -398,9 +398,19 @@ void UI_update_wifi_state() {
     }
 
     if (wifi_connect_state()) {
+        // update wifi icon
         lv_label_set_text(wifi_connect_state_label, wifi_name_state().c_str());
         lv_obj_clear_flag(wifi_disconnect_button, LV_OBJ_FLAG_HIDDEN);
         lv_img_set_src(main_network_img, &icn_Network);
+
+        // update grab num
+        int num = get_grab_remain();
+        lv_label_set_text(grab_label, String("今日剩余次数：" + String(num)).c_str());
+        if (num <= 0) {
+            lv_obj_add_state(grab_start_button, LV_STATE_DISABLED);
+        } else {
+            lv_obj_clear_state(grab_start_button, LV_STATE_DISABLED);
+        }
     } else {
         lv_label_set_text(wifi_connect_state_label, "无");
         lv_obj_add_flag(wifi_disconnect_button, LV_OBJ_FLAG_HIDDEN);
@@ -945,8 +955,12 @@ void grabScreenInit() {
 
 
     grab_label = lv_label_create(grab_screen);
-    // todo update claw num
-    lv_label_set_text(grab_label, "今日剩余次数：5");
+    int num = get_grab_remain();
+    if (num < 0) {
+        lv_label_set_text(grab_label, "请检查网络连接");
+    } else {
+        lv_label_set_text(grab_label, String("今日剩余次数：" + String(num)).c_str());
+    }
     lv_obj_set_align(grab_label, LV_ALIGN_TOP_LEFT);
     lv_obj_set_style_text_font(grab_label, &font_middle, 0);
     lv_obj_set_pos(grab_label, pos_x, pos_y);
@@ -967,6 +981,9 @@ void grabScreenInit() {
     lv_obj_set_align(grab_start_button, LV_ALIGN_TOP_RIGHT);
     lv_obj_set_pos(grab_start_button, -pos_x, pos_y - 5);
     lv_obj_add_event_cb(grab_start_button, click_grab_start, LV_EVENT_CLICKED, nullptr);
+    if (num <= 0) {
+        lv_obj_add_state(grab_start_button, LV_STATE_DISABLED);
+    }
 
 
     label = lv_label_create(grab_start_button);

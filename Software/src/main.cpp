@@ -41,7 +41,7 @@ __attribute__((unused)) void setup() {
 
     // init display
     displayInit();
-    show_screen("main");
+    show_screen("grab");
     xTaskCreatePinnedToCore(displayTask, "DisplayTask", 10000, nullptr, 1, nullptr, 1);
 
     // init WiFi
