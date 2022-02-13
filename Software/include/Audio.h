@@ -1,14 +1,10 @@
-//
-// Created by zixiao_bios on 2021/12/10.
-//
-
 #ifndef SOFTWARE_AUDIO_H
 #define SOFTWARE_AUDIO_H
 
 #include <SPIFFS.h>
 #include <freertos/FreeRTOS.h>
 #include <freertos/FreeRTOSConfig.h>
-#include "AudioFileSourceSPIFFS.h"
+#include <AudioFileSourceLittleFS.h>
 #include "AudioGeneratorMP3.h"
 #include "AudioOutputI2S.h"
 #include "AudioFileSourceSD.h"
@@ -29,7 +25,7 @@ public:
 
 private:
     const char *fileName = nullptr;
-    AudioFileSourceSPIFFS *file = nullptr;
+    AudioFileSourceLittleFS *file = nullptr;
     AudioGeneratorMP3 *mp3 = nullptr;
     AudioOutputI2S *out = nullptr;
     TaskHandle_t playTaskHandle = nullptr;

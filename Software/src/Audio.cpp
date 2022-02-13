@@ -1,13 +1,10 @@
-//
-// Created by zixiao_bios on 2021/12/10.
-//
-
 #include "Audio.h"
 
 bool Audio::play(const char *filename) {
     this->fileName = filename;
-    if (xTaskCreate(&Audio::playHandle, "playHandle", 2048, this, 1,
-                    &this->playTaskHandle) == pdPASS) {
+    // todo: Error(Interrupt wdt timeout on CPU1) when pinned to core1
+    if (xTaskCreatePinnedToCore(&Audio::playHandle, "playHandle", 4096, this, 1,
+                    &this->playTaskHandle, 1) == pdPASS) {
         this->playing = true;
         return true;
     } else {
@@ -61,7 +58,7 @@ void Audio::stop() {
 void Audio::initPlay() {
     this->releaseInit();
 
-    file = new AudioFileSourceSPIFFS(this->fileName);
+    file = new AudioFileSourceLittleFS(this->fileName);
     mp3 = new AudioGeneratorMP3();
     out = new AudioOutputI2S();
     out->SetPinout(PIN_I2S_BLCK, PIN_I2S_LRC, PIN_I2S_DIN);
