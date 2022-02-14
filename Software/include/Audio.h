@@ -17,26 +17,24 @@ enum playMode {
 
 class Audio {
 public:
-    bool play(const char *filename);
+    bool play(const String& filename);
 
     void setPlayMode(playMode playMode);
 
     void stop();
 
 private:
-    const char *fileName = nullptr;
+    String fileName;
     AudioFileSourceLittleFS *file = nullptr;
     AudioGeneratorMP3 *mp3 = nullptr;
     AudioOutputI2S *out = nullptr;
-    TaskHandle_t playTaskHandle = nullptr;
 
-    bool playing = false;
+    bool stop_flag = false;
     playMode mode = Once;
 
     void initPlay();
     void releaseInit();
-    void destroyPlayHandle();
-    [[noreturn]] static void playHandle(void *pv);
+    static void playHandle(void *pv);
 };
 
 
