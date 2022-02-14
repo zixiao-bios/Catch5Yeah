@@ -2,7 +2,6 @@
 
 bool Audio::play(const char *filename) {
     this->fileName = filename;
-    // todo: Error(Interrupt wdt timeout on CPU1) when pinned to core1
     if (xTaskCreatePinnedToCore(&Audio::playHandle, "playHandle", 4096, this, 1,
                     &this->playTaskHandle, 1) == pdPASS) {
         this->playing = true;
@@ -23,13 +22,14 @@ void Audio::setPlayMode(playMode playMode) {
             self->initPlay();
             // playing music
             self->mp3->begin(self->file, self->out);
+            TickType_t lastWakeTime = xTaskGetTickCount();
             while (self->mp3->isRunning()) {
                 if (!self->mp3->loop()) {
                     self->mp3->stop();
                 }
-                vTaskDelay(1);
+                vTaskDelayUntil(&lastWakeTime, 20 / portTICK_PERIOD_MS);
             }
-            vTaskDelay(1);
+            delay(20);
         } while (self->mode == Loop);
 
         // playback finish, delete task
