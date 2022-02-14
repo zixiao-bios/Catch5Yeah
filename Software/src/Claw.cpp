@@ -139,7 +139,7 @@ void move_to_end(int dir) {
 void claw_stay_top_async() {
     if (!stay_top_task) {
         stay_top_task = true;
-        xTaskCreatePinnedToCore(claw_stay_top_task, "StayTop", 2048, nullptr, 2, nullptr, 0);
+        xTaskCreatePinnedToCore(claw_stay_top_task, "StayTop", 2048, nullptr, 3, nullptr, 0);
     }
 }
 
@@ -260,11 +260,11 @@ void claw_init() {
 }
 
 void claw_reset_async() {
-    xTaskCreatePinnedToCore(claw_reset_task, "ClawReset", 2048, nullptr, 2, nullptr, 0);
+    xTaskCreatePinnedToCore(claw_reset_task, "ClawReset", 2048, nullptr, 3, nullptr, 0);
 }
 
 void claw_grab_start() {
-    xTaskCreatePinnedToCore(claw_grab_task, "ClawGrab", 2048, nullptr, 2, nullptr, 0);
+    xTaskCreatePinnedToCore(claw_grab_task, "ClawGrab", 2048, nullptr, 3, nullptr, 0);
 }
 
 void claw_grab_exit() {
