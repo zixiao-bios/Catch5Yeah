@@ -1,3 +1,4 @@
+#include <Audio.h>
 #include "Display.h"
 
 // Display
@@ -40,6 +41,8 @@ String *wifi_name_clicked = nullptr;
 lv_obj_t *grab_label, *grab_back_button, *grab_start_button, *grab_finish_button;
 
 SemaphoreHandle_t lvgl_mutex;
+
+Audio *audio;
 
 static void *openFile(lv_fs_drv_t *drv, const char *path, lv_fs_mode_t mode) {
     auto *file = new fs::File();
@@ -169,6 +172,8 @@ void displayInit() {
     flashDrv.dir_open_cb = nullptr;
     flashDrv.dir_read_cb = nullptr;
     lv_fs_drv_register(&flashDrv);
+
+    audio = new Audio();
 
     mainScreenInit();
     settingScreenInit();
@@ -371,6 +376,9 @@ void click_grab_start(lv_event_t *e) {
     lv_obj_add_flag(grab_back_button, LV_OBJ_FLAG_HIDDEN);
     lv_obj_add_flag(grab_start_button, LV_OBJ_FLAG_HIDDEN);
 
+    audio->play("/JingleBells.mp3");
+    audio->setPlayMode(Loop);
+
     claw_grab_start();
 
     xTaskCreatePinnedToCore(UI_update_grab_time, "GrabTimeUpdate", 2048, nullptr, 1, nullptr, 1);
@@ -381,6 +389,8 @@ void click_grab_start(lv_event_t *e) {
 
 void click_grab_finish(lv_event_t *e) {
     claw_grab_exit();
+
+    audio->stop();
 
     show_screen("main");
 
