@@ -2,7 +2,6 @@
 #include <freertos/FreeRTOS.h>
 #include <LITTLEFS.h>
 
-#include "Audio.h"
 #include "Display.h"
 #include "RGB_Strip.h"
 #include "Network.h"
@@ -10,6 +9,7 @@
 #include "Setup.h"
 #include "RTC.h"
 #include "Tool.h"
+#include "music.h"
 
 RGB_Strip *rgb1, *rgb2, *rgb3, *rgb4;
 
@@ -35,6 +35,7 @@ __attribute__((unused)) void setup() {
 
     // read setup file
     init_setup();
+    music_init();
 
     // init claw
     claw_init();

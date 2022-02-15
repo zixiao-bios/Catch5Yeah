@@ -11,6 +11,7 @@
 #include "Claw.h"
 #include "Setup.h"
 #include "RTC.h"
+#include "music.h"
 
 extern SemaphoreHandle_t lvgl_mutex;
 
