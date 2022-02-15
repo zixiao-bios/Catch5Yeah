@@ -1,25 +1,41 @@
 #include "RTC.h"
 
 RTC_DS3231 rtc;
+SemaphoreHandle_t rtc_mutex;
 
 void rtc_init() {
+    rtc_mutex = xSemaphoreCreateMutex();
     Wire.setPins(PIN_RTC_SDA, PIN_RTC_SCL);
     if (!rtc.begin()) {
         Serial.println("Couldn't find RTC");
     }
     if (rtc.lostPower()) {
+        xSemaphoreTake(rtc_mutex, portMAX_DELAY);
+
         RTC_DS3231::adjust(DateTime(DATETIME_BEGIN_YEAR, DATETIME_BEGIN_MONTH, DATETIME_BEGIN_DAY, DATETIME_BEGIN_HOUR,
                             DATETIME_BEGIN_MIN, 0));
+
+        xSemaphoreGive(rtc_mutex);
     }
 }
 
 DateTime rtc_get_time() {
-    return RTC_DS3231::now();
+    xSemaphoreTake(rtc_mutex, portMAX_DELAY);
+
+    DateTime now = RTC_DS3231::now();
+
+    xSemaphoreGive(rtc_mutex);
+
+    return now;
 }
 
 void rtc_set_time(uint32_t timestamp) {
+    xSemaphoreTake(rtc_mutex, portMAX_DELAY);
+
     // convert unix timestamp to GMT+8
     RTC_DS3231::adjust(DateTime(timestamp + 28800));
+
+    xSemaphoreGive(rtc_mutex);
 }
 
 [[noreturn]] void get_time_task(void *pv) {
@@ -38,7 +54,7 @@ void rtc_set_time(uint32_t timestamp) {
         Serial.print(':');
         Serial.print(now.second(), DEC);
         Serial.println();
-        delay(1000);
+        delay(600);
     }
 }
 
@@ -47,7 +63,12 @@ void run_get_time_task() {
 }
 
 uint32_t get_timestamp() {
+    xSemaphoreTake(rtc_mutex, portMAX_DELAY);
+
+    // todo: get wrong timestamp sometimes (add mutex)
     return RTC_DS3231::now().unixtime();
+
+    xSemaphoreGive(rtc_mutex);
 }
 
 bool is_same_day(uint32_t ts1, uint32_t ts2) {
