@@ -65,10 +65,11 @@ void run_get_time_task() {
 uint32_t get_timestamp() {
     xSemaphoreTake(rtc_mutex, portMAX_DELAY);
 
-    // todo: get wrong timestamp sometimes (add mutex)
-    return RTC_DS3231::now().unixtime();
+    uint32_t st = RTC_DS3231::now().unixtime();
 
     xSemaphoreGive(rtc_mutex);
+
+    return st;
 }
 
 bool is_same_day(uint32_t ts1, uint32_t ts2) {
