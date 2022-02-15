@@ -65,7 +65,6 @@ void run_get_time_task() {
 uint32_t get_timestamp() {
     xSemaphoreTake(rtc_mutex, portMAX_DELAY);
 
-    // todo: get wrong timestamp sometimes (add mutex)
     return RTC_DS3231::now().unixtime();
 
     xSemaphoreGive(rtc_mutex);
