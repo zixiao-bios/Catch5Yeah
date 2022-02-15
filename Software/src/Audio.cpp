@@ -2,8 +2,8 @@
 
 bool Audio::play(const String &filename) {
     this->fileName = filename;
-    if (xTaskCreatePinnedToCore(&Audio::playHandle, "playHandle", 10000, this, 2,
-                                nullptr, 0) == pdPASS) {
+    if (xTaskCreatePinnedToCore(&Audio::playHandle, "playHandle", 4096, this, 2,
+                                nullptr, 1) == pdPASS) {
         return true;
     } else {
         return false;
