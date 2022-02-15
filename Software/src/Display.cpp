@@ -381,10 +381,7 @@ void click_grab_start(lv_event_t *e) {
 
     claw_grab_start();
 
-    xTaskCreatePinnedToCore(UI_update_grab_time, "GrabTimeUpdate", 2048, nullptr, 1, nullptr, 1);
-
-    // update grab num
-    record_grab_once();
+    xTaskCreatePinnedToCore(UI_update_grab_time, "GrabTimeUpdate", 4096, nullptr, 1, nullptr, 1);
 }
 
 void click_grab_finish(lv_event_t *e) {
@@ -594,6 +591,8 @@ void UI_update_grab_time(void *pv) {
     }
 
     // grab is done, wait for gift done
+    // update grab num
+    record_grab_once();
     xSemaphoreTake(lvgl_mutex, portMAX_DELAY);
     lv_label_set_text(grab_label, "正在运送礼物...");
     xSemaphoreGive(lvgl_mutex);
