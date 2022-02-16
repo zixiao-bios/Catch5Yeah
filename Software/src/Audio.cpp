@@ -48,10 +48,21 @@ void Audio::initPlay() {
     mp3 = new AudioGeneratorMP3();
     out = new AudioOutputI2S();
     out->SetPinout(PIN_I2S_BLCK, PIN_I2S_LRC, PIN_I2S_DIN);
+    out->SetGain(this->volume);
 }
 
 void Audio::releaseInit() {
     delete this->file;
     delete this->mp3;
     delete this->out;
+    this->file = nullptr;
+    this->mp3 = nullptr;
+    this->out = nullptr;
+}
+
+void Audio::setVolume(float v) {
+    this->volume = v;
+    if (out) {
+        out->SetGain(v);
+    }
 }

@@ -23,6 +23,8 @@ public:
 
     void stop();
 
+    void setVolume(float v);
+
 private:
     String fileName;
     AudioFileSourceLittleFS *file = nullptr;
@@ -31,6 +33,7 @@ private:
 
     bool stop_flag = false;
     playMode mode = Once;
+    float volume = 0.5;
 
     void initPlay();
     void releaseInit();
