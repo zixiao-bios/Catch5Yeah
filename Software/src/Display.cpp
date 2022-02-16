@@ -22,6 +22,9 @@ LV_IMG_DECLARE(icn_NoNetwork)
 LV_IMG_DECLARE(icn_WiFi)
 LV_IMG_DECLARE(icn_Sound)
 LV_IMG_DECLARE(icn_RGB)
+LV_IMG_DECLARE(icn_Mute)
+LV_IMG_DECLARE(icn_Music)
+LV_IMG_DECLARE(icn_Volume)
 LV_IMG_DECLARE(img_DST)
 LV_IMG_DECLARE(img_GrabPage)
 
@@ -36,6 +39,8 @@ lv_obj_t *main_network_img, *main_datetime_label;
 // wifi page
 lv_obj_t *wifi_page, *wifi_switch, *wifi_state_section, *wifi_connect_state_label, *wifi_disconnect_button, *wifi_list_label, *wifi_list_section, *wifi_refresh_button, *wifi_connect_win_bg;
 String *wifi_name_clicked = nullptr;
+// audio page
+lv_obj_t *audio_mute_switch, *audio_volume_section, *audio_music_section, *audio_volume_label, *audio_music_switch;
 
 // grab screen
 lv_obj_t *grab_label, *grab_back_button, *grab_start_button, *grab_finish_button;
@@ -649,6 +654,12 @@ void UI_update_grab_num(void *pv) {
     vTaskDelete(nullptr);
 }
 
+void UI_update_audio_state() {
+    if (setup_doc["audio"]["mute"]) {
+
+    }
+}
+
 void mainScreenInit() {
     main_screen = lv_obj_create(nullptr);
 
@@ -767,7 +778,7 @@ void settingScreenInit() {
     lv_obj_set_style_bg_color(menu, lv_color_hex(0xEEEEEE), 0);
     lv_obj_add_event_cb(menu, click_menu, LV_EVENT_CLICKED, menu);
 
-    lv_obj_t *cont, *section, *label, *img;
+    lv_obj_t *cont, *section, *label, *img, *slider;
 
 
     // WiFi page
@@ -821,12 +832,46 @@ void settingScreenInit() {
     lv_obj_set_style_pad_hor(sound_page, padding_x, 0);
     lv_obj_set_style_text_font(sound_page, &font_small, 0);
 
+    //section 1
     lv_menu_separator_create(sound_page);
     section = lv_menu_section_create(sound_page);
 
     cont = lv_menu_cont_create(section);
+    img = lv_img_create(cont);
+    lv_img_set_src(img, &icn_Mute);
     label = lv_label_create(cont);
     lv_label_set_text(label, "静音");
+    lv_obj_set_flex_grow(label, 1);
+    audio_mute_switch = lv_switch_create(cont);
+
+    // section 2
+    lv_menu_separator_create(sound_page);
+    audio_volume_section = lv_menu_section_create(sound_page);
+
+    cont = lv_menu_cont_create(audio_volume_section);
+    img = lv_img_create(cont);
+    lv_img_set_src(img, &icn_Volume);
+    label = lv_label_create(cont);
+    lv_label_set_text(label, "音量");
+    lv_obj_set_flex_grow(label, 1);
+    audio_volume_label = lv_label_create(cont);
+    lv_label_set_text(audio_volume_label, "50");
+    label = lv_label_create(cont);
+    lv_label_set_text(label, " ");
+    slider = lv_slider_create(cont);
+    lv_obj_set_width(slider, 150);
+
+    // section 3
+    lv_menu_separator_create(sound_page);
+    audio_music_section = lv_menu_section_create(sound_page);
+
+    cont = lv_menu_cont_create(audio_music_section);
+    img = lv_img_create(cont);
+    lv_img_set_src(img, &icn_Music);
+    label = lv_label_create(cont);
+    lv_label_set_text(label, "音乐模式");
+    lv_obj_set_flex_grow(label, 1);
+    audio_music_switch = lv_switch_create(cont);
 
 
     // RGB page
