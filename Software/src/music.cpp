@@ -41,13 +41,16 @@ void play_one_loop() {
         play_stop();
     }
 
-    audio->play(music_names[random(music_num)]);
     audio->setPlayMode(Loop);
+    audio->play_async(music_names[random(music_num)]);
     playing = true;
 }
 
 void play_random_loop_task(void *pv) {
-
+    while (playing) {
+        audio->setPlayMode(Once);
+        audio->play(music_names[random(music_num)]);
+    }
 }
 
 void play_random_loop() {
@@ -58,11 +61,14 @@ void play_random_loop() {
     if (is_playing()) {
         play_stop();
     }
+
+    playing = true;
+    xTaskCreatePinnedToCore(play_random_loop_task, "MusicModeTask", 2048, nullptr, 1, nullptr, 1);
 }
 
 void play_stop() {
-    audio->stop();
     playing = false;
+    audio->stop();
 }
 
 bool is_playing() {

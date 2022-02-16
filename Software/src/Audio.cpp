@@ -1,6 +1,8 @@
 #include "Audio.h"
 
-bool Audio::play(const String &filename) {
+SemaphoreHandle_t Audio::playMutex = xSemaphoreCreateMutex();
+
+bool Audio::play_async(const String &filename) {
     this->fileName = filename;
     if (xTaskCreatePinnedToCore(&Audio::playHandle, "playHandle", 4096, this, 2,
                                 nullptr, 1) == pdPASS) {
@@ -15,6 +17,8 @@ void Audio::setPlayMode(playMode playMode) {
 }
 
 void Audio::playHandle(void *pv) {
+    xSemaphoreTake(Audio::playMutex, portMAX_DELAY);
+
     auto *self = (Audio *) pv;
     self->stop_flag = false;
     do {
@@ -31,6 +35,8 @@ void Audio::playHandle(void *pv) {
         }
         delay(10);
     } while (self->mode == Loop and !self->stop_flag);
+
+    xSemaphoreGive(Audio::playMutex);
 
     // playback finish, delete task
     vTaskDelete(nullptr);
@@ -65,4 +71,26 @@ void Audio::setVolume(float v) {
     if (out) {
         out->SetGain(v);
     }
+}
+
+void Audio::play(const String &filename) {
+    xSemaphoreTake(Audio::playMutex, portMAX_DELAY);
+
+    this->stop_flag = false;
+    do {
+        this->initPlay();
+
+        // playing music
+        this->mp3->begin(this->file, this->out);
+        TickType_t lastWakeTime = xTaskGetTickCount();
+        while (this->mp3->isRunning()) {
+            if (!this->mp3->loop() or this->stop_flag) {
+                this->mp3->stop();
+            }
+            vTaskDelayUntil(&lastWakeTime, 10 / portTICK_PERIOD_MS);
+        }
+        delay(10);
+    } while (this->mode == Loop and !this->stop_flag);
+
+    xSemaphoreGive(Audio::playMutex);
 }

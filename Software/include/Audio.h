@@ -17,13 +17,17 @@ enum playMode {
 
 class Audio {
 public:
-    bool play(const String& filename);
+    bool play_async(const String& filename);
+
+    void play(const String &filename);
 
     void setPlayMode(playMode playMode);
 
     void stop();
 
     void setVolume(float v);
+
+    static SemaphoreHandle_t playMutex;
 
 private:
     String fileName;
