@@ -406,6 +406,18 @@ void change_audio_mute_switch(lv_event_t *e) {
     write_setup();
 
     UI_update_audio_state();
+    if (mute) {
+        lv_obj_clear_state(audio_music_switch, LV_STATE_CHECKED);
+    }
+}
+
+void change_audio_music_switch(lv_event_t *e) {
+    if (lv_obj_has_state(audio_music_switch, LV_STATE_CHECKED)) {
+        // open music mode
+        play_random_loop();
+    } else {
+        play_stop();
+    }
 }
 
 void UI_update_wifi_state() {
@@ -891,6 +903,7 @@ void settingScreenInit() {
     lv_label_set_text(label, "音乐模式");
     lv_obj_set_flex_grow(label, 1);
     audio_music_switch = lv_switch_create(cont);
+    lv_obj_add_event_cb(audio_music_switch, change_audio_music_switch, LV_EVENT_VALUE_CHANGED, nullptr);
 
 
     // RGB page

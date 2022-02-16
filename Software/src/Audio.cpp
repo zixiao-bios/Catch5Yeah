@@ -74,6 +74,7 @@ void Audio::setVolume(float v) {
 }
 
 void Audio::play(const String &filename) {
+    this->fileName = filename;
     xSemaphoreTake(Audio::playMutex, portMAX_DELAY);
 
     this->stop_flag = false;

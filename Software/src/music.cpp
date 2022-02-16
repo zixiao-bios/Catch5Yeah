@@ -51,6 +51,8 @@ void play_random_loop_task(void *pv) {
         audio->setPlayMode(Once);
         audio->play(music_names[random(music_num)]);
     }
+
+    vTaskDelete(nullptr);
 }
 
 void play_random_loop() {
@@ -63,7 +65,7 @@ void play_random_loop() {
     }
 
     playing = true;
-    xTaskCreatePinnedToCore(play_random_loop_task, "MusicModeTask", 2048, nullptr, 1, nullptr, 1);
+    xTaskCreatePinnedToCore(play_random_loop_task, "MusicModeTask", 4096, nullptr, 2, nullptr, 1);
 }
 
 void play_stop() {
