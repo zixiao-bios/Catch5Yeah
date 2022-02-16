@@ -397,6 +397,17 @@ void click_grab_finish(lv_event_t *e) {
     lv_obj_add_flag(grab_finish_button, LV_OBJ_FLAG_HIDDEN);
 }
 
+void change_audio_mute_switch(lv_event_t *e) {
+    bool mute = lv_obj_has_state(audio_mute_switch, LV_STATE_CHECKED);
+
+    music_set_mute(mute);
+
+    setup_doc["audio"]["mute"] = mute;
+    write_setup();
+
+    UI_update_audio_state();
+}
+
 void UI_update_wifi_state() {
     if (wifi_on_state()) {
         lv_obj_add_state(wifi_switch, LV_STATE_CHECKED);
@@ -656,7 +667,14 @@ void UI_update_grab_num(void *pv) {
 
 void UI_update_audio_state() {
     if (setup_doc["audio"]["mute"]) {
-
+        // mute
+        lv_obj_add_state(audio_mute_switch, LV_STATE_CHECKED);
+        lv_obj_add_flag(audio_volume_section, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(audio_music_section, LV_OBJ_FLAG_HIDDEN);
+    } else {
+        lv_obj_clear_state(audio_mute_switch, LV_STATE_CHECKED);
+        lv_obj_clear_flag(audio_volume_section, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_clear_flag(audio_music_section, LV_OBJ_FLAG_HIDDEN);
     }
 }
 
@@ -843,6 +861,7 @@ void settingScreenInit() {
     lv_label_set_text(label, "静音");
     lv_obj_set_flex_grow(label, 1);
     audio_mute_switch = lv_switch_create(cont);
+    lv_obj_add_event_cb(audio_mute_switch, change_audio_mute_switch, LV_EVENT_VALUE_CHANGED, nullptr);
 
     // section 2
     lv_menu_separator_create(sound_page);
@@ -997,6 +1016,7 @@ void settingScreenInit() {
                   nullptr);
 
     UI_update_wifi_state();
+    UI_update_audio_state();
 }
 
 void grabScreenInit() {

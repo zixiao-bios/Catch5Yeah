@@ -74,7 +74,4 @@ void music_set_mute(bool m) {
     if (m && playing) {
         play_stop();
     }
-
-    setup_doc["audio"]["mute"] = mute;
-    write_setup();
 }

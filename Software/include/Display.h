@@ -70,6 +70,8 @@ void UI_update_grab_time(void *pv);
 
 void UI_update_grab_num(void *pv);
 
+void UI_update_audio_state();
+
 
 // screen load function
 void mainScreenInit();
