@@ -15,6 +15,8 @@ void play_stop();
 
 bool is_playing();
 
+bool is_music_mode();
+
 void music_set_mute(bool m);
 
 #endif //SOFTWARE_MUSIC_H

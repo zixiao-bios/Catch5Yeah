@@ -378,7 +378,9 @@ void click_grab_start(lv_event_t *e) {
     lv_obj_add_flag(grab_back_button, LV_OBJ_FLAG_HIDDEN);
     lv_obj_add_flag(grab_start_button, LV_OBJ_FLAG_HIDDEN);
 
-    play_one_loop();
+    if (!is_music_mode()) {
+        play_one_loop();
+    }
 
     claw_grab_start();
 
@@ -388,7 +390,9 @@ void click_grab_start(lv_event_t *e) {
 void click_grab_finish(lv_event_t *e) {
     claw_grab_exit();
 
-    play_stop();
+    if (!is_music_mode()) {
+        play_stop();
+    }
 
     show_screen("main");
 

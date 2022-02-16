@@ -6,6 +6,7 @@ String *music_names;
 Audio *audio;
 bool playing = false;
 bool mute;
+bool music_mode = false;
 
 void music_init() {
     File dir = LITTLEFS.open("/music");
@@ -47,10 +48,14 @@ void play_one_loop() {
 }
 
 void play_random_loop_task(void *pv) {
+    music_mode = true;
+
     while (playing) {
         audio->setPlayMode(Once);
         audio->play(music_names[random(music_num)]);
     }
+
+    music_mode = false;
 
     vTaskDelete(nullptr);
 }
@@ -75,6 +80,10 @@ void play_stop() {
 
 bool is_playing() {
     return playing;
+}
+
+bool is_music_mode() {
+    return music_mode;
 }
 
 void music_set_mute(bool m) {
