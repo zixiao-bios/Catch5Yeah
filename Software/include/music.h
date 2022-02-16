@@ -19,4 +19,6 @@ bool is_music_mode();
 
 void music_set_mute(bool m);
 
+void music_set_volume(int volume);
+
 #endif //SOFTWARE_MUSIC_H

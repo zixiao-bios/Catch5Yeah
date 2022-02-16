@@ -424,6 +424,17 @@ void change_audio_music_switch(lv_event_t *e) {
     }
 }
 
+void change_volume_slider(lv_event_t *e) {
+    int volume = lv_slider_get_value(lv_event_get_target(e));
+
+    lv_label_set_text(audio_volume_label, String(volume == 100 ? 99 : volume).c_str());
+
+    music_set_volume(volume);
+
+    setup_doc["audio"]["volume"] = volume;
+    write_setup();
+}
+
 void UI_update_wifi_state() {
     if (wifi_on_state()) {
         lv_obj_add_state(wifi_switch, LV_STATE_CHECKED);
@@ -866,7 +877,7 @@ void settingScreenInit() {
     lv_obj_set_style_pad_hor(sound_page, padding_x, 0);
     lv_obj_set_style_text_font(sound_page, &font_small, 0);
 
-    //section 1
+    // section 1
     lv_menu_separator_create(sound_page);
     section = lv_menu_section_create(sound_page);
 
@@ -890,11 +901,14 @@ void settingScreenInit() {
     lv_label_set_text(label, "音量");
     lv_obj_set_flex_grow(label, 1);
     audio_volume_label = lv_label_create(cont);
-    lv_label_set_text(audio_volume_label, "50");
+    int volume = setup_doc["audio"]["volume"];
+    lv_label_set_text(audio_volume_label, String(volume).c_str());
     label = lv_label_create(cont);
     lv_label_set_text(label, " ");
     slider = lv_slider_create(cont);
+    lv_obj_add_event_cb(slider, change_volume_slider, LV_EVENT_VALUE_CHANGED, nullptr);
     lv_obj_set_width(slider, 150);
+    lv_slider_set_value(slider, volume, LV_ANIM_OFF);
 
     // section 3
     lv_menu_separator_create(sound_page);

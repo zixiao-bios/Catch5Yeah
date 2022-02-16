@@ -29,6 +29,7 @@ void music_init() {
     dir.close();
 
     audio = new Audio();
+    music_set_volume(setup_doc["audio"]["volume"]);
 
     mute = setup_doc["audio"]["mute"];
 }
@@ -91,4 +92,8 @@ void music_set_mute(bool m) {
     if (m && playing) {
         play_stop();
     }
+}
+
+void music_set_volume(int volume) {
+    audio->setVolume((float) volume / 100);
 }
