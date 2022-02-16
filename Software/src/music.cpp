@@ -5,7 +5,7 @@ int music_num = 0;
 String *music_names;
 Audio *audio;
 bool playing = false;
-bool mute = false;
+bool mute;
 
 void music_init() {
     File dir = LITTLEFS.open("/music");
@@ -28,6 +28,8 @@ void music_init() {
     dir.close();
 
     audio = new Audio();
+
+    mute = setup_doc["audio"]["mute"];
 }
 
 void play_one_loop() {
@@ -65,4 +67,14 @@ void play_stop() {
 
 bool is_playing() {
     return playing;
+}
+
+void music_set_mute(bool m) {
+    mute = m;
+    if (m && playing) {
+        play_stop();
+    }
+
+    setup_doc["audio"]["mute"] = mute;
+    write_setup();
 }

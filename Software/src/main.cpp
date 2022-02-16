@@ -35,6 +35,8 @@ __attribute__((unused)) void setup() {
 
     // read setup file
     init_setup();
+
+    // init music player
     music_init();
 
     // init claw
