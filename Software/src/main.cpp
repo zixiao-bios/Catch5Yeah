@@ -55,16 +55,16 @@ __attribute__((unused)) void setup() {
 
     // init RGB
     rgb1 = new RGB_Strip(1);
-    rgb1->setEffect(RGB_OFF);
+    rgb1->setEffect(RGB_RAINBOW);
 
 //    rgb2 = new RGB_Strip(2);
 //    rgb2->setEffect(RGB_OFF);
 
     rgb3 = new RGB_Strip(3);
-    rgb3->setEffect(RGB_OFF);
+    rgb3->setEffect(RGB_RAINBOW);
 
     rgb4 = new RGB_Strip(4);
-    rgb4->setEffect(RGB_OFF);
+    rgb4->setEffect(RGB_RAINBOW);
 }
 
 __attribute__((unused)) void loop() {}

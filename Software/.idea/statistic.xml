@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Statistic">
+    <option name="excludedDirectories">
+      <list>
+        <option value="$PROJECT_DIR$/../ArtDesign" />
+        <option value="$PROJECT_DIR$/../Docs" />
+        <option value="$PROJECT_DIR$/../Hardware" />
+        <option value="$PROJECT_DIR$/../PCB" />
+        <option value="$PROJECT_DIR$/../Sticker" />
+        <option value="$PROJECT_DIR$/.idea" />
+        <option value="$PROJECT_DIR$/.pio" />
+        <option value="$PROJECT_DIR$/cmake-build-debug" />
+        <option value="$PROJECT_DIR$/cmake-build-nodemcu-32s" />
+        <option value="$PROJECT_DIR$/data" />
+        <option value="$PROJECT_DIR$/lib" />
+        <option value="$PROJECT_DIR$/src/imgs" />
+        <option value="$PROJECT_DIR$/test" />
+      </list>
+    </option>
+  </component>
+</project>
