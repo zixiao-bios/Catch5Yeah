@@ -1,6 +1,6 @@
 # Catch5Yeah
 
- A DIY claw machine as our 5th anniversary gift.
+ A DIY claw machine.
 
 Assembly and operation video on bilibili: https://www.bilibili.com/video/BV1fP411p73M/
 
